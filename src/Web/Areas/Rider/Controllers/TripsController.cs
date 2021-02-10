@@ -1,5 +1,4 @@
 ﻿using App.CQRS;
-using App.CQRS.Trips.Common.Queries.Query;
 using Data.App.DbContext;
 using Data.Common;
 using Data.Constants;
@@ -14,7 +13,7 @@ using Web.Controllers;
 
 namespace Web.Areas.Rider.Controllers
 {
-    [Authorize(Policy = ApplicationRoles.RiderRoleName)]
+    [Authorize(Policy = ApplicationRoles.AdministratorRoleName)]
     [ApiController]
     [Route("api/riders/[controller]")]
     [Produces("application/json")]
@@ -70,14 +69,14 @@ namespace Web.Areas.Rider.Controllers
             return Ok();
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> GetSearchAsync(string c, int p, int s, string sf, int so)
-        {
-            var query = new SearchTripQuery("", TenantId, UserId, c, p, s, sf, so);
+        //[HttpGet("search")]
+        //public async Task<IActionResult> GetSearchAsync(string c, int p, int s, string sf, int so)
+        //{
+        //    var query = new SearchTripQuery("", TenantId, UserId, c, p, s, sf, so);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchTripQuery, Paged<SearchTripQuery.Trip>>(query);
+        //    var dto = await _queryHandlerDispatcher.HandleAsync<SearchTripQuery, Paged<SearchTripQuery.Trip>>(query);
 
-            return Ok(dto);
-        }
+        //    return Ok(dto);
+        //}
     }
 }

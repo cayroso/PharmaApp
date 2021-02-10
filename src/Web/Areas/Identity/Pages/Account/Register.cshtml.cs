@@ -21,6 +21,8 @@ using Data.Identity.Models;
 using Data.Constants;
 using Data.App.DbContext;
 using Data.App.Models.Users;
+using Data.App.Models.Pharmacies;
+using Data.App.Models.Customers;
 
 namespace Web.Areas.Identity.Pages.Account
 {
@@ -156,16 +158,25 @@ namespace Web.Areas.Identity.Pages.Account
                         RoleId = Input.RoleId
                     });
 
-                    if (Input.RoleId == ApplicationRoles.Driver.Id)
+                    if (Input.RoleId == ApplicationRoles.Administrator.Id)
                     {
-                        await appDbContext.AddAsync(new Data.App.Models.Drivers.Driver
+                        var pharmacy = new Pharmacy
                         {
-                            User = appUser
+                            PharmacyId = Guid.NewGuid().ToString(),
+                            Name = $"{appUser.FirstLastName} Pharmacy",
+                        };
+
+                        pharmacy.Staffs.Add(new PharmacyStaff
+                        {
+                            PharmacyId = pharmacy.PharmacyId,
+                            UserId = appUser.UserId
                         });
+
+                        await appDbContext.AddAsync(pharmacy);
                     }
-                    if (Input.RoleId == ApplicationRoles.Rider.Id)
+                    if (Input.RoleId == ApplicationRoles.Customer.Id)
                     {
-                        await appDbContext.AddAsync(new Data.App.Models.Riders.Rider
+                        await appDbContext.AddAsync(new Customer
                         {
                             User = appUser,
                         });

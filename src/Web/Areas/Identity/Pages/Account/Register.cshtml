@@ -55,8 +55,8 @@
                     <label>Role</label>
                     <div>
                         <select name="Input.RoleId" class="form-control custom-select">
-                            <option value="@Data.Constants.ApplicationRoles.Driver.Id">Driver</option>
-                            <option value="@Data.Constants.ApplicationRoles.Rider.Id">Rider</option>
+                            <option value="@Data.Constants.ApplicationRoles.Administrator.Id">Owner</option>
+                            <option value="@Data.Constants.ApplicationRoles.Customer.Id">Customer</option>
                         </select>
                     </div>
                 </div>
@@ -69,8 +69,8 @@
                         <a id="login" asp-page="./Login">Login</a>
                     </p>
                     @*<p>
-                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-            </p>*@
+                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                        </p>*@
                     <p>
                         <a asp-page="/Index">Go to Home page</a>
                     </p>

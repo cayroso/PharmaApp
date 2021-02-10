@@ -1,7 +1,5 @@
-﻿
+﻿using Data.App.Models.FileUploads;
 
-using Data.App.Models.FileUploads;
-using Data.App.Models.Trips;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

@@ -1,10 +1,12 @@
 ﻿
 using Data.App.Models.Calendars;
 using Data.App.Models.Chats;
-using Data.App.Models.Drivers;
+using Data.App.Models.Customers;
 using Data.App.Models.FileUploads;
-using Data.App.Models.Riders;
-using Data.App.Models.Trips;
+using Data.App.Models.Medicines;
+using Data.App.Models.Orders;
+using Data.App.Models.Orders.OrderLineItems;
+using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
 using Data.Identity.Models;
 using Data.Identity.Models.Users;
@@ -72,13 +74,15 @@ namespace Data.App.DbContext
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatReceiver> ChatReceivers { get; set; }
 
-        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<Drug> Drugs { get; set; }
 
         public DbSet<FileUpload> FileUploads { get; set; }
 
-        public DbSet<Rider> Riders { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
-        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Pharmacy> Pharmacies { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -127,13 +131,15 @@ namespace Data.App.DbContext
 
             CreateChats(builder);
 
-            CreateDrivers(builder);
+            CreateCustomers(builder);
+
+            CreateDrugs(builder);
 
             CreateFileUploads(builder);
 
-            CreateRiders(builder);
+            CreateOrders(builder);
 
-            CreateTrips(builder);
+            CreatePharmacies(builder);
 
             CreateUser(builder);
         }
@@ -204,41 +210,49 @@ namespace Data.App.DbContext
 
         }
 
-        void CreateDrivers(ModelBuilder builder)
+        void CreateCustomers(ModelBuilder builder)
         {
-            builder.Entity<Driver>(b =>
+            builder.Entity<Customer>(b =>
             {
-                b.ToTable("Driver");
-                b.HasKey(e => e.DriverId);
+                b.ToTable("Customer");
+                b.HasKey(e => e.CustomerId);
 
-                b.Property(e => e.DriverId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
+                //b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
 
-                b.HasOne(e => e.User).WithOne().HasForeignKey<Driver>(e => e.DriverId);
+                b.HasOne(e => e.User).WithOne().HasForeignKey<Customer>(e => e.CustomerId);
 
-                b.HasMany(e => e.Trips)
-                    .WithOne(d => d.Driver)
-                    .HasForeignKey(f => f.DriverId);
-
-                b.HasMany(e => e.Vehicles)
-                    .WithOne(d => d.Driver)
-                    .HasForeignKey(f => f.DriverId);
-            });
-
-            builder.Entity<Vehicle>(b =>
-            {
-                b.ToTable("Vehicle");
-                b.HasKey(e => e.VehicleId);
-
-                b.Property(e => e.VehicleId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DriverId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
-
-                b.HasMany(e => e.Trips)
-                    .WithOne(d => d.Vehicle)
-                    .HasForeignKey(f => f.VehicleId);
+                b.HasMany(e => e.Orders)
+                    .WithOne(d => d.Customer)
+                    .HasForeignKey(f => f.CustomerId);
             });
         }
+
+        void CreateDrugs(ModelBuilder builder)
+        {
+            builder.Entity<Drug>(b =>
+            {
+                b.ToTable("Drug");
+                b.HasKey(e => e.DrugId);
+
+                b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasMany(e => e.Prices)
+                    .WithOne(d => d.Drug)
+                    .HasForeignKey(f => f.DrugId);
+
+                b.HasMany(e => e.CustomerSubscriptions)
+                    .WithOne(d => d.Drug)
+                    .HasForeignKey(f => f.DrugId);
+
+                b.HasMany(e => e.OrderLineItems)
+                    .WithOne(d => d.Drug)
+                    .HasForeignKey(f => f.DrugId);
+            });
+        }
+
         void CreateFileUploads(ModelBuilder builder)
         {
             builder.Entity<FileUpload>(b =>
@@ -256,122 +270,80 @@ namespace Data.App.DbContext
             });
         }
 
-        void CreateRiders(ModelBuilder builder)
+        void CreateOrders(ModelBuilder builder)
         {
-            builder.Entity<Rider>(b =>
+            builder.Entity<Order>(b =>
             {
-                b.ToTable("Rider");
-                b.HasKey(e => e.RiderId);
+                b.ToTable("Order");
+                b.HasKey(e => e.OrderId);
 
-                b.Property(e => e.RiderId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
 
-                b.HasOne(e => e.User).WithOne().HasForeignKey<Rider>(e => e.RiderId);
+                b.HasMany(e => e.LineItems)
+                    .WithOne(d => d.Order)
+                    .HasForeignKey(f => f.OrderId);
+            });
 
-                b.HasMany(e => e.Bookmarks)
-                    .WithOne(d => d.Rider)
-                    .HasForeignKey(f => f.RiderId);
+            builder.Entity<OrderLineItem>(b =>
+            {
+                b.ToTable("OrderLineItem");
+                b.HasKey(e => e.OrderLineItemId);
 
-                b.HasMany(e => e.Trips)
-                    .WithOne(d => d.Rider)
-                    .HasForeignKey(f => f.RiderId);
+                b.Property(e => e.OrderLineItemId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();                
             });
         }
 
-        void CreateTrips(ModelBuilder builder)
+        void CreatePharmacies(ModelBuilder builder)
         {
-            builder.Entity<Trip>(b =>
+            builder.Entity<Pharmacy>(b =>
             {
-                b.ToTable("Trip");
-                b.HasKey(e => e.TripId);
+                b.ToTable("Pharmacy");
+                b.HasKey(e => e.PharmacyId);
 
-                b.Property(e => e.TripId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.RiderId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DriverId).HasMaxLength(KeyMaxLength);
-                b.Property(e => e.VehicleId).HasMaxLength(KeyMaxLength);
-                //b.Property(e => e.TripFeedbackId).HasMaxLength(KeyMaxLength);
-
-                b.Property(e => e.StartAddress).HasMaxLength(DescMaxLength).IsRequired();
-                b.Property(e => e.StartAddressDescription).HasMaxLength(DescMaxLength).IsRequired();
-                b.Property(e => e.EndAddress).HasMaxLength(DescMaxLength).IsRequired();
-                b.Property(e => e.EndAddressDescription).HasMaxLength(DescMaxLength).IsRequired();
-
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                
                 b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
 
-                b.HasMany(e => e.ExcludedDrivers)
-                    .WithOne(d => d.Trip)
-                    .HasForeignKey(f => f.TripId);
+                b.HasMany(e => e.Drugs)
+                    .WithOne(d => d.Pharmacy)
+                    .HasForeignKey(f => f.PharmacyId);
 
-                b.HasMany(e => e.Locations)
-                    .WithOne(d => d.Trip)
-                    .HasForeignKey(f => f.TripId);
+                b.HasMany(e => e.Orders)
+                    .WithOne(d => d.Pharmacy)
+                    .HasForeignKey(f => f.PharmacyId);
 
-                b.HasMany(e => e.Timelines)
-                    .WithOne(d => d.Trip)
-                    .HasForeignKey(f => f.TripId);
+                b.HasMany(e => e.Reviews)
+                    .WithOne(d => d.Pharmacy)
+                    .HasForeignKey(f => f.PharmacyId);
             });
 
-            builder.Entity<TripExcludedDriver>(b =>
+            builder.Entity<PharmacyReview>(b =>
             {
-                b.ToTable("TripExcludedDriver");
-                b.HasKey(e => e.TripExcludedDriverId);
+                b.ToTable("PharmacyReview");
+                b.HasKey(e => e.PharmacyReviewId);
 
-                b.Property(e => e.TripExcludedDriverId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.TripId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DriverId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyReviewId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
             });
 
-            builder.Entity<TripLocation>(b =>
+            builder.Entity<PharmacyStaff>(b =>
             {
-                b.ToTable("TripLocation");
-                b.HasKey(e => e.TripLocationId);
+                b.ToTable("PharmacyStaff");
+                b.HasKey(e => e.PharmacyStaffId);
 
-                b.Property(e => e.TripLocationId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.TripId).HasMaxLength(KeyMaxLength).IsRequired();
-            });
-
-            builder.Entity<TripTimeline>(b =>
-            {
-                b.ToTable("TripTimeline");
-                b.HasKey(e => e.TripTimelineId);
-
-                b.Property(e => e.TripTimelineId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.TripId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyStaffId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.UserId).HasMaxLength(KeyMaxLength).IsRequired();
             });
-
         }
-        //void CreateTeams(ModelBuilder builder)
-        //{
-        //    builder.Entity<Team>(b =>
-        //    {
-        //        b.ToTable("Team");
-        //        b.HasKey(e => e.TeamId);
-
-        //        b.Property(e => e.TeamId).HasMaxLength(KeyMaxLength).IsRequired();                
-        //        b.Property(e => e.Name).HasMaxLength(NameMaxLength);
-        //        b.Property(e => e.Description).HasMaxLength(DescMaxLength);
-
-        //        b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
-
-        //        b.HasOne(e => e.Chat).WithOne().HasForeignKey<Team>(e => e.TeamId);
-
-        //        b.HasMany(e => e.Members)
-        //            .WithOne(d => d.Team)
-        //            .HasForeignKey(d => d.TeamId);
-        //    });
-
-        //    builder.Entity<TeamMember>(b =>
-        //    {
-        //        b.ToTable("TeamMember");
-        //        b.HasKey(e => new { e.TeamId, e.MemberId });
-
-        //        b.Property(e => e.TeamId).HasMaxLength(KeyMaxLength).IsRequired();
-        //        b.Property(e => e.MemberId).HasMaxLength(KeyMaxLength).IsRequired();
-        //    });
-        //}
-
-
+        
         static void CreateUser(ModelBuilder builder)
         {
 

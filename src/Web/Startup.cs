@@ -64,16 +64,16 @@ namespace Web
                        c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.AdministratorRoleName
                            )));
 
-                options.AddPolicy(ApplicationRoles.DriverRoleName, policy =>
+                options.AddPolicy(ApplicationRoles.StaffRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
-                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.DriverRoleName
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.StaffRoleName
                            )));
 
-                options.AddPolicy(ApplicationRoles.RiderRoleName, policy =>
+                options.AddPolicy(ApplicationRoles.CustomerRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
-                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.RiderRoleName
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.CustomerRoleName
                            )));
 
 
@@ -96,8 +96,8 @@ namespace Web
             .AddRazorPagesOptions(opt =>
             {
                 opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.AdministratorRoleName, "/", ApplicationRoles.AdministratorRoleName);
-                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.DriverRoleName, "/", ApplicationRoles.DriverRoleName);
-                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.RiderRoleName, "/", ApplicationRoles.RiderRoleName);
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.StaffRoleName, "/", ApplicationRoles.StaffRoleName);
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.CustomerRoleName, "/", ApplicationRoles.CustomerRoleName);
             });
 
 

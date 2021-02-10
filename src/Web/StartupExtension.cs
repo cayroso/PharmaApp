@@ -1,6 +1,5 @@
 ﻿using App.CQRS;
 using App.Services;
-using Data.App.Models.Trips;
 using Data.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,8 +14,8 @@ namespace Web
     {
         public static void RegisterCQRS(IServiceCollection services)
         {
-            services.AddSingleton<JobQueue<Trip>>();
-            services.AddHostedService<MyJobBackgroundService>();
+            //services.AddSingleton<JobQueue<Trip>>();
+            //services.AddHostedService<MyJobBackgroundService>();
 
             services.AddTransient<IContainer, DotNetCoreContainer>();
             services.AddScoped<ITenantProvider, DefaultTenantProvider>();

@@ -3,6 +3,7 @@ using Data.Enums;
 using Data.Identity.Models.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Data.App.Models.Users
 
     public class UserTask
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string UserTaskId { get; set; }
 
         public EnumTaskType Type { get; set; } = EnumTaskType.Unknown;

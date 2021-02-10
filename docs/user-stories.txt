@@ -1,0 +1,44 @@
+As a Guest User,
+	I must be able to register as Owner of Pharmacy or Customer(normal user).
+	I must be able to see the locations of the pharmacies in the map,
+		but not able to click/view (requires registration)
+
+As an Owner of a Pharmacy
+	I must be able to login
+	I must be able to manage my profile 
+		Change name, contact #, and upload profile picture)
+	I must be able to create/register, and manage a Pharmacy.
+		Set the opening days, and hours.
+		Set if the pharmacy is closed.
+		Set the location of the pharmacy using google map.	
+	I must be able to manage Medicines
+		Add/Edit/Retire Medicine
+		Set the selling price,
+		Set if medicine must have prescription from doctor
+		Set if available.
+		Set how the medicines should be used, indications, etc.
+	
+	I must be able to view list of reservations/orders from registered users/customers.
+	I must be able to manage customer placed orders/reservations
+		Set order status {accepted, processed, ready for pickup, completed, cancelled, archived}.
+						
+As a Staff of a Pharmacy
+	???
+	do we support this type of user/role in the system
+	if yes, please specify the roles this user will perform
+	otherwise, we will not implement
+	???
+
+As as Customer
+	I must be able to login
+	I must be able to manage my profile
+		Change name, contact #, and upload profile picture.
+	I must be able to see the locations of nearby pharmacies(using google map)
+	I must be able to view the details of a pharmacy
+	I must be able to search the medicines of a pharmacy
+	I must be able to "subscribe" to a medicine, so that I will be notified when it becomes available/unavailable
+	I must be able to reserved/place orders for medicines, except medicines w/ prescriptions 		
+	I must be able to cancel previously reserved/placed orders, specifying the reason for cancellation.
+	I must be able to set the order's status = complete when the order is receved in the pharmacy.
+	I must be able to add and edit my review to a pharmacy
+	

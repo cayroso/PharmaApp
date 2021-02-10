@@ -1,5 +1,5 @@
 ﻿using Common.Extensions;
-using Data.Enums;
+using Data.App.Models.Customers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,19 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.App.Models.Trips
+namespace Data.App.Models.Pharmacies
 {
-    public class TripLocation
+    public class PharmacyReview
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string TripLocationId { get; set; }
-        public string TripId { get; set; }
-        public virtual Trip Trip { get; set; }
+        public string PharmacyReviewId { get; set; }
 
-        public EnunTripLocationType TripLocationType { get; set; }
+        public string PharmacyId { get; set; }
+        public virtual Pharmacy Pharmacy { get; set; }
 
-        public double GeoX { get; set; }
-        public double GeoY { get; set; }
+        public string CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
+
+        public int Rating { get; set; }
+        public string Comment { get; set; }
+
 
         DateTime _dateCreated = DateTime.UtcNow.Truncate();
         public DateTime DateCreated

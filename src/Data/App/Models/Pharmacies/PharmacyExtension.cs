@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.App.Models.Trips
+namespace Data.App.Models.Pharmacies
 {
-    public static class TripExtension
+    public static class PharmacyExtension
     {
-        public static void ThrowIfNull(this Trip me)
+        public static void ThrowIfNull(this Pharmacy me)
         {
             if (me == null)
-                throw new ApplicationException("Trip not found.");
+                throw new ApplicationException("Pharmacy not found.");
         }
-        public static void ThrowIfNullOrAlreadyUpdated(this Trip me, string currentToken, string newToken)
+        public static void ThrowIfNullOrAlreadyUpdated(this Pharmacy me, string currentToken, string newToken)
         {
             me.ThrowIfNull();
 

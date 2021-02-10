@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Data.App.Models.Chats;
-using Data.App.Models.Drivers;
-using Data.App.Models.Riders;
+using Data.App.Models.Customers;
+using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
 using Data.Constants;
 using Data.Identity.DbContext;
@@ -23,30 +23,40 @@ namespace Data.App.DbContext
             if (ctx.Users.Any())
                 return;
 
-            CreateRoles(ctx);
+            var pharmacy = CreatePharmacy();
 
-            CopyIdentityUserToApp(identityWebContext, ctx);
+            CreateRoles(ctx, pharmacy);
+
+            CopyIdentityUserToApp(identityWebContext, ctx, pharmacy);
+
+            ctx.Add(pharmacy);
 
             ctx.SaveChanges();
-
-            //GenerateUsersAndTeams(ctx, provisionUserRoles);
-            //GenerateContacts(ctx);
         }
 
-        static void CreateRoles(AppDbContext ctx)
+        static Pharmacy CreatePharmacy()
         {
-            var roles = ApplicationRoles.Items//.Where(e => e.Id != ApplicationRoles.System.Id)
+            return new Pharmacy
+            {
+                PharmacyId = NewId(),
+                Name = "Default Pharmacy",
+                Address = "123 Main Street",
+            };
+        }
+
+        static void CreateRoles(AppDbContext ctx, Pharmacy pharmacy)
+        {
+            var roles = ApplicationRoles.Items
                 .Select(e => new Role
                 {
                     RoleId = e.Id,
                     Name = e.Name,
-                    //NormalizedName = e.Name.ToUpper()
                 });
 
             ctx.AddRange(roles);
         }
 
-        static void CopyIdentityUserToApp(IdentityWebContext identityWebContext, AppDbContext appDbContext)
+        static void CopyIdentityUserToApp(IdentityWebContext identityWebContext, AppDbContext appDbContext, Pharmacy pharmacy)
         {
             var users = identityWebContext.Users.Include(e => e.UserInformation).ToList();
 
@@ -74,101 +84,32 @@ namespace Data.App.DbContext
 
                 appUsers.Add(appUser);
 
-                // if driver
-                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Driver.Id))
+                // if Owner or Staff
+                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Administrator.Id || e.RoleId == ApplicationRoles.Staff.Id))
                 {
-                    var driver = new Driver
+                    var ownerOrStaff = new PharmacyStaff
                     {
-                        DriverId = appUser.UserId,
+                        PharmacyId = pharmacy.PharmacyId,
+                        UserId = appUser.UserId
                     };
 
-                    driver.Vehicles.Add(new Vehicle
-                    {
-                        DriverId = driver.DriverId,
-                        PlateNumber = "Vehicle #1"
-                    });
-                    driver.Vehicles.Add(new Vehicle
-                    {
-                        DriverId = driver.DriverId,
-                        PlateNumber = "Vehicle #2"
-                    });
-
-                    appDbContext.Add(driver);
+                    appDbContext.Add(ownerOrStaff);
                 }
 
                 // if rider
-                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Rider.Id))
+                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Customer.Id))
                 {
-                    var rider = new Rider
+                    var customer = new Customer
                     {
-                        RiderId = appUser.UserId,
+                        CustomerId = appUser.UserId,
                     };
 
-                    appDbContext.Add(rider);
+                    appDbContext.Add(customer);
                 }
             });
 
             appDbContext.AddRange(appUsers);
         }
-
-        //static void GenerateUsersAndTeams(AppDbContext ctx, IEnumerable<ProvisionUserRole> provisionUserRoles)
-        //{
-        //    var teamId = NewId();
-
-        //    var team = new Team
-        //    {
-        //        TeamId = teamId,
-        //        Name = "Default",
-        //        Description = "Default Team",
-        //        DateCreated = DateTime.UtcNow,
-        //        DateUpdated = DateTime.UtcNow,
-        //        Members = provisionUserRoles.Select(e => new TeamMember
-        //        {
-        //            MemberId = e.User.UserId,
-        //        }).ToList(),
-        //        Chat = new Chat
-        //        {
-        //            ChatId = teamId,
-        //            Title = "Chat: Default",
-        //            Receivers = provisionUserRoles.Select(e => new ChatReceiver
-        //            {
-        //                ReceiverId = e.User.UserId
-        //            }).ToList()
-        //        }
-        //    };
-
-        //    ctx.Add(team);
-        //}
-
-        //static void GenerateContacts(AppDbContext ctx)
-        //{
-        //    var foo = GetNames().Select(e => new Contact
-        //    {
-        //        ContactId = NewId(),
-        //        FirstName = e.Item1,
-        //        MiddleName = "Middle",
-        //        Email = $"{e.Item1}@{e.Item2}.com",
-        //        ReferralSource = "facebook",
-        //        Title = "Mr/Ms",
-        //        Website = $"www.{e.Item1}.com",
-        //        LastName = e.Item2,
-        //        HomePhone = e.Item3,
-        //        MobilePhone = "",
-        //        BusinessPhone = "",
-        //        Fax = "12345",
-        //        Industry = "IT",
-        //        Rating = 3,
-
-        //        DateOfInitialContact = DateTime.UtcNow,
-        //        Address = "102 Main Street",
-        //        AnnualRevenue = 1.2M,
-        //        DateCreated = DateTime.UtcNow,
-        //        DateUpdated = DateTime.UtcNow,
-        //        Status = Enums.EnumContactStatus.Lead,
-        //    });
-
-        //    ctx.AddRange(foo);
-        //}
 
         static List<Tuple<string, string, string, string>> GetNames()
         {

@@ -1,5 +1,4 @@
 ﻿using App.CQRS;
-using App.CQRS.Trips.Common.Queries.Query;
 using Data.App.DbContext;
 using Data.Common;
 using Data.Constants;
@@ -14,7 +13,7 @@ using Web.Controllers;
 
 namespace Web.Areas.Driver.Controllers
 {
-    [Authorize(Policy = ApplicationRoles.DriverRoleName)]
+    [Authorize(Policy = ApplicationRoles.AdministratorRoleName)]
     [ApiController]
     [Route("api/drivers/[controller]")]
     [Produces("application/json")]
@@ -73,11 +72,13 @@ namespace Web.Areas.Driver.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> GetSearchAsync(string c, int p, int s, string sf, int so)
         {
-            var query = new SearchTripQuery("", TenantId, UserId, c, p, s, sf, so);
+            throw new NotImplementedException();
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchTripQuery, Paged<SearchTripQuery.Trip>>(query);
+            //var query = new SearchTripQuery("", TenantId, UserId, c, p, s, sf, so);
 
-            return Ok(dto);
+            //var dto = await _queryHandlerDispatcher.HandleAsync<SearchTripQuery, Paged<SearchTripQuery.Trip>>(query);
+
+            //return Ok(dto);
         }
     }
 }

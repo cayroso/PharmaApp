@@ -27,8 +27,8 @@
                 </div>
             </div>
         }
-        
-        @if (User.IsInRole(Data.Constants.ApplicationRoles.DriverRoleName))
+
+        @if (User.IsInRole(Data.Constants.ApplicationRoles.StaffRoleName))
         {
             <div class="col-md">
                 <div class="card shadow-sm card-body text-center mb-3">
@@ -39,7 +39,7 @@
             </div>
         }
 
-        @if (User.IsInRole(Data.Constants.ApplicationRoles.RiderRoleName))
+        @if (User.IsInRole(Data.Constants.ApplicationRoles.CustomerRoleName))
         {
             <div class="col-md">
                 <div class="card shadow-sm card-body text-center mb-3">
