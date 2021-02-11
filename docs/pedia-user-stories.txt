@@ -1,0 +1,30 @@
+As a Guest User,
+	I must be able to register as Pedia/Owner of a Clinic or Customer(normal user).
+    
+As an Owner of a Pharmacy
+	I must be able to login/logout
+	I must be able to manage my profile 
+		Change name, contact #, and upload profile picture)
+    I must be able to Manage Patient Records    
+    I must be able to Manage Patient Appointments   
+    I must be able to add Receptionist
+    I must be able to view new, upcoming, and overdue appointments
+    
+As a Receptionist of a Pharmacy
+    I must be able to login/logout
+	I must be able to manage my profile 
+		Change name, contact #, and upload profile picture)
+    I must be able to Manage Patient Records
+    I must be able to Manage Patient Appointments
+    I must be able to view new, upcoming, and overdue appointments
+    
+As as Customer
+	I must be able to login/logout
+	I must be able to manage my profile
+		Change name, contact #, and upload profile picture.
+    I must be able to search pedia/clinic
+    I must be able to view details of a clinic
+    I must be able to book appointment to a clinic
+    I must be able to edit details of pending appointment
+    I must be able to cancel a pending appointment
+    I must be able to view my patient details on a given clinic
