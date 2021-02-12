@@ -20,14 +20,14 @@ namespace Data.Constants
         public const string SystemRoleName = "System";
         public static ApplicationRoles System = new ApplicationRoles(SystemRoleName.ToLower(), SystemRoleName);
 
-        public const string AdministratorRoleName = "Administrator";
-        public static ApplicationRoles Administrator = new ApplicationRoles(AdministratorRoleName.ToLower(), AdministratorRoleName);
+        public const string PediaRoleName = "Pedia";
+        public static ApplicationRoles Pedia = new ApplicationRoles(PediaRoleName.ToLower(), PediaRoleName);
 
-        public const string StaffRoleName = "Staff";
-        public static ApplicationRoles Staff = new ApplicationRoles(StaffRoleName.ToLower(), StaffRoleName);
+        public const string ReceptionistRoleName = "Receptionist";
+        public static ApplicationRoles Receptionist = new ApplicationRoles(ReceptionistRoleName.ToLower(), ReceptionistRoleName);
 
-        public const string CustomerRoleName = "Customer";
-        public static ApplicationRoles Customer = new ApplicationRoles(CustomerRoleName.ToLower(), CustomerRoleName);
+        public const string ParentRoleName = "Parent";
+        public static ApplicationRoles Parent = new ApplicationRoles(ParentRoleName.ToLower(), ParentRoleName);
 
         public static List<ApplicationRoles> Items
         {
@@ -36,9 +36,9 @@ namespace Data.Constants
                 return new List<ApplicationRoles>
                 {
                     System,
-                    Administrator,
-                    Staff,
-                    Customer
+                    Pedia,
+                    Receptionist,
+                    Parent
                 };
             }
         }

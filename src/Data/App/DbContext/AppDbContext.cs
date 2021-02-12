@@ -1,12 +1,10 @@
 ﻿
+using Data.App.Models.Appointments;
 using Data.App.Models.Calendars;
 using Data.App.Models.Chats;
-using Data.App.Models.Customers;
+using Data.App.Models.Clinics;
 using Data.App.Models.FileUploads;
-using Data.App.Models.Medicines;
-using Data.App.Models.Orders;
-using Data.App.Models.Orders.OrderLineItems;
-using Data.App.Models.Pharmacies;
+using Data.App.Models.Parents;
 using Data.App.Models.Users;
 using Data.Identity.Models;
 using Data.Identity.Models.Users;
@@ -74,15 +72,10 @@ namespace Data.App.DbContext
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatReceiver> ChatReceivers { get; set; }
 
-        public DbSet<Customer> Customers { get; set; }
-
-        public DbSet<Drug> Drugs { get; set; }
 
         public DbSet<FileUpload> FileUploads { get; set; }
 
-        public DbSet<Order> Orders { get; set; }
-
-        public DbSet<Pharmacy> Pharmacies { get; set; }
+        public DbSet<Clinic> Pharmacies { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -127,21 +120,37 @@ namespace Data.App.DbContext
         {
             base.OnModelCreating(builder);
 
+            CreateAppointments(builder);
+
             CreateCalendar(builder);
 
             CreateChats(builder);
 
-            CreateCustomers(builder);
-
-            CreateDrugs(builder);
+            CreateClinics(builder);
 
             CreateFileUploads(builder);
 
-            CreateOrders(builder);
-
-            CreatePharmacies(builder);
+            CreateParents(builder);
 
             CreateUser(builder);
+        }
+
+        void CreateAppointments(ModelBuilder builder)
+        {
+            builder.Entity<Appointment>(b =>
+            {
+                b.ToTable("Appointment");
+                b.HasKey(e => e.AppointmentId);
+
+                b.Property(e => e.AppointmentId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ClinicId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ChildId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasMany(e => e.MedicalEntries)
+                    .WithOne(d => d.Appointment)
+                    .HasForeignKey(f => f.AppointmentId);
+            });
         }
 
         void CreateCalendar(ModelBuilder builder)
@@ -210,46 +219,67 @@ namespace Data.App.DbContext
 
         }
 
-        void CreateCustomers(ModelBuilder builder)
+        void CreateClinics(ModelBuilder builder)
         {
-            builder.Entity<Customer>(b =>
+            builder.Entity<Clinic>(b =>
             {
-                b.ToTable("Customer");
-                b.HasKey(e => e.CustomerId);
+                b.ToTable("Clinic");
+                b.HasKey(e => e.ClinicId);
 
-                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
-                //b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
-
-                b.HasOne(e => e.User).WithOne().HasForeignKey<Customer>(e => e.CustomerId);
-
-                b.HasMany(e => e.Orders)
-                    .WithOne(d => d.Customer)
-                    .HasForeignKey(f => f.CustomerId);
-            });
-        }
-
-        void CreateDrugs(ModelBuilder builder)
-        {
-            builder.Entity<Drug>(b =>
-            {
-                b.ToTable("Drug");
-                b.HasKey(e => e.DrugId);
-
-                b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ClinicId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
 
-                b.HasMany(e => e.Prices)
-                    .WithOne(d => d.Drug)
-                    .HasForeignKey(f => f.DrugId);
+                b.HasMany(e => e.Appointments)
+                    .WithOne(d => d.Clinic)
+                    .HasForeignKey(f => f.ClinicId);
 
-                b.HasMany(e => e.CustomerSubscriptions)
-                    .WithOne(d => d.Drug)
-                    .HasForeignKey(f => f.DrugId);
+                b.HasMany(e => e.Parents)
+                    .WithOne(d => d.Clinic)
+                    .HasForeignKey(f => f.ClinicId);
 
-                b.HasMany(e => e.OrderLineItems)
-                    .WithOne(d => d.Drug)
-                    .HasForeignKey(f => f.DrugId);
+                b.HasMany(e => e.Staffs)
+                    .WithOne(d => d.Clinic)
+                    .HasForeignKey(f => f.ClinicId);
+            });
+
+            builder.Entity<ClinicParent>(b =>
+            {
+                b.ToTable("ClinicParent");
+                b.HasKey(e => e.ClinicParentId);
+
+                b.Property(e => e.ClinicParentId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ClinicId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ParentId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+            builder.Entity<ClinicReview>(b =>
+            {
+                b.ToTable("ClinicReview");
+                b.HasKey(e => e.ClinicReviewId);
+
+                b.Property(e => e.ClinicReviewId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ClinicId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ParentId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+            builder.Entity<ClinicStaff>(b =>
+            {
+                b.ToTable("ClinicStaff");
+                b.HasKey(e => e.ClinicStaffId);
+
+                b.Property(e => e.ClinicStaffId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ClinicId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.StaffId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+            builder.Entity<Staff>(b =>
+            {
+                b.ToTable("Staff");
+                b.HasKey(e => e.StaffId);
+
+                b.Property(e => e.StaffId).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasOne(e => e.User).WithOne().HasForeignKey<Staff>(fk => fk.StaffId);
             });
         }
 
@@ -270,80 +300,56 @@ namespace Data.App.DbContext
             });
         }
 
-        void CreateOrders(ModelBuilder builder)
+        void CreateParents(ModelBuilder builder)
         {
-            builder.Entity<Order>(b =>
+            builder.Entity<Parent>(b =>
             {
-                b.ToTable("Order");
-                b.HasKey(e => e.OrderId);
+                b.ToTable("Parent");
+                b.HasKey(e => e.ParentId);
 
-                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ParentId).HasMaxLength(KeyMaxLength).IsRequired();
 
-                b.HasMany(e => e.LineItems)
-                    .WithOne(d => d.Order)
-                    .HasForeignKey(f => f.OrderId);
+                b.HasOne(e => e.User).WithOne().HasForeignKey<Parent>(fk => fk.ParentId);
+
+                b.HasMany(e => e.Children)
+                    .WithOne(d => d.Parent)
+                    .HasForeignKey(f => f.ParentId);
+
+                b.HasMany(e => e.Clinics)
+                    .WithOne(d => d.Parent)
+                    .HasForeignKey(f => f.ParentId);
             });
 
-            builder.Entity<OrderLineItem>(b =>
+            builder.Entity<Child>(b =>
             {
-                b.ToTable("OrderLineItem");
-                b.HasKey(e => e.OrderLineItemId);
+                b.ToTable("Child");
+                b.HasKey(e => e.ChildId);
 
-                b.Property(e => e.OrderLineItemId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();                
+                b.Property(e => e.ChildId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ParentId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ImageId).HasMaxLength(KeyMaxLength);
+                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasMany(e => e.MedicalEntries)
+                    .WithOne(d => d.Child)
+                    .HasForeignKey(f => f.ChildId);
+
+                b.HasMany(e => e.Appointments)
+                    .WithOne(d => d.Child)
+                    .HasForeignKey(f => f.ChildId);
+            });
+
+            builder.Entity<ChildMedicalEntry>(b =>
+            {
+                b.ToTable("ChildMedicalEntry");
+                b.HasKey(e => e.ChildMedicalEntryId);
+
+                b.Property(e => e.ChildMedicalEntryId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.AppointmentId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ChildId).HasMaxLength(KeyMaxLength).IsRequired();                
             });
         }
 
-        void CreatePharmacies(ModelBuilder builder)
-        {
-            builder.Entity<Pharmacy>(b =>
-            {
-                b.ToTable("Pharmacy");
-                b.HasKey(e => e.PharmacyId);
-
-                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                
-                b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
-
-                b.HasMany(e => e.Drugs)
-                    .WithOne(d => d.Pharmacy)
-                    .HasForeignKey(f => f.PharmacyId);
-
-                b.HasMany(e => e.Orders)
-                    .WithOne(d => d.Pharmacy)
-                    .HasForeignKey(f => f.PharmacyId);
-
-                b.HasMany(e => e.Reviews)
-                    .WithOne(d => d.Pharmacy)
-                    .HasForeignKey(f => f.PharmacyId);
-            });
-
-            builder.Entity<PharmacyReview>(b =>
-            {
-                b.ToTable("PharmacyReview");
-                b.HasKey(e => e.PharmacyReviewId);
-
-                b.Property(e => e.PharmacyReviewId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.CustomerId).HasMaxLength(KeyMaxLength).IsRequired();
-            });
-
-            builder.Entity<PharmacyStaff>(b =>
-            {
-                b.ToTable("PharmacyStaff");
-                b.HasKey(e => e.PharmacyStaffId);
-
-                b.Property(e => e.PharmacyStaffId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.UserId).HasMaxLength(KeyMaxLength).IsRequired();
-            });
-        }
-        
         static void CreateUser(ModelBuilder builder)
         {
 

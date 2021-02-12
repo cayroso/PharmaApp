@@ -8,7 +8,7 @@
 <div class="text-center mb-5">
     @*<h1 class="display-4">Welcome</h1>*@
     <h3 class="display-411">@Model.TenantName</h3>
-    <h5 class="display-41">TODA Management System</h5>
+    <h5 class="display-41">Community Pharmacy App</h5>
     @*<hr />*@
 
     <p class="d-none">Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
@@ -17,34 +17,34 @@
 <div>
 
     <div class="row mb-3">
-        @if (User.IsInRole(Data.Constants.ApplicationRoles.AdministratorRoleName))
+        @if (User.IsInRole(Data.Constants.ApplicationRoles.PediaRoleName))
         {
             <div class="col-md">
                 <div class="card shadow-sm card-body text-center mb-3">
                     <a asp-area="Administrator" asp-page="/index" class="text-decoration-none">
-                        <span class="fas fa-fw fa-lg fa-user-shield"></span> Administrator
+                        <span class="fas fa-fw fa-lg fa-user-shield"></span> Pedia
                     </a>
                 </div>
             </div>
         }
 
-        @if (User.IsInRole(Data.Constants.ApplicationRoles.StaffRoleName))
+        @if (User.IsInRole(Data.Constants.ApplicationRoles.ReceptionistRoleName))
         {
             <div class="col-md">
                 <div class="card shadow-sm card-body text-center mb-3">
                     <a asp-area="Driver" asp-page="/Index" class="text-decoration-none">
-                        <span class="fas fa-fw fa-lg fa-user"></span> Driver
+                        <span class="fas fa-fw fa-lg fa-user"></span> Receptionist
                     </a>
                 </div>
             </div>
         }
 
-        @if (User.IsInRole(Data.Constants.ApplicationRoles.CustomerRoleName))
+        @if (User.IsInRole(Data.Constants.ApplicationRoles.ParentRoleName))
         {
             <div class="col-md">
                 <div class="card shadow-sm card-body text-center mb-3">
                     <a asp-area="Rider" asp-page="/Index" class="text-decoration-none">
-                        <span class="fas fa-fw fa-lg fa-user-cog"></span> Rider
+                        <span class="fas fa-fw fa-lg fa-user"></span> Parent
                     </a>
                 </div>
             </div>

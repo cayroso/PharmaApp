@@ -16,7 +16,7 @@
     import modalViewChat from '../../../_Core/Modals/Chats/view.vue';
 
     //import SystemBar from './system-bar.vue';
-    import AppBar from './app-bar.vue';
+    import AppBar from './app-bar.vue'; 
     import NavDrawer from './nav-drawer.vue';
     //import AppFooter from './footer.vue';
     import BottomNav from './bottom-nav.vue';

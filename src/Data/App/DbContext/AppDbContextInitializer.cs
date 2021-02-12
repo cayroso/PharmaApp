@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Data.App.Models.Chats;
-using Data.App.Models.Customers;
-using Data.App.Models.Pharmacies;
+using Data.App.Models.Clinics;
+using Data.App.Models.Parents;
 using Data.App.Models.Users;
 using Data.Constants;
 using Data.Identity.DbContext;
@@ -23,28 +23,28 @@ namespace Data.App.DbContext
             if (ctx.Users.Any())
                 return;
 
-            var pharmacy = CreatePharmacy();
+            var clinic = CreateClinic();
 
-            CreateRoles(ctx, pharmacy);
+            CreateRoles(ctx, clinic);
 
-            CopyIdentityUserToApp(identityWebContext, ctx, pharmacy);
+            CopyIdentityUserToApp(identityWebContext, ctx, clinic);
 
-            ctx.Add(pharmacy);
+            ctx.Add(clinic);
 
             ctx.SaveChanges();
         }
 
-        static Pharmacy CreatePharmacy()
+        static Clinic CreateClinic()
         {
-            return new Pharmacy
+            return new Clinic
             {
-                PharmacyId = NewId(),
-                Name = "Default Pharmacy",
+                ClinicId = NewId(),
+                Name = "Default Clinic",
                 Address = "123 Main Street",
             };
         }
 
-        static void CreateRoles(AppDbContext ctx, Pharmacy pharmacy)
+        static void CreateRoles(AppDbContext ctx, Clinic pharmacy)
         {
             var roles = ApplicationRoles.Items
                 .Select(e => new Role
@@ -56,7 +56,7 @@ namespace Data.App.DbContext
             ctx.AddRange(roles);
         }
 
-        static void CopyIdentityUserToApp(IdentityWebContext identityWebContext, AppDbContext appDbContext, Pharmacy pharmacy)
+        static void CopyIdentityUserToApp(IdentityWebContext identityWebContext, AppDbContext appDbContext, Clinic clinic)
         {
             var users = identityWebContext.Users.Include(e => e.UserInformation).ToList();
 
@@ -84,24 +84,29 @@ namespace Data.App.DbContext
 
                 appUsers.Add(appUser);
 
-                // if Owner or Staff
-                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Administrator.Id || e.RoleId == ApplicationRoles.Staff.Id))
+                // if Clinic
+                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Pedia.Id || e.RoleId == ApplicationRoles.Receptionist.Id))
                 {
-                    var ownerOrStaff = new PharmacyStaff
+                    var staff = new Staff
                     {
-                        PharmacyId = pharmacy.PharmacyId,
-                        UserId = appUser.UserId
+                        StaffId = appUser.UserId
+                    };
+
+                    var ownerOrStaff = new ClinicStaff
+                    {
+                        ClinicId = clinic.ClinicId,
+                        Staff = staff
                     };
 
                     appDbContext.Add(ownerOrStaff);
                 }
 
                 // if rider
-                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Customer.Id))
+                if (userRoles.Any(e => e.RoleId == ApplicationRoles.Parent.Id))
                 {
-                    var customer = new Customer
+                    var customer = new Parent
                     {
-                        CustomerId = appUser.UserId,
+                        ParentId = appUser.UserId,
                     };
 
                     appDbContext.Add(customer);
