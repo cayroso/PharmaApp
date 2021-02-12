@@ -58,22 +58,22 @@ namespace Web
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(ApplicationRoles.PediaRoleName, policy =>
+                options.AddPolicy(ApplicationRoles.AdministratorRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
-                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.PediaRoleName
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.AdministratorRoleName
                            )));
 
-                options.AddPolicy(ApplicationRoles.ReceptionistRoleName, policy =>
+                options.AddPolicy(ApplicationRoles.StaffRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
-                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.ReceptionistRoleName
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.StaffRoleName
                            )));
 
-                options.AddPolicy(ApplicationRoles.ParentRoleName, policy =>
+                options.AddPolicy(ApplicationRoles.CustomerRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
-                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.ParentRoleName
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.CustomerRoleName
                            )));
 
 
@@ -95,9 +95,9 @@ namespace Web
             })
             .AddRazorPagesOptions(opt =>
             {
-                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.PediaRoleName, "/", ApplicationRoles.PediaRoleName);
-                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.ReceptionistRoleName, "/", ApplicationRoles.ReceptionistRoleName);
-                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.ParentRoleName, "/", ApplicationRoles.ParentRoleName);
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.AdministratorRoleName, "/", ApplicationRoles.AdministratorRoleName);
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.StaffRoleName, "/", ApplicationRoles.StaffRoleName);
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.CustomerRoleName, "/", ApplicationRoles.CustomerRoleName);
             });
 
 

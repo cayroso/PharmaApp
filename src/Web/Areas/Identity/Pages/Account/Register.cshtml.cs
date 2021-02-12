@@ -21,7 +21,8 @@ using Data.Identity.Models;
 using Data.Constants;
 using Data.App.DbContext;
 using Data.App.Models.Users;
-using Data.App.Models.Clinics;
+using Data.App.Models.Pharmacies;
+using Data.App.Models.Customers;
 
 namespace Web.Areas.Identity.Pages.Account
 {
@@ -157,28 +158,25 @@ namespace Web.Areas.Identity.Pages.Account
                         RoleId = Input.RoleId
                     });
 
-                    if (Input.RoleId == ApplicationRoles.Pedia.Id)
+                    if (Input.RoleId == ApplicationRoles.Administrator.Id)
                     {
-                        var clinic = new Clinic
+                        var pharmacy = new Pharmacy
                         {
-                            ClinicId = Guid.NewGuid().ToString(),
-                            Name = $"{appUser.FirstLastName} Clinic",
+                            PharmacyId = Guid.NewGuid().ToString(),
+                            Name = $"{appUser.FirstLastName} Pharmacy",
                         };
 
-                        clinic.Staffs.Add(new ClinicStaff
+                        pharmacy.Staffs.Add(new PharmacyStaff
                         {
-                            ClinicId = clinic.ClinicId,
-                            Staff = new Staff
-                            {
-                                StaffId = appUser.UserId
-                            }
+                            PharmacyId = pharmacy.PharmacyId,
+                            UserId = appUser.UserId
                         });
 
-                        await appDbContext.AddAsync(clinic);
+                        await appDbContext.AddAsync(pharmacy);
                     }
-                    if (Input.RoleId == ApplicationRoles.Parent.Id)
+                    if (Input.RoleId == ApplicationRoles.Customer.Id)
                     {
-                        await appDbContext.AddAsync(new Data.App.Models.Parents.Parent
+                        await appDbContext.AddAsync(new Customer
                         {
                             User = appUser,
                         });
