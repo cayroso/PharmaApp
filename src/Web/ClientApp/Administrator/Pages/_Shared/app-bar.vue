@@ -25,11 +25,11 @@
                     </a>
                 </li>
 
-                <li class="nav-item px-2 px-sm-0">
+                <!--<li class="nav-item px-2 px-sm-0">
                     <a v-b-toggle.teamsDrawer class="nav-link" @click.prevent href="#">
                         <i class="fas fa-users fa-fw"></i>
                     </a>
-                </li>
+                </li>-->
 
                 <!-- Nav Item - User Information -->
                 <li class="nav-item px-2 px-sm-0 dropdown">
@@ -46,10 +46,10 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <a href="/" class="dropdown-item">
+                        <router-link to="/pharmacy" class="dropdown-item">
                             <i class="fas fa-home fa-sm fa-fw mr-2"></i>
-                            Home Page
-                        </a>
+                            Pharmacy Info
+                        </router-link>
 
                         <div class="dropdown-divider"></div>
 
@@ -66,7 +66,7 @@
         <!--<nav-drawer :appName="appName"></nav-drawer>-->
         <notifications-drawer :notifications="notifications"></notifications-drawer>
         <messages-drawer :messages="messages"></messages-drawer>
-        <teams-drawer :uid="uid"></teams-drawer>
+        <!--<teams-drawer :uid="uid"></teams-drawer>-->
     </b-navbar>
 </template>
 <script>
@@ -76,14 +76,15 @@
 
     import NotificationsDrawer from '../../../_Common/Drawers/notifications-drawer.vue';
     import MessagesDrawer from '../../../_Common/Drawers/messages-drawer.vue';
-    import TeamsDrawer from '../../../_Common/Drawers/teams-drawer.vue';
+    import TeamsDrawer from '../../../_Common/Drawers/shopping-drawer.vue';
 
     export default {
         mixins: [navbarMixin],
         props: {
             uid: String,
             appName: {
-                type: String, required: true,
+                type: String,
+                required: true,
                 default: 'LMS'
             },
             urlProfilePicture: String,

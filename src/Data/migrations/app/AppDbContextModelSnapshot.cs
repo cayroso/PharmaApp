@@ -16,6 +16,29 @@ namespace Data.migrations.app
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.2");
 
+            modelBuilder.Entity("Data.App.Models.Brands.Brand", b =>
+                {
+                    b.Property<string>("BrandId")
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PharmacyId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("BrandId");
+
+                    b.HasIndex("PharmacyId");
+
+                    b.ToTable("Brand");
+                });
+
             modelBuilder.Entity("Data.App.Models.Calendars.Calendar", b =>
                 {
                     b.Property<DateTime>("Date")
@@ -157,13 +180,32 @@ namespace Data.migrations.app
                     b.ToTable("ChatReceiver");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Driver", b =>
+            modelBuilder.Entity("Data.App.Models.Customers.Customer", b =>
                 {
-                    b.Property<string>("DriverId")
+                    b.Property<string>("CustomerId")
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Availability")
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Drugs.Drug", b =>
+                {
+                    b.Property<string>("DrugId")
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("BrandId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Classification")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ConcurrencyToken")
@@ -171,36 +213,94 @@ namespace Data.migrations.app
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("DriverId");
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("Driver");
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PharmacyId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("ReorderLevel")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("SafetyStock")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Stock")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("DrugId");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("PharmacyId");
+
+                    b.ToTable("Drug");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Vehicle", b =>
+            modelBuilder.Entity("Data.App.Models.Drugs.DrugPrice", b =>
                 {
-                    b.Property<string>("VehicleId")
+                    b.Property<string>("DrugPriceId")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ConcurrencyToken")
-                        .IsRequired()
-                        .HasMaxLength(36)
+                    b.Property<bool>("Active")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Cogs")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("DrugId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasMaxLength(36)
+                    b.Property<uint>("LoyaltyPoints")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("SaleEnd")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PlateNumber")
+                    b.Property<double>("SalePrice")
+                        .HasColumnType("REAL");
+
+                    b.Property<DateTime>("SaleStart")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("VehicleId");
+                    b.HasKey("DrugPriceId");
 
-                    b.HasIndex("DriverId");
+                    b.HasIndex("DrugId");
 
-                    b.ToTable("Vehicle");
+                    b.ToTable("DrugPrice");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Drugs.DrugSubscription", b =>
+                {
+                    b.Property<string>("DrugSubscriptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DrugId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("DrugSubscriptionId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DrugId");
+
+                    b.ToTable("DrugSubscription");
                 });
 
             modelBuilder.Entity("Data.App.Models.FileUploads.FileUpload", b =>
@@ -239,41 +339,9 @@ namespace Data.migrations.app
                     b.ToTable("FileUpload");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Riders.Rider", b =>
+            modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
-                    b.Property<string>("RiderId")
-                        .HasMaxLength(36)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ConcurrencyToken")
-                        .IsRequired()
-                        .HasMaxLength(36)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RiderId");
-
-                    b.ToTable("Rider");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Riders.RiderBookmark", b =>
-                {
-                    b.Property<string>("RiderBookmarkId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RiderId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RiderBookmarkId");
-
-                    b.HasIndex("RiderId");
-
-                    b.ToTable("RiderBookmark");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Trips.Trip", b =>
-                {
-                    b.Property<string>("TripId")
+                    b.Property<string>("OrderId")
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
@@ -285,116 +353,96 @@ namespace Data.migrations.app
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DriverComment")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DriverId")
-                        .HasMaxLength(36)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DriverRating")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("EndAddress")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EndAddressDescription")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("TEXT");
-
-                    b.Property<double>("EndX")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("EndY")
-                        .HasColumnType("REAL");
-
-                    b.Property<decimal>("Fare")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RiderComment")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RiderId")
+                    b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RiderRating")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StartAddress")
-                        .IsRequired()
-                        .HasMaxLength(2048)
+                    b.Property<DateTime>("EndPickupDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("StartAddressDescription")
-                        .IsRequired()
-                        .HasMaxLength(2048)
+                    b.Property<double>("GrossPrice")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Number")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("StartX")
-                        .HasColumnType("REAL");
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("TEXT");
 
-                    b.Property<double>("StartY")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("Status")
+                    b.Property<int>("OrderStatus")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("VehicleId")
+                    b.Property<string>("PharmacyId")
+                        .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("TripId");
+                    b.Property<DateTime>("StartPickupDate")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("DriverId");
+                    b.HasKey("OrderId");
 
-                    b.HasIndex("RiderId");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("VehicleId");
+                    b.HasIndex("PharmacyId");
 
-                    b.ToTable("Trip");
+                    b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Trips.TripExcludedDriver", b =>
+            modelBuilder.Entity("Data.App.Models.Orders.OrderLineItems.OrderLineItem", b =>
                 {
-                    b.Property<string>("TripExcludedDriverId")
+                    b.Property<string>("OrderLineItemId")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("DriverId")
+                    b.Property<string>("DrugId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Reason")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TripId")
+                    b.Property<string>("DrugPriceId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("TripExcludedDriverId");
+                    b.Property<double>("ExtendedPrice")
+                        .HasColumnType("REAL");
 
-                    b.HasIndex("DriverId");
+                    b.Property<string>("LineNumber")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("TripId");
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("TripExcludedDriver");
+                    b.Property<double>("Quantity")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("OrderLineItemId");
+
+                    b.HasIndex("DrugId");
+
+                    b.HasIndex("DrugPriceId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderLineItem");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Trips.TripLocation", b =>
+            modelBuilder.Entity("Data.App.Models.Pharmacies.Pharmacy", b =>
                 {
-                    b.Property<string>("TripLocationId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("PharmacyId")
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyToken")
+                        .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
@@ -407,54 +455,90 @@ namespace Data.migrations.app
                     b.Property<double>("GeoY")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("TripId")
-                        .IsRequired()
-                        .HasMaxLength(36)
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TripLocationType")
+                    b.Property<string>("OpeningHours")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PharmacyStatus")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("TripLocationId");
+                    b.HasKey("PharmacyId");
 
-                    b.HasIndex("TripId");
-
-                    b.ToTable("TripLocation");
+                    b.ToTable("Pharmacy");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Trips.TripTimeline", b =>
+            modelBuilder.Entity("Data.App.Models.Pharmacies.PharmacyReview", b =>
                 {
-                    b.Property<string>("TripTimelineId")
+                    b.Property<string>("PharmacyReviewId")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("DateTimeline")
+                    b.Property<string>("Comment")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PharmacyId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Rating")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TripId")
+                    b.HasKey("PharmacyReviewId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("PharmacyId");
+
+                    b.ToTable("PharmacyReview");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Pharmacies.PharmacyStaff", b =>
+                {
+                    b.Property<string>("PharmacyStaffId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PharmacyId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("StaffId")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("TripTimelineId");
+                    b.HasKey("PharmacyStaffId");
 
-                    b.HasIndex("TripId");
+                    b.HasIndex("PharmacyId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("StaffId");
 
-                    b.ToTable("TripTimeline");
+                    b.ToTable("PharmacyStaff");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Pharmacies.Staff", b =>
+                {
+                    b.Property<string>("StaffId")
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("StaffId");
+
+                    b.ToTable("Staff");
                 });
 
             modelBuilder.Entity("Data.App.Models.Users.Role", b =>
@@ -543,6 +627,7 @@ namespace Data.migrations.app
             modelBuilder.Entity("Data.App.Models.Users.UserTask", b =>
                 {
                     b.Property<string>("UserTaskId")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
@@ -633,6 +718,17 @@ namespace Data.migrations.app
                     b.ToTable("UserTaskItem");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Brands.Brand", b =>
+                {
+                    b.HasOne("Data.App.Models.Pharmacies.Pharmacy", "Pharmacy")
+                        .WithMany("Brands")
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pharmacy");
+                });
+
             modelBuilder.Entity("Data.App.Models.Chats.ChatMessage", b =>
                 {
                     b.HasOne("Data.App.Models.Chats.Chat", "Chat")
@@ -669,116 +765,151 @@ namespace Data.migrations.app
                     b.Navigation("Receiver");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Driver", b =>
+            modelBuilder.Entity("Data.App.Models.Customers.Customer", b =>
                 {
                     b.HasOne("Data.App.Models.Users.User", "User")
                         .WithOne()
-                        .HasForeignKey("Data.App.Models.Drivers.Driver", "DriverId")
+                        .HasForeignKey("Data.App.Models.Customers.Customer", "CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Vehicle", b =>
+            modelBuilder.Entity("Data.App.Models.Drugs.Drug", b =>
                 {
-                    b.HasOne("Data.App.Models.Drivers.Driver", "Driver")
-                        .WithMany("Vehicles")
-                        .HasForeignKey("DriverId")
+                    b.HasOne("Data.App.Models.Brands.Brand", "Brand")
+                        .WithMany("Drugs")
+                        .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Driver");
+                    b.HasOne("Data.App.Models.Pharmacies.Pharmacy", "Pharmacy")
+                        .WithMany("Drugs")
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Pharmacy");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Riders.Rider", b =>
+            modelBuilder.Entity("Data.App.Models.Drugs.DrugPrice", b =>
+                {
+                    b.HasOne("Data.App.Models.Drugs.Drug", "Drug")
+                        .WithMany("Prices")
+                        .HasForeignKey("DrugId");
+
+                    b.Navigation("Drug");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Drugs.DrugSubscription", b =>
+                {
+                    b.HasOne("Data.App.Models.Customers.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Data.App.Models.Drugs.Drug", "Drug")
+                        .WithMany("CustomerSubscriptions")
+                        .HasForeignKey("DrugId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Drug");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
+                {
+                    b.HasOne("Data.App.Models.Customers.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Pharmacies.Pharmacy", "Pharmacy")
+                        .WithMany("Orders")
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Pharmacy");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Orders.OrderLineItems.OrderLineItem", b =>
+                {
+                    b.HasOne("Data.App.Models.Drugs.Drug", "Drug")
+                        .WithMany("OrderLineItems")
+                        .HasForeignKey("DrugId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Drugs.DrugPrice", "DrugPrice")
+                        .WithMany("OrderLineItems")
+                        .HasForeignKey("DrugPriceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Orders.Order", "Order")
+                        .WithMany("LineItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Drug");
+
+                    b.Navigation("DrugPrice");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Pharmacies.PharmacyReview", b =>
+                {
+                    b.HasOne("Data.App.Models.Customers.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Pharmacies.Pharmacy", "Pharmacy")
+                        .WithMany("Reviews")
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Pharmacy");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Pharmacies.PharmacyStaff", b =>
+                {
+                    b.HasOne("Data.App.Models.Pharmacies.Pharmacy", "Pharmacy")
+                        .WithMany("Staffs")
+                        .HasForeignKey("PharmacyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Pharmacies.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pharmacy");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Pharmacies.Staff", b =>
                 {
                     b.HasOne("Data.App.Models.Users.User", "User")
                         .WithOne()
-                        .HasForeignKey("Data.App.Models.Riders.Rider", "RiderId")
+                        .HasForeignKey("Data.App.Models.Pharmacies.Staff", "StaffId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Riders.RiderBookmark", b =>
-                {
-                    b.HasOne("Data.App.Models.Riders.Rider", "Rider")
-                        .WithMany("Bookmarks")
-                        .HasForeignKey("RiderId");
-
-                    b.Navigation("Rider");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Trips.Trip", b =>
-                {
-                    b.HasOne("Data.App.Models.Drivers.Driver", "Driver")
-                        .WithMany("Trips")
-                        .HasForeignKey("DriverId");
-
-                    b.HasOne("Data.App.Models.Riders.Rider", "Rider")
-                        .WithMany("Trips")
-                        .HasForeignKey("RiderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.App.Models.Drivers.Vehicle", "Vehicle")
-                        .WithMany("Trips")
-                        .HasForeignKey("VehicleId");
-
-                    b.Navigation("Driver");
-
-                    b.Navigation("Rider");
-
-                    b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Trips.TripExcludedDriver", b =>
-                {
-                    b.HasOne("Data.App.Models.Drivers.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.App.Models.Trips.Trip", "Trip")
-                        .WithMany("ExcludedDrivers")
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Driver");
-
-                    b.Navigation("Trip");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Trips.TripLocation", b =>
-                {
-                    b.HasOne("Data.App.Models.Trips.Trip", "Trip")
-                        .WithMany("Locations")
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
-                });
-
-            modelBuilder.Entity("Data.App.Models.Trips.TripTimeline", b =>
-                {
-                    b.HasOne("Data.App.Models.Trips.Trip", "Trip")
-                        .WithMany("Timelines")
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.App.Models.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Trip");
 
                     b.Navigation("User");
                 });
@@ -839,6 +970,11 @@ namespace Data.migrations.app
                     b.Navigation("UserTask");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Brands.Brand", b =>
+                {
+                    b.Navigation("Drugs");
+                });
+
             modelBuilder.Entity("Data.App.Models.Chats.Chat", b =>
                 {
                     b.Navigation("Messages");
@@ -846,32 +982,41 @@ namespace Data.migrations.app
                     b.Navigation("Receivers");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Driver", b =>
+            modelBuilder.Entity("Data.App.Models.Customers.Customer", b =>
                 {
-                    b.Navigation("Trips");
-
-                    b.Navigation("Vehicles");
+                    b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Drivers.Vehicle", b =>
+            modelBuilder.Entity("Data.App.Models.Drugs.Drug", b =>
                 {
-                    b.Navigation("Trips");
+                    b.Navigation("CustomerSubscriptions");
+
+                    b.Navigation("OrderLineItems");
+
+                    b.Navigation("Prices");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Riders.Rider", b =>
+            modelBuilder.Entity("Data.App.Models.Drugs.DrugPrice", b =>
                 {
-                    b.Navigation("Bookmarks");
-
-                    b.Navigation("Trips");
+                    b.Navigation("OrderLineItems");
                 });
 
-            modelBuilder.Entity("Data.App.Models.Trips.Trip", b =>
+            modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
-                    b.Navigation("ExcludedDrivers");
+                    b.Navigation("LineItems");
+                });
 
-                    b.Navigation("Locations");
+            modelBuilder.Entity("Data.App.Models.Pharmacies.Pharmacy", b =>
+                {
+                    b.Navigation("Brands");
 
-                    b.Navigation("Timelines");
+                    b.Navigation("Drugs");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Staffs");
                 });
 
             modelBuilder.Entity("Data.App.Models.Users.User", b =>

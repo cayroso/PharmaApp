@@ -1,9 +1,10 @@
 ﻿
+using Data.App.Models.Brands;
 using Data.App.Models.Calendars;
 using Data.App.Models.Chats;
 using Data.App.Models.Customers;
+using Data.App.Models.Drugs;
 using Data.App.Models.FileUploads;
-using Data.App.Models.Medicines;
 using Data.App.Models.Orders;
 using Data.App.Models.Orders.OrderLineItems;
 using Data.App.Models.Pharmacies;
@@ -68,6 +69,8 @@ namespace Data.App.DbContext
         private readonly IConfiguration _configuration;
 
 
+        public DbSet<Brand> Brands { get; set; }
+
         public DbSet<Calendar> Calendars { get; set; }
 
         public DbSet<Chat> Chats { get; set; }
@@ -83,6 +86,7 @@ namespace Data.App.DbContext
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<Pharmacy> Pharmacies { get; set; }
+        public DbSet<PharmacyStaff> PharmacyStaffs { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -127,6 +131,8 @@ namespace Data.App.DbContext
         {
             base.OnModelCreating(builder);
 
+            CreateBrands(builder);
+
             CreateCalendar(builder);
 
             CreateChats(builder);
@@ -142,6 +148,24 @@ namespace Data.App.DbContext
             CreatePharmacies(builder);
 
             CreateUser(builder);
+        }
+
+        void CreateBrands(ModelBuilder builder)
+        {
+            builder.Entity<Brand>(b =>
+            {
+                b.ToTable("Brand");
+                b.HasKey(e => e.BrandId);
+
+                b.Property(e => e.BrandId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.Name).HasMaxLength(NameMaxLength).IsRequired();
+
+                b.HasMany(e => e.Drugs)
+                    .WithOne(d => d.Brand)
+                    .HasForeignKey(fk => fk.BrandId);
+            });
+
         }
 
         void CreateCalendar(ModelBuilder builder)
@@ -237,6 +261,7 @@ namespace Data.App.DbContext
 
                 b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.BrandId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
 
                 b.HasMany(e => e.Prices)
@@ -250,6 +275,8 @@ namespace Data.App.DbContext
                 b.HasMany(e => e.OrderLineItems)
                     .WithOne(d => d.Drug)
                     .HasForeignKey(f => f.DrugId);
+
+                b.HasQueryFilter(e => e.Active);
             });
         }
 
@@ -295,7 +322,7 @@ namespace Data.App.DbContext
                 b.Property(e => e.OrderLineItemId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();                
+                b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();
             });
         }
 
@@ -307,8 +334,12 @@ namespace Data.App.DbContext
                 b.HasKey(e => e.PharmacyId);
 
                 b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                
+
                 b.Property(e => e.ConcurrencyToken).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasMany(e => e.Brands)
+                    .WithOne(d => d.Pharmacy)
+                    .HasForeignKey(f => f.PharmacyId);
 
                 b.HasMany(e => e.Drugs)
                     .WithOne(d => d.Pharmacy)
@@ -340,10 +371,20 @@ namespace Data.App.DbContext
 
                 b.Property(e => e.PharmacyStaffId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.PharmacyId).HasMaxLength(KeyMaxLength).IsRequired();
-                b.Property(e => e.UserId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.StaffId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+            builder.Entity<Staff>(b =>
+            {
+                b.ToTable("Staff");
+                b.HasKey(e => e.StaffId);
+
+                b.Property(e => e.StaffId).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasOne(e => e.User).WithOne().HasForeignKey<Staff>(fk => fk.StaffId);
             });
         }
-        
+
         static void CreateUser(ModelBuilder builder)
         {
 

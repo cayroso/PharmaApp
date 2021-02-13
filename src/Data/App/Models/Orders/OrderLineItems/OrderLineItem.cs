@@ -1,5 +1,4 @@
 ﻿using Data.App.Models.Drugs;
-using Data.App.Models.Medicines;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,6 +23,7 @@ namespace Data.App.Models.Orders.OrderLineItems
         public virtual DrugPrice DrugPrice { get; set; }
 
         public string LineNumber { get; set; }
+        public double Quantity { get; set; }
         public double ExtendedPrice { get; set; }
     }
 }

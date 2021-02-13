@@ -1,5 +1,4 @@
 ﻿using Data.App.Models.Customers;
-using Data.App.Models.Medicines;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

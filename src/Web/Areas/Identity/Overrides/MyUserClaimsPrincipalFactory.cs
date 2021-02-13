@@ -1,4 +1,5 @@
 ﻿using Common.Extensions;
+using Data.App.DbContext;
 using Data.Identity.DbContext;
 using Data.Identity.Models;
 using Data.Identity.Models.Users;
@@ -17,6 +18,7 @@ namespace Web.Areas.Identity.Overrides
 {
     public class MyUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<IdentityWebUser, IdentityRole>
     {
+        readonly AppDbContext _appDbContext;
         readonly IdentityWebContext _identityWebContext;
         readonly IWebHostEnvironment _webHostEnvironment;
         readonly IHttpContextAccessor _accessor;
@@ -24,12 +26,14 @@ namespace Web.Areas.Identity.Overrides
             UserManager<IdentityWebUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<IdentityOptions> optionsAccessor,
+            AppDbContext appDbContext,
             IdentityWebContext identityWebContext,
             IWebHostEnvironment webHostEnvironment,
             IHttpContextAccessor accessor
             )
             : base(userManager, roleManager, optionsAccessor)
         {
+            _appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
             _identityWebContext = identityWebContext ?? throw new ArgumentNullException(nameof(identityWebContext));
             _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             _accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
@@ -86,12 +90,20 @@ namespace Web.Areas.Identity.Overrides
 
             var urlProfilePicture = "";
 
-            if( !string.IsNullOrWhiteSpace(userInfo.ImageId))
+            if (!string.IsNullOrWhiteSpace(userInfo.ImageId))
             {
                 urlProfilePicture = $"/api/files/{userInfo.ImageId}";
             }
 
             identity.AddClaim(new Claim("Profile:UrlProfilePicture", urlProfilePicture));
+
+            var pharmacyStaff = await _appDbContext.PharmacyStaffs.FirstOrDefaultAsync(e => e.StaffId == user.Id);
+
+            if (pharmacyStaff != null)
+            {
+                identity.AddClaim(new Claim("PharmacyId", pharmacyStaff.PharmacyId));
+            }
+
             //_appDbContextFactory.Provision(tenant, _webHostEnvironment.IsDevelopment());
 
             return identity;

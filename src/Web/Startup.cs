@@ -147,13 +147,13 @@ namespace Web
                 {
                     context.Request.Path = "/administrator/";
                 }
-                else if (context.Request.Path.Value.StartsWith("/driver/"))
+                else if (context.Request.Path.Value.StartsWith("/staff/"))
                 {
-                    context.Request.Path = "/driver/";
+                    context.Request.Path = "/staff/";
                 }
-                else if (context.Request.Path.Value.StartsWith("/rider/"))
+                else if (context.Request.Path.Value.StartsWith("/customer/"))
                 {
-                    context.Request.Path = "/rider/";
+                    context.Request.Path = "/customer/";
                 }
 
 

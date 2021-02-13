@@ -16,7 +16,7 @@ namespace Data.App.Models.Pharmacies
         public string PharmacyId { get; set; }
         public virtual Pharmacy Pharmacy { get; set; }
 
-        public string UserId { get; set; }
-        public virtual User User { get; set; }
+        public string StaffId { get; set; }
+        public virtual Staff Staff { get; set; }
     }
 }

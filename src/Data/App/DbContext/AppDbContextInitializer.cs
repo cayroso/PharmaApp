@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Data.App.Models.Chats;
 using Data.App.Models.Customers;
+using Data.App.Models.Drugs;
 using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
 using Data.Constants;
@@ -36,12 +37,42 @@ namespace Data.App.DbContext
 
         static Pharmacy CreatePharmacy()
         {
-            return new Pharmacy
+            var pharmacy = new Pharmacy
             {
-                PharmacyId = NewId(),
+                PharmacyId = "default",
                 Name = "Default Pharmacy",
                 Address = "123 Main Street",
+
             };
+
+            pharmacy.Brands.Add(new Models.Brands.Brand
+            {
+                BrandId = "default",
+                PharmacyId = pharmacy.PharmacyId,
+                Name = "Default"
+            });
+
+            //pharmacy.Drugs.Add(new Models.Drugs.Drug
+            //{
+            //    DrugId =NewId(),
+            //    Name = "Sample #1",
+            //    BrandId = "default",
+            //    Classification = Enums.EnumDrugClassification.OverTheCounter,
+            //    IsAvailable = true,
+            //    Stock=1,
+            //    SafetyStock =1,
+            //    ReorderLevel=1,
+            //    Prices = new List<DrugPrice>
+            //    {
+            //        new DrugPrice
+            //        {
+            //            DrugId="dru"
+            //        }
+            //    }
+
+            //});;
+
+            return pharmacy;
         }
 
         static void CreateRoles(AppDbContext ctx, Pharmacy pharmacy)
@@ -90,7 +121,10 @@ namespace Data.App.DbContext
                     var ownerOrStaff = new PharmacyStaff
                     {
                         PharmacyId = pharmacy.PharmacyId,
-                        UserId = appUser.UserId
+                        Staff = new Staff
+                        {
+                            StaffId = appUser.UserId
+                        }
                     };
 
                     appDbContext.Add(ownerOrStaff);

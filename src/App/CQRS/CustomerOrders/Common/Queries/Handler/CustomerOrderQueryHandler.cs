@@ -12,14 +12,61 @@ using Data.Identity.DbContext;
 
 namespace App.CQRS.Orders.Common.Queries.Handler
 {
-    public sealed class CustomerOrderQueryHandler//:
-        //IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.CustomerOrder>,
-        //IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>
+    public sealed class CustomerOrderQueryHandler :
+        IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>
+    //IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>
     {
         readonly AppDbContext _dbContext;
         public CustomerOrderQueryHandler(AppDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        }
+
+        async Task<GetCustomerOrderByIdQuery.Order> IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>.HandleAsync(GetCustomerOrderByIdQuery query)
+        {
+            var sql = from o in _dbContext.Orders
+
+                                //.Include(e => e.LineItems)
+                                //    .ThenInclude(e => e.Drug)
+                                //.Include(e => e.LineItems)
+                                //    .ThenInclude(e => e.DrugPrice)
+                                .AsNoTracking()
+                      
+                      where o.OrderId == query.OrderId
+
+                      select new GetCustomerOrderByIdQuery.Order
+                      {
+                          OrderId = o.OrderId,
+                          Number = o.Number,
+                          GrossPrice = o.GrossPrice,
+
+                          Pharmacy = new GetCustomerOrderByIdQuery.Pharmacy
+                          {
+                              PharmacyId = o.Pharmacy.PharmacyId,
+                              Name = o.Pharmacy.Name,
+                              Address = o.Pharmacy.Address
+                          },
+                          Customer = new GetCustomerOrderByIdQuery.Customer
+                          {
+                              CustomerId = o.Customer.CustomerId,
+                              Name = o.Customer.User.FirstLastName,
+                              Email = o.Customer.User.Email,
+                              PhoneNumber = o.Customer.User.PhoneNumber
+                          },
+                          Lines = o.LineItems.Select(e => new GetCustomerOrderByIdQuery.Orderline
+                          {
+                              LineNumber = e.LineNumber,
+                              DrugName = e.Drug.Name,
+                              DrugPrice = e.Drug.Prices.First().Price,
+                              Quantity = e.Quantity,
+                              ExtendedPrice = e.ExtendedPrice
+                          }).ToList(),
+                          Token = o.ConcurrencyToken
+                      };
+
+            var dto = await sql.FirstOrDefaultAsync();
+
+            return dto;
         }
 
         //async Task<GetCustomerOrderByIdQuery.CustomerOrder> IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.CustomerOrder>.HandleAsync(GetCustomerOrderByIdQuery query)

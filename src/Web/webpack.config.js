@@ -19,8 +19,8 @@ module.exports = {
     },
     entry: {
         'administrator': './ClientApp/Administrator/main.js',
-        'driver': './ClientApp/Driver/main.js',
-        'rider': './ClientApp/Rider/main.js',
+        'staff': './ClientApp/Staff/main.js',
+        'customer': './ClientApp/Customer/main.js',
         
     },
     output: {
@@ -103,16 +103,16 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject: false,
             scriptLoading: 'defer',
-            chunks: ['driver'],
-            filename: path.resolve(__dirname, "Areas/Driver/Pages/_Shared/_Layout.cshtml"),
-            template: path.resolve(__dirname, "Areas/Driver/Pages/_Shared/_Layout_Template.cshtml")
+            chunks: ['staff'],
+            filename: path.resolve(__dirname, "Areas/Staff/Pages/_Shared/_Layout.cshtml"),
+            template: path.resolve(__dirname, "Areas/Staff/Pages/_Shared/_Layout_Template.cshtml")
         }),
         new HtmlWebpackPlugin({
             inject: false,
             scriptLoading: 'defer',
-            chunks: ['rider'],
-            filename: path.resolve(__dirname, "Areas/Rider/Pages/_Shared/_Layout.cshtml"),
-            template: path.resolve(__dirname, "Areas/Rider/Pages/_Shared/_Layout_Template.cshtml")
+            chunks: ['customer'],
+            filename: path.resolve(__dirname, "Areas/Customer/Pages/_Shared/_Layout.cshtml"),
+            template: path.resolve(__dirname, "Areas/Customer/Pages/_Shared/_Layout_Template.cshtml")
         }),
     ],
 

@@ -113,11 +113,22 @@ namespace Web.Areas.Identity.Pages.Account
                 var userId = Guid.NewGuid().ToString();
                 var token = Guid.NewGuid().ToString();
 
-                var userRole = new IdentityUserRole<string>
+                var userRoles = new List<IdentityUserRole<string>>();
+
+                userRoles.Add(new IdentityUserRole<string>
                 {
                     UserId = userId,
                     RoleId = Input.RoleId
-                };
+                });
+
+                if (Input.RoleId == ApplicationRoles.Administrator.Id)
+                {
+                    userRoles.Add(new IdentityUserRole<string>
+                    {
+                        UserId = userId,
+                        RoleId = ApplicationRoles.Staff.Id
+                    });
+                }
 
                 var user = new IdentityWebUser
                 {
@@ -138,7 +149,7 @@ namespace Web.Areas.Identity.Pages.Account
                 };
 
                 await identityWebContext.AddRangeAsync(userInfo);
-                await identityWebContext.AddRangeAsync(userRole);
+                await identityWebContext.AddRangeAsync(userRoles);
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
@@ -160,6 +171,13 @@ namespace Web.Areas.Identity.Pages.Account
 
                     if (Input.RoleId == ApplicationRoles.Administrator.Id)
                     {
+                        //  also assign staff role
+                        appUser.UserRoles.Add(new UserRole
+                        {
+                            UserId = appUser.UserId,
+                            RoleId = ApplicationRoles.Staff.Id
+                        });
+
                         var pharmacy = new Pharmacy
                         {
                             PharmacyId = Guid.NewGuid().ToString(),
@@ -169,14 +187,17 @@ namespace Web.Areas.Identity.Pages.Account
                         pharmacy.Staffs.Add(new PharmacyStaff
                         {
                             PharmacyId = pharmacy.PharmacyId,
-                            UserId = appUser.UserId
+                            Staff = new Data.App.Models.Pharmacies.Staff
+                            {
+                                StaffId = appUser.UserId
+                            }
                         });
 
                         await appDbContext.AddAsync(pharmacy);
                     }
                     if (Input.RoleId == ApplicationRoles.Customer.Id)
                     {
-                        await appDbContext.AddAsync(new Customer
+                        await appDbContext.AddAsync(new Data.App.Models.Customers.Customer
                         {
                             User = appUser,
                         });

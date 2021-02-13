@@ -8,9 +8,16 @@ import accountsIndex from './Pages/Accounts/index.vue';
 
 //import contactsIndex from './Pages/Contacts/index.vue';
 
-import teamsIndex from './Pages/Teams/index.vue';
-import teamsAdd from './Pages/Teams/add.vue';
-import teamsView from './Pages/Teams/index.vue';
+import medicinesIndex from './Pages/Medicines/index.vue';
+import medicinesAdd from './Pages/Medicines/add.vue';
+import medicinesView from './Pages/Medicines/view.vue';
+
+import ordersIndex from './Pages/Orders/index.vue';
+import ordersAdd from './Pages/Orders/add.vue';
+import ordersView from './Pages/Orders/view.vue';
+
+import pharmacyIndex from './Pages/Pharmacy/index.vue';
+
 
 import usersIndex from './Pages/Users/index.vue';
 import usersAdd from './Pages/Users/add.vue';
@@ -32,9 +39,15 @@ const routes = [
 
     //{ path: '/contacts', name: "contacts", component: contactsIndex },
 
-    { path: '/teams', name: "teams", component: teamsIndex },
-    { path: '/teams/add', name: "teamsAdd", component: teamsAdd },
-    { path: '/teams/view/:id', name: "teamsView", component: teamsView, props: true },
+    { path: '/medicines', name: "medicines", component: medicinesIndex },
+    { path: '/medicines/add', name: "medicinesAdd", component: medicinesAdd },
+    { path: '/medicines/view/:id', name: "medicinesView", component: medicinesView, props: true },
+
+    { path: '/orders', name: "orders", component: ordersIndex },
+    { path: '/orders/add', name: "ordersAdd", component: ordersAdd },
+    { path: '/orders/view/:id', name: "ordersView", component: ordersView, props: true },
+
+    { path: '/pharmacy', name: "pharmacy", component: pharmacyIndex },
 
     { path: '/users', name: "users", component: usersIndex },
     { path: '/users/add', name: "usersAdd", component: usersAdd },
