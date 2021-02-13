@@ -153,6 +153,8 @@
                     await vm.$util.axios.post(`/api/orders/customer/add-order`, payload)
                         .then(resp => {
                             alert('saved')
+
+                            vm.$router.push({ name: 'ordersView', params: { id: resp.data } });
                         })
                 } catch (e) {
                     vm.$util.handleError(e);

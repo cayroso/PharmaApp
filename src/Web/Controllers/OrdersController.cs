@@ -61,7 +61,7 @@ namespace Web.Controllers
 
             await _commandHandlerDispatcher.HandleAsync(cmd);
 
-            return Ok();
+            return Ok(cmd.OrderId);
         }
 
         [HttpGet("{id}")]

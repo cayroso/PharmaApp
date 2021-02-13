@@ -26,53 +26,7 @@
 
         <div class="mt-2">
 
-
-            <div class="form-group">
-                <label for="name">Name</label>
-                <div class="form-control-plaintext">
-                    {{item.name}}
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md">
-                    <label for="price">Price</label>
-                    <div class="form-control-plaintext">
-                        {{item.price.price|toCurrency}}
-                    </div>
-                </div>
-                <div class="form-group col-md">
-                    <label for="brandId">Brand</label>
-                    <div class="form-control-plaintext">
-                        {{item.brand}}
-                    </div>
-                </div>
-                <div class="form-group col-md">
-                    <label for="classification">Classification</label>
-                    <div class="form-control-plaintext">
-                        {{item.classificationText}}
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md">
-                    <label for="stock">Stock</label>
-                    <div class="form-control-plaintext">
-                        {{item.stock}}
-                    </div>
-                </div>
-                <div class="form-group col-md">
-                    <label for="safetyStock">Safety Stock</label>
-                    <div class="form-control-plaintext">
-                        {{item.safetyStock}}
-                    </div>
-                </div>
-                <div class="form-group col-md">
-                    <label for="reorderLevel">Reorder Level</label>
-                    <div class="form-control-plaintext">
-                        {{item.reorderLevel}}
-                    </div>
-                </div>
-            </div>
+            {{item}}
         </div>
     </div>
 </template>
@@ -84,7 +38,10 @@
 
         props: {
             uid: String,
-            id: String,
+            id: {
+                type: String,
+                required: true
+            },
         },
 
         data() {
@@ -111,8 +68,8 @@
         methods: {
             async get() {
                 const vm = this;
-
-                await vm.$util.axios.get(`/api/drugs/${vm.id}`)
+                debugger
+                await vm.$util.axios.get(`/api/orders/${vm.id}`)
                     .then(resp => vm.item = resp.data);
             }
         }
