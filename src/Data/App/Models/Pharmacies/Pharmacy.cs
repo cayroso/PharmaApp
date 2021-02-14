@@ -17,6 +17,9 @@ namespace Data.App.Models.Pharmacies
 
         public EnumPharmacyStatus PharmacyStatus { get; set; }
         public string Name { get; set; }
+        public string PhoneNumber { get; set; }
+        public string MobileNumber { get; set; }
+        public string Email { get; set; }
 
         public string Address { get; set; }
         public double GeoX { get; set; }

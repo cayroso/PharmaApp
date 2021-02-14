@@ -14,6 +14,9 @@
             </div>
             <div class="col-auto">
                 <div>
+                     <button  @click="get" class="btn btn-primary">
+                        <span class="fas fa-fw fa-sync"></span>
+                    </button>
                     <button v-bind:disabled="isDirty && !formIsValid" @click="save" class="btn btn-primary">
                         <span class="fas fa-fw fa-save"></span>
                     </button>
@@ -34,24 +37,57 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="pharmacyStatus">Status</label>
-                <div>
-                    <b-form-select v-model="item.pharmacyStatus" :options="lookups.statuses" value-field="id" text-field="name"  id="pharmacyStatus" class="form-control" v-bind:class="getValidClass('pharmacyStatus')" />
-                    <div v-if="validations.has('pharmacyStatus')" class="invalid-feedback">
-                        {{validations.get('pharmacyStatus')}}
+            <div class="form-row">
+                <div class="form-group col-md">
+                    <label for="phoneNumber">Phone</label>
+                    <div>
+                        <input v-model="item.phoneNumber" type="tel" id="phoneNumber" class="form-control" v-bind:class="getValidClass('phoneNumber')" />
+                        <div v-if="validations.has('phoneNumber')" class="invalid-feedback">
+                            {{validations.get('phoneNumber')}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md">
+                    <label for="mobileNumber">Mobile</label>
+                    <div>
+                        <input v-model="item.mobileNumber" type="tel" id="mobileNumber" class="form-control" v-bind:class="getValidClass('mobileNumber')" />
+                        <div v-if="validations.has('mobileNumber')" class="invalid-feedback">
+                            {{validations.get('mobileNumber')}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md">
+                    <label for="email">Email</label>
+                    <div>
+                        <input v-model="item.email" type="email" id="email" class="form-control" v-bind:class="getValidClass('email')" />
+                        <div v-if="validations.has('email')" class="invalid-feedback">
+                            {{validations.get('email')}}
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="openingHours">Opening Hours</label>
-                <div>
-                    <input v-model="item.openingHours" type="text" id="openingHours" class="form-control" v-bind:class="getValidClass('openingHours')" />
-                    <div v-if="validations.has('openingHours')" class="invalid-feedback">
-                        {{validations.get('openingHours')}}
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="pharmacyStatus">Status</label>
+                    <div>
+                        <b-form-select v-model="item.pharmacyStatus" :options="lookups.statuses" value-field="id" text-field="name" id="pharmacyStatus" class="form-control" v-bind:class="getValidClass('pharmacyStatus')" />
+                        <div v-if="validations.has('pharmacyStatus')" class="invalid-feedback">
+                            {{validations.get('pharmacyStatus')}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md">
+                    <label for="openingHours">Opening Hours</label>
+                    <div>
+                        <input v-model="item.openingHours" type="text" id="openingHours" class="form-control" v-bind:class="getValidClass('openingHours')" />
+                        <div v-if="validations.has('openingHours')" class="invalid-feedback">
+                            {{validations.get('openingHours')}}
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="address">Address</label>
                 <div>

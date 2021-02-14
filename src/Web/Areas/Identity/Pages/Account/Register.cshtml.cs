@@ -146,6 +146,7 @@ namespace Web.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     MiddleName = Input.MiddleName,
                     LastName = Input.LastName,
+                    Theme = "https://bootswatch.com/4/journal/bootstrap.min.css"
                 };
 
                 await identityWebContext.AddRangeAsync(userInfo);

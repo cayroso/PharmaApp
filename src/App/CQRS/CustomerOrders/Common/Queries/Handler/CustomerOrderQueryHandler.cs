@@ -13,8 +13,8 @@ using Data.Identity.DbContext;
 namespace App.CQRS.Orders.Common.Queries.Handler
 {
     public sealed class CustomerOrderQueryHandler :
-        IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>
-    //IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>
+        IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>,
+        IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>
     {
         readonly AppDbContext _dbContext;
         public CustomerOrderQueryHandler(AppDbContext dbContext)
@@ -31,7 +31,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                                 //.Include(e => e.LineItems)
                                 //    .ThenInclude(e => e.DrugPrice)
                                 .AsNoTracking()
-                      
+
                       where o.OrderId == query.OrderId
 
                       select new GetCustomerOrderByIdQuery.Order
@@ -39,11 +39,19 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           OrderId = o.OrderId,
                           Number = o.Number,
                           GrossPrice = o.GrossPrice,
+                          Status = o.OrderStatus,
+                          DateOrdered = o.OrderDate,
+                          DateStartPickup = o.StartPickupDate,
+                          DateEndPickup = o.EndPickupDate,
 
                           Pharmacy = new GetCustomerOrderByIdQuery.Pharmacy
                           {
                               PharmacyId = o.Pharmacy.PharmacyId,
                               Name = o.Pharmacy.Name,
+                              PhoneNumber = o.Pharmacy.PhoneNumber,
+                              MobileNumber = o.Pharmacy.MobileNumber,
+                              Email = o.Pharmacy.Email,
+                              OpeningHours = o.Pharmacy.OpeningHours,
                               Address = o.Pharmacy.Address
                           },
                           Customer = new GetCustomerOrderByIdQuery.Customer
@@ -53,7 +61,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                               Email = o.Customer.User.Email,
                               PhoneNumber = o.Customer.User.PhoneNumber
                           },
-                          Lines = o.LineItems.Select(e => new GetCustomerOrderByIdQuery.Orderline
+                          Lines = o.LineItems.OrderBy(e => e.LineNumber).Select(e => new GetCustomerOrderByIdQuery.Orderline
                           {
                               LineNumber = e.LineNumber,
                               DrugName = e.Drug.Name,
@@ -61,10 +69,58 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                               Quantity = e.Quantity,
                               ExtendedPrice = e.ExtendedPrice
                           }).ToList(),
-                          Token = o.ConcurrencyToken
                       };
 
             var dto = await sql.FirstOrDefaultAsync();
+
+            return dto;
+        }
+
+        async Task<Paged<SearchOrderQuery.Order>> IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>.HandleAsync(SearchOrderQuery query)
+        {
+            var sql = from o in _dbContext.Orders
+
+                                //.Include(e => e.LineItems)
+                                //    .ThenInclude(e => e.Drug)
+                                //.Include(e => e.LineItems)
+                                //    .ThenInclude(e => e.DrugPrice)
+                                .AsNoTracking()
+
+                      where o.CustomerId == query.CustomerId || o.PharmacyId == query.PharmacyId
+                      where string.IsNullOrWhiteSpace(query.Criteria)
+                        || EF.Functions.Like(o.Number, $"%{query.Criteria}%")
+
+                      select new SearchOrderQuery.Order
+                      {
+                          OrderId = o.OrderId,
+                          Number = o.Number,
+                          GrossPrice = o.GrossPrice,
+                          Status = o.OrderStatus,
+                          DateOrdered = o.OrderDate,
+                          DateStartPickup = o.StartPickupDate,
+                          DateEndPickup = o.EndPickupDate,
+                          NumberOfItems = o.LineItems.Count(),
+
+                          Pharmacy = new SearchOrderQuery.Pharmacy
+                          {
+                              PharmacyId = o.Pharmacy.PharmacyId,
+                              Name = o.Pharmacy.Name,
+                              PhoneNumber = o.Pharmacy.PhoneNumber,
+                              MobileNumber = o.Pharmacy.MobileNumber,
+                              Email = o.Pharmacy.Email,
+                              OpeningHours = o.Pharmacy.OpeningHours,
+                              Address = o.Pharmacy.Address
+                          },
+                          Customer = new SearchOrderQuery.Customer
+                          {
+                              CustomerId = o.Customer.CustomerId,
+                              Name = o.Customer.User.FirstLastName,
+                              Email = o.Customer.User.Email,
+                              PhoneNumber = o.Customer.User.PhoneNumber
+                          }
+                      };
+
+            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize);
 
             return dto;
         }

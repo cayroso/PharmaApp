@@ -278,6 +278,17 @@ namespace Data.App.DbContext
 
                 b.HasQueryFilter(e => e.Active);
             });
+
+            builder.Entity<DrugPrice>(b =>
+            {
+                b.ToTable("DrugPrice");
+                b.HasKey(e => e.DrugPriceId);
+
+                b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
+                
+                b.HasQueryFilter(e => e.Active);
+            });
         }
 
         void CreateFileUploads(ModelBuilder builder)

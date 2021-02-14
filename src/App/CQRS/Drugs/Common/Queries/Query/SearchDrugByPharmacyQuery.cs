@@ -24,7 +24,8 @@ namespace App.CQRS.Drugs.Common.Queries.Query
 
             public Pharmacy Pharmacy { get; set; }
             public DrupPrice Price { get; set; }
-            public string Brand { get; set; }
+            public string BrandId { get; set; }
+            public string BrandName { get; set; }
             public EnumDrugClassification Classification { get; set; }
             public string ClassificationText => Classification.ToString();
 
@@ -36,8 +37,12 @@ namespace App.CQRS.Drugs.Common.Queries.Query
         {
             public string PharmacyId { get; set; }
             public string Name { get; set; }
-
+            public string PhoneNumber { get; set; }
+            public string MobileNumber { get; set; }
+            public string OpeningHours { get; set; }
+            public string Email { get; set; }
             public string Address { get; set; }
+            
         }
 
         public class DrupPrice

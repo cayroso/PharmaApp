@@ -138,7 +138,7 @@
                 const vm = this;
                 const item = vm.item;
 
-                const items = item.items.map(e => {
+                const items = item.items.filter(e => e.drugQuantity > 0).map(e => {
                     return {
                         drugId: e.drugId,
                         drugQuantity: e.drugQuantity
@@ -152,9 +152,12 @@
                 try {
                     await vm.$util.axios.post(`/api/orders/customer/add-order`, payload)
                         .then(resp => {
-                            alert('saved')
+                            vm.$bvToast.toast('Reservation placed.', { title: 'Reserve Medicines', variant: 'success', toaster: 'b-toaster-bottom-right' });
 
-                            vm.$router.push({ name: 'ordersView', params: { id: resp.data } });
+                            setTimeout(_ => {
+                                vm.$router.push({ name: 'ordersView', params: { id: resp.data } });
+                            }, 2000);
+
                         })
                 } catch (e) {
                     vm.$util.handleError(e);

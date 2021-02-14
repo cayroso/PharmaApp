@@ -201,15 +201,20 @@
                 if (vm.busy)
                     return;
 
-                const query = [
+                const params = [
                     '?c=', encodeURIComponent(filter.query.criteria),
                     '&p=', filter.query.pageIndex,
                     '&s=', filter.query.pageSize,
                     '&sf=', filter.query.sortField,
-                    '&so=', filter.query.sortOrder,
-                    '&pharmacyId=', vm.pharmacyId || null
-                ].join('');
+                    '&so=', filter.query.sortOrder
+                ];
 
+                if (vm.pharmacyId) {
+                    params.push('&pharmacyId=');
+                    params.push(vm.pharmacyId);
+                }
+
+                const query = params.join('');
                 return query;
             },
 

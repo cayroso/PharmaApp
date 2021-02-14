@@ -44,7 +44,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             {
                 OrderId = order.OrderId,
                 DrugId = e.DrugId,
-                LineNumber = (++lineNumber).ToString("##"),
+                LineNumber = (++lineNumber).ToString("D2"),
                 DrugPrice = drugs.First(d => d.DrugId == e.DrugId).Prices.First(),
                 Quantity = e.Quantity,
                 ExtendedPrice = drugs.First(d => d.DrugId == e.DrugId).Prices.First().Price * e.Quantity,

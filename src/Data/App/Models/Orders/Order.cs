@@ -33,14 +33,14 @@ namespace Data.App.Models.Orders
             set => _orderDate = value.Truncate();
         }
 
-        DateTime _startPickupDate;
+        DateTime _startPickupDate = DateTime.MaxValue;
         public DateTime StartPickupDate
         {
             get => _startPickupDate.AsUtc();
             set => _startPickupDate = value.Truncate();
         }
 
-        DateTime _endPickupDate;
+        DateTime _endPickupDate = DateTime.MaxValue;
         public DateTime EndPickupDate
         {
             get => _endPickupDate.AsUtc();
@@ -53,7 +53,7 @@ namespace Data.App.Models.Orders
 
         public string ConcurrencyToken { get; set; } = Guid.NewGuid().ToString();
 
-        public virtual ICollection<OrderLineItem> LineItems { get; set; } = new List<OrderLineItem>();                
+        public virtual ICollection<OrderLineItem> LineItems { get; set; } = new List<OrderLineItem>();
     }
 
     public static class OrderExtension

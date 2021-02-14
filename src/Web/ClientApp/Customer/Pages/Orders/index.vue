@@ -3,7 +3,7 @@
         <div class="row align-items-center">
             <div class="col-sm">
                 <h1 class="h3 mb-sm-0">
-                    <i class="fas fa-fw fa-prescription-bottle-alt mr-1"></i>Medicines - {{pharmacy.name}}
+                    <i class="fas fa-fw fa-cubes mr-1"></i>Reservations
                 </h1>
             </div>
             <div class="col-sm-auto">
@@ -34,73 +34,147 @@
 
         <b-overlay :show="busy">
             <div class="mt-2 table-responsive shadow-sm">
-                <table-list :header="{key: 'drugId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
+                <table-list :header="{key: 'orderId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
                     <template #header>
                         <th class="text-center">#</th>
-                        <th>Name</th>
-                        <th>Classification</th>
-                        <th>Available</th>
-                        <th>Price</th>
+                        <th>Order Number</th>
+                        <th>Total Price</th>
+                        <th>Pharmacy</th>
+                        <th>Date</th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
-                            <router-link :to="{name:'medicinesView', params:{ pharmacyId: pharmacyId, id: row.item.drugId}}">
-                                {{row.item.name}}
+                            <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                {{row.item.number}}
                             </router-link>
-                            <div>
-                                <small>{{row.item.brand}}</small>
+                            <div class="small">
+                                {{row.item.statusText}}
                             </div>
                         </td>
                         <td>
-                            {{row.item.classificationText}}
+                            {{row.item.grossPrice|toCurrency}}
                         </td>
                         <td>
-                            {{row.item.isAvailable}}
+                            {{row.item.pharmacy.name}}
+                            <div class="row">
+                                <div v-if="row.item.pharmacy.phoneNumber" class="col-md-auto">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-phone"></i>
+                                        {{row.item.pharmacy.phoneNumber}}
+                                    </div>
+                                </div>
+                                <div v-if="row.item.pharmacy.mobileNumber" class="col-md-auto">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-mobile"></i>
+                                        {{row.item.pharmacy.mobileNumber}}
+                                    </div>
+                                </div>
+                                <div v-if="row.item.pharmacy.email" class="col-md-auto">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-at"></i>
+                                        {{row.item.pharmacy.email}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="row.item.pharmacy.openingHours" class="small">
+                                <i class="fas fa-fw fa-clock"></i>
+                                {{row.item.pharmacy.openingHours}}
+                            </div>
+                            <div v-if="row.item.pharmacy.address" class="small">
+                                <i class="fas fa-fw fa-location-arrow"></i>
+                                {{row.item.pharmacy.address}}
+                            </div>
                         </td>
                         <td>
-                            {{row.item.price.price|toCurrency}}
-                        </td>
-                        <td>
-                            <button @click="addToCart(row.item)">
-                                <i class="fas fa-fw fa-cart-plus"></i>
-                            </button>
+                            <ul class="list-unstyled">
+                                <li>
+                                    Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                </li>
+                                <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                    <li>
+                                        Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                    </li>
+                                    <li>
+                                        End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                    </li>
+                                </template>
+                            </ul>
                         </td>
                     </template>
 
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Name</label>
+                                <label class="col-3 col-form-label">Number</label>
                                 <div class="col align-self-center">
-                                    <router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
-                                        {{row.item.name}}
+                                    <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                        {{row.item.number}}
                                     </router-link>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Brand</label>
+                                <label class="col-3 col-form-label">Status</label>
                                 <div class="col align-self-center">
-                                    {{row.item.brand}}
+                                    {{row.item.statusText}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Classification</label>
+                                <label class="col-3 col-form-label">Total Price</label>
                                 <div class="col align-self-center">
-                                    {{row.item.classificationText}}
+                                    {{row.item.grossPrice|toCurrency}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Available</label>
+                                <label class="col-3 col-form-label">Pharmacy</label>
                                 <div class="col align-self-center">
-                                    <span v-if="row.item.isAvailable" class="fas fa-fw fa-check"></span>
-                                    <span v-else class="fas fa-fw fa-times"></span>
+                                    {{row.item.pharmacy.name}}
+                                    <div class="row">
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-phone"></i>
+                                                {{row.item.pharmacy.phoneNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-mobile"></i>
+                                                {{row.item.pharmacy.mobileNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-at"></i>
+                                                {{row.item.pharmacy.email}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-clock"></i>
+                                        {{row.item.pharmacy.openingHours}}
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-location-arrow"></i>
+                                        {{row.item.pharmacy.address}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Price</label>
+                                <label class="col-3 col-form-label">Date</label>
                                 <div class="col align-self-center">
-                                    {{row.item.price.price|toCurrency}}
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                        </li>
+                                        <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                            <li>
+                                                Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                            </li>
+                                            <li>
+                                                End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                            </li>
+                                        </template>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -129,25 +203,25 @@
             uid: String,
             urlAdd: String,
             urlView: String,
-            pharmacyId: {
-                type: String,
-                required: true,
-            },
+            //pharmacyId: {
+            //    type: String,
+            //    required: true,
+            //},
         },
         components: {
         },
         data() {
             return {
-                baseUrl: `/api/drugs/search`,
+                baseUrl: `/api/orders/search-my-orders`,
                 filter: {
-                    cacheKey: `filter-${this.uid}/drugs/search`,
+                    cacheKey: `filter-${this.uid}/orders/search-my-orders`,
                     //query: {
                     //    orderStatus: 0,
                     //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
                     //    dateEnd: moment().endOf('week').format('YYYY-MM-DD')
                     //}
                 },
-                pharmacy: {}
+                moment: moment
             };
         },
 
@@ -167,52 +241,11 @@
 
         async mounted() {
             const vm = this;
-            await vm.getPharmacyInfo();
+            //await vm.getPharmacyInfo();
         },
 
         methods: {
-            getQuery() {
 
-                const vm = this;
-                const filter = vm.filter;
-
-                if (vm.busy)
-                    return;
-
-                const query = [
-                    '?c=', encodeURIComponent(filter.query.criteria),
-                    '&p=', filter.query.pageIndex,
-                    '&s=', filter.query.pageSize,
-                    '&sf=', filter.query.sortField,
-                    '&so=', filter.query.sortOrder,
-                    '&pharmacyId=', vm.pharmacyId
-                ].join('');
-
-                return query;
-            },
-
-            async getPharmacyInfo() {
-                const vm = this;
-
-                await vm.$util.axios.get(`/api/pharmacy/${vm.pharmacyId}`)
-                    .then(resp => vm.pharmacy = resp.data);
-            },
-
-            addToCart(item) {
-                const vm = this;
-
-                var info = {
-                    pharmacyId: vm.pharmacyId,
-                    pharmacyName: vm.pharmacy.name,
-                    drugId: item.drugId,
-                    drugName: item.name,
-                    drugBrand: item.brand,
-                    drugClassification: item.classificationText,
-                    drugPrice: item.price.price,
-                };
-
-                vm.$bus.$emit('event:add-to-cart', info);
-            }
         }
     }
 </script>

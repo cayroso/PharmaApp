@@ -65,6 +65,9 @@ namespace Data.migrations.app
                     PharmacyId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
                     PharmacyStatus = table.Column<int>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    MobileNumber = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true),
                     Address = table.Column<string>(type: "TEXT", nullable: true),
                     GeoX = table.Column<double>(type: "REAL", nullable: false),
                     GeoY = table.Column<double>(type: "REAL", nullable: false),
@@ -430,8 +433,8 @@ namespace Data.migrations.app
                 name: "DrugPrice",
                 columns: table => new
                 {
-                    DrugPriceId = table.Column<string>(type: "TEXT", nullable: false),
-                    DrugId = table.Column<string>(type: "TEXT", nullable: true),
+                    DrugPriceId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
+                    DrugId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
                     Cogs = table.Column<double>(type: "REAL", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
                     SalePrice = table.Column<double>(type: "REAL", nullable: false),
@@ -448,7 +451,7 @@ namespace Data.migrations.app
                         column: x => x.DrugId,
                         principalTable: "Drug",
                         principalColumn: "DrugId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

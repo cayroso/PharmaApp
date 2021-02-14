@@ -31,15 +31,21 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
                           DrugId = d.DrugId,
                           Name = d.Name,
                           Classification = d.Classification,
-                          Brand = d.Brand.Name,
+                          BrandId = d.Brand.BrandId,
+                          BrandName = d.Brand.Name,
                           IsAvailable = d.IsAvailable,
                           Stock = d.Stock,
+                          SafetyStock = d.SafetyStock,
+                          ReorderLevel = d.ReorderLevel,
                           Pharmacy = new GetDrugByIdQuery.Pharmacy
                           {
                               PharmacyId = d.Pharmacy.PharmacyId,
                               Name = d.Pharmacy.Name,
-                              Address = d.Pharmacy.Address,
+                              MobileNumber = d.Pharmacy.MobileNumber,
+                              PhoneNumber = d.Pharmacy.PhoneNumber,
+                              Email = d.Pharmacy.Email,
                               OpeningHours = d.Pharmacy.OpeningHours,
+                              Address = d.Pharmacy.Address,
                               GeoX = d.Pharmacy.GeoX,
                               GeoY = d.Pharmacy.GeoY,
                           },
@@ -48,6 +54,7 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
                               Price = d.Prices.First().Price,
                               SalePrice = d.Prices.First().SalePrice,
                           },
+                          Token = d.ConcurrencyToken
                       };
 
             var dto = await sql.FirstOrDefaultAsync();
@@ -71,14 +78,19 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
                           DrugId = d.DrugId,
                           Name = d.Name,
                           Classification = d.Classification,
-                          Brand = d.Brand.Name,
+                          BrandId = d.Brand.BrandId,
+                          BrandName = d.Brand.Name,
                           IsAvailable = d.IsAvailable,
 
                           Pharmacy = new SearchDrugByPharmacyQuery.Pharmacy
                           {
                               PharmacyId = d.Pharmacy.PharmacyId,
                               Name = d.Pharmacy.Name,
-                              Address = d.Pharmacy.Address
+                              Address = d.Pharmacy.Address,
+                              MobileNumber = d.Pharmacy.MobileNumber,
+                              PhoneNumber = d.Pharmacy.PhoneNumber,
+                              Email = d.Pharmacy.Email,
+                              OpeningHours = d.Pharmacy.OpeningHours
                           },
                           Price = new SearchDrugByPharmacyQuery.DrupPrice
                           {

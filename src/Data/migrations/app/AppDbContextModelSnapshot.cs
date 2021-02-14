@@ -249,6 +249,7 @@ namespace Data.migrations.app
                 {
                     b.Property<string>("DrugPriceId")
                         .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Active")
@@ -258,6 +259,8 @@ namespace Data.migrations.app
                         .HasColumnType("REAL");
 
                     b.Property<string>("DrugId")
+                        .IsRequired()
+                        .HasMaxLength(36)
                         .HasColumnType("TEXT");
 
                     b.Property<uint>("LoyaltyPoints")
@@ -449,11 +452,17 @@ namespace Data.migrations.app
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("GeoX")
                         .HasColumnType("REAL");
 
                     b.Property<double>("GeoY")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("MobileNumber")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -463,6 +472,9 @@ namespace Data.migrations.app
 
                     b.Property<int>("PharmacyStatus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("PharmacyId");
 
@@ -799,7 +811,9 @@ namespace Data.migrations.app
                 {
                     b.HasOne("Data.App.Models.Drugs.Drug", "Drug")
                         .WithMany("Prices")
-                        .HasForeignKey("DrugId");
+                        .HasForeignKey("DrugId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Drug");
                 });

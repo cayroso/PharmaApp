@@ -38,8 +38,10 @@
                     <template #header>
                         <th class="text-center">#</th>
                         <th>Name</th>
-                        <th>Status</th>
+                        <th>Contact</th>
                         <th>Address</th>
+                        <th>Status</th>
+                        <th></th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
@@ -49,14 +51,38 @@
                             </router-link>
                         </td>
                         <td>
+                            <div class="small">
+                                <i class="fas fa-fw fa-phone"></i>
+                                {{row.item.phoneNumber}}
+                            </div>
+
+                            <div class="small">
+                                <i class="fas fa-fw fa-mobile"></i>
+                                {{row.item.mobileNumber}}
+                            </div>
+
+                            <div class="small">
+                                <i class="fas fa-fw fa-at"></i>
+                                {{row.item.email}}
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="small">
+                                <i class="fas fa-fw fa-location-arrow"></i>
+                                {{row.item.address}}
+                            </div>
+                            <div class="small">
+                                <i class="fas fa-fw fa-clock"></i>
+                                {{row.item.openingHours}}
+                            </div>
+                        </td>
+                        <td>
                             {{row.item.pharmacyStatusText}}
                         </td>
                         <td>
-                            {{row.item.address}}
-                        </td>
-                        <td>
-                            <router-link :to="{name: 'pharmaMedicinesIndex', params:{ pharmacyId: row.item.pharmacyId}}">
-                                Search Medicines
+                            <router-link :to="{name: 'pharmaMedicinesIndex', params:{ pharmacyId: row.item.pharmacyId}}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-fw fa-search"></i> Search Medicines
                             </router-link>
                         </td>
                     </template>
@@ -72,28 +98,49 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Brand</label>
+                                <label class="col-3 col-form-label">Contact</label>
                                 <div class="col align-self-center">
-                                    {{row.item.brand}}
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Classification</label>
-                                <div class="col align-self-center">
-                                    {{row.item.classificationText}}
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Available</label>
-                                <div class="col align-self-center">
-                                    <span v-if="row.item.isAvailable" class="fas fa-fw fa-check"></span>
-                                    <span v-else class="fas fa-fw fa-times"></span>
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Price</label>
-                                <div class="col align-self-center">
+                                    <div class="">
+                                        <i class="fas fa-fw fa-phone"></i>
+                                        {{row.item.phoneNumber}}
+                                    </div>
 
+                                    <div class="">
+                                        <i class="fas fa-fw fa-mobile"></i>
+                                        {{row.item.mobileNumber}}
+                                    </div>
+
+                                    <div class="">
+                                        <i class="fas fa-fw fa-at"></i>
+                                        {{row.item.email}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
+                                <label class="col-3 col-form-label">Address</label>
+                                <div class="col align-self-center">
+                                    <i class="fas fa-fw fa-location-arrow"></i>
+                                    {{row.item.address}}
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
+                                <label class="col-3 col-form-label">Open Hours</label>
+                                <div class="col align-self-center">
+                                    <i class="fas fa-fw fa-clock"></i>
+                                    {{row.item.openingHours}}
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
+                                <label class="col-3 col-form-label">Status</label>
+                                <div class="col align-self-center">
+                                    {{row.item.pharmacyStatusText}}
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
+                                <div class="offset-3 col align-self-center">
+                                    <router-link :to="{name: 'pharmaMedicinesIndex', params:{ pharmacyId: row.item.pharmacyId}}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-fw fa-search"></i> Search Medicines
+                                    </router-link>
                                 </div>
                             </div>
 

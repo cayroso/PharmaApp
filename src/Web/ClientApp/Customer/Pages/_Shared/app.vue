@@ -48,8 +48,8 @@
                     { to: '/', label: 'Home', icon: 'fas fa-fw fa-home' },
                     { to: '/pharmacies', label: 'Pharmacies', icon: 'fas fa-fw fa-clinic-medical' },
                     { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-tasks' },
-                    { to: '/orders', label: 'Reservations', icon: 'fas fa-fw fa-archive' },
-                    { to: '/trips', label: 'Trips', icon: 'fas fa-fw fa-map-marked' },
+                    { to: '/orders', label: 'Reservations', icon: 'fas fa-fw fa-cubes' },
+                    //{ to: '/trips', label: 'Trips', icon: 'fas fa-fw fa-map-marked' },
                 ]
             }
         },

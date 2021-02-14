@@ -34,68 +34,134 @@
 
         <b-overlay :show="busy">
             <div class="mt-2 table-responsive shadow-sm">
-                <table-list :header="{key: 'brandId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
+                <table-list :header="{key: 'orderId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
                     <template #header>
                         <th class="text-center">#</th>
-                        <th>Name</th>
-                        <th>Classification</th>
-                        <th>Available</th>
-                        <th>Price</th>
+                        <th>Order Number</th>
+                        <th>Total Price</th>
+                        <th>Customer</th>
+                        <th>Date</th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
-                            <router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
-                                {{row.item.name}}
-                            </router-link>                            
-                            <div>
-                                <small>{{row.item.brand}}</small>
+                            <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                {{row.item.number}}
+                            </router-link>
+                            <div class="small">
+                                {{row.item.statusText}}
                             </div>
                         </td>
                         <td>
-                            {{row.item.classificationText}}
+                            {{row.item.grossPrice|toCurrency}}
                         </td>
                         <td>
-                            {{row.item.isAvailable}}
+                            {{row.item.customer.name}}
+                            <div>
+                                <div v-if="row.item.customer.phoneNumber">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-phone"></i>
+                                        {{row.item.customer.phoneNumber}}
+                                    </div>
+                                </div>                                
+                                <div v-if="row.item.customer.email">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-at"></i>
+                                        {{row.item.customer.email}}
+                                    </div>
+                                </div>
+                            </div>
+                           
                         </td>
                         <td>
-                            {{row.item.price.price|toCurrency}}
+                            <ul class="list-unstyled">
+                                <li>
+                                    Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                </li>
+                                <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                    <li>
+                                        Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                    </li>
+                                    <li>
+                                        End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                    </li>
+                                </template>
+                            </ul>
                         </td>
                     </template>
 
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Name</label>
+                                <label class="col-3 col-form-label">Number</label>
                                 <div class="col align-self-center">
-                                    <router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
-                                        {{row.item.name}}
-                                    </router-link>                                    
+                                    <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                        {{row.item.number}}
+                                    </router-link>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Brand</label>
+                                <label class="col-3 col-form-label">Status</label>
                                 <div class="col align-self-center">
-                                    {{row.item.brand}}
+                                    {{row.item.statusText}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Classification</label>
+                                <label class="col-3 col-form-label">Total Price</label>
                                 <div class="col align-self-center">
-                                    {{row.item.classificationText}}
+                                    {{row.item.grossPrice|toCurrency}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Available</label>
+                                <label class="col-3 col-form-label">Pharmacy</label>
                                 <div class="col align-self-center">
-                                    <span v-if="row.item.isAvailable" class="fas fa-fw fa-check"></span>
-                                    <span v-else class="fas fa-fw fa-times"></span>
+                                    {{row.item.pharmacy.name}}
+                                    <div class="row">
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-phone"></i>
+                                                {{row.item.pharmacy.phoneNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-mobile"></i>
+                                                {{row.item.pharmacy.mobileNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-at"></i>
+                                                {{row.item.pharmacy.email}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-clock"></i>
+                                        {{row.item.pharmacy.openingHours}}
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-location-arrow"></i>
+                                        {{row.item.pharmacy.address}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Price</label>
+                                <label class="col-3 col-form-label">Date</label>
                                 <div class="col align-self-center">
-                                    {{row.item.price.price|toCurrency}}
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                        </li>
+                                        <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                            <li>
+                                                Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                            </li>
+                                            <li>
+                                                End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                            </li>
+                                        </template>
+                                    </ul>
                                 </div>
                             </div>
 
@@ -113,12 +179,11 @@
 
         <m-pagination :filter="filter" :search="search" :showPerPage="true" class="mt-2"></m-pagination>
 
-        <modal-add-member ref="modalAddMember" @saved="search"></modal-add-member>
     </div>
 </template>
 <script>
     import paginatedMixin from '../../../_Core/Mixins/paginatedMixin';
-    import modalAddMember from '../../Modals/Teams/add-member.vue';
+    //import modalAddMember from '../../Modals/Teams/add-member.vue';
 
     export default {
         mixins: [paginatedMixin],
@@ -130,19 +195,20 @@
         },
         components: {
             //modalAddTask
-            modalAddMember
+            //modalAddMember
         },
         data() {
             return {
-                baseUrl: `/api/drugs`,
+                baseUrl: `/api/orders/search-pharmacy-orders`,
                 filter: {
-                    cacheKey: `filter-${this.uid}/drugs`,
+                    cacheKey: `filter-${this.uid}/orders/search-pharmacy-orders`,
                     //query: {
                     //    orderStatus: 0,
                     //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
                     //    dateEnd: moment().endOf('week').format('YYYY-MM-DD')
                     //}
                 },
+                moment: moment
             };
         },
 
@@ -166,69 +232,7 @@
         },
 
         methods: {
-            addTeamMember(item) {
-                const vm = this;
-
-                //const payload = {
-                //    contactId: item.contactId,
-                //    firstName: item.firstName,
-                //    middleName: item.middleName,
-                //    lastName: item.lastName,
-
-                //    statusText: item.statusText,
-                //    rating: item.rating,
-                //};
-
-                vm.$refs.modalAddMember.open(item.teamId, item.name);
-            },
-
-            async removeTeamMember(team, user) {
-                const vm = this;
-
-                try {
-                    this.$bvModal.msgBoxConfirm(`Are you sure you want to remove "${user.name}" from "${team.name}"?`)
-                        .then(async value => {
-                            if (value) {
-
-                                await vm.$util.axios.delete(`/api/teams/${team.teamId}/remove-member/${user.userId}/`)
-                                    .then(resp => {
-                                        vm.$bvToast.toast('User removed from group.', { title: 'Remove User from Group', variant: 'success', toaster: 'b-toaster-bottom-right' });
-                                    })
-
-                                vm.search();
-                            }
-                        })
-                        .catch(err => {
-                            vm.$util.handleError(err);
-                        });
-                } catch (e) {
-                    vm.$util.handleError(e)
-                }
-            },
-
-            async removeTeam(team) {
-                const vm = this;
-
-                try {
-                    this.$bvModal.msgBoxConfirm(`Are you sure you want to delete "${team.name}"?`)
-                        .then(async value => {
-                            if (value) {
-
-                                await vm.$util.axios.delete(`/api/teams/${team.teamId}`)
-                                    .then(resp => {
-                                        vm.$bvToast.toast('Team deleted.', { title: 'Delete Team', variant: 'warning', toaster: 'b-toaster-bottom-right' });
-                                    })
-
-                                vm.search();
-                            }
-                        })
-                        .catch(err => {
-                            vm.$util.handleError(err);
-                        });
-                } catch (e) {
-                    vm.$util.handleError(e);
-                }
-            },
+            
         }
     }
 </script>

@@ -19,19 +19,46 @@ namespace App.CQRS.Orders.Common.Queries.Query
         {
             public string OrderId { get; set; }
 
+            public EnumOrderStatus Status { get; set; }
+            public string StatusText => Status.ToString();
+
             public string Number { get; set; }
             public Pharmacy Pharmacy { get; set; }
             public Customer Customer { get; set; }            
             public double GrossPrice { get; set; }
 
+            DateTime _dateOrdered;
+            public DateTime DateOrdered
+            {
+                get => _dateOrdered;
+                set => _dateOrdered = value.AsUtc();
+            }
+
+            DateTime _dateStartPickup;
+            public DateTime DateStartPickup
+            {
+                get => _dateStartPickup;
+                set => _dateStartPickup = value.AsUtc();
+            }
+
+            DateTime _dateEndPickup;
+            public DateTime DateEndPickup
+            {
+                get => _dateEndPickup;
+                set => _dateEndPickup = value.AsUtc();
+            }
+
             public IEnumerable<Orderline> Lines { get; set; } = new List<Orderline>();
-            public string Token { get; set; }
         }
 
         public class Pharmacy
         {
             public string PharmacyId { get; set; }
             public string Name { get; set; }
+            public string PhoneNumber { get; set; }
+            public string MobileNumber { get; set; }
+            public string Email { get; set; }
+            public string OpeningHours { get; set; }
             public string Address { get; set; }
         }
 

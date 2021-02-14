@@ -25,8 +25,6 @@
         </div>
 
         <div class="mt-2">
-
-
             <div class="form-group">
                 <label for="name">Name</label>
                 <div>
@@ -122,8 +120,8 @@
                     brandId: null,
                     classification: null,
                     name: null,
-                    price: 0,
-                    stock: 0,
+                    price: null,
+                    stock: null,
                 }
             };
         },

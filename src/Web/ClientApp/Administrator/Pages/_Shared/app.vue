@@ -45,8 +45,8 @@
                 menus: [
                     { to: '/', label: 'Home', icon: 'fas fa-fw fa-home' },
                     { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-prescription-bottle-alt' },
-                    { to: '/orders', label: 'Orders', icon: 'fas fa-fw fa-shopping-cart' },
-                    { to: '/users', label: 'Users', icon: 'fas fa-fw fa-users' },
+                    { to: '/orders', label: 'Reservations', icon: 'fas fa-fw fa-cubes' },
+                    { to: '/users', label: 'Staffs', icon: 'fas fa-fw fa-users' },
                     //{ to: '/contacts', label: 'Contacts', icon: 'fas fa-fw fa-id-card' },
 
                 ]

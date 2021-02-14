@@ -29,6 +29,9 @@ namespace App.CQRS.Pharmacy.Common.Commands.Handler
             pharmacy.ThrowIfNullOrAlreadyUpdated(command.Token, _sequentialGuidGenerator.NewId());
 
             pharmacy.Name = command.Name;
+            pharmacy.PhoneNumber = command.PhoneNumber;
+            pharmacy.MobileNumber = command.MobileNumber;
+            pharmacy.Email = command.Email;
             pharmacy.PharmacyStatus = command.PharmacyStatus;
             pharmacy.OpeningHours = command.OpeningHours;
             pharmacy.Address = command.Address;

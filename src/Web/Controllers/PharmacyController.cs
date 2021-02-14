@@ -81,7 +81,8 @@ namespace Web.Controllers
         [HttpPut()]
         public async Task<IActionResult> Put([FromBody] EditPharmacyInfo info)
         {
-            var cmd = new EditPharmacyCommand("", TenantId, UserId, info.PharmacyId, info.Token, info.Name, info.PharmacyStatus, info.OpeningHours, info.Address, info.GeoX, info.GeoY);
+            var cmd = new EditPharmacyCommand("", TenantId, UserId, info.PharmacyId, info.Token, info.Name, info.PhoneNumber, info.MobileNumber, info.Email,
+                info.PharmacyStatus, info.OpeningHours, info.Address, info.GeoX, info.GeoY);
 
             await _commandHandlerDispatcher.HandleAsync(cmd);
 

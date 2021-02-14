@@ -7,63 +7,72 @@ using Data.Enums;
 
 namespace App.CQRS.Orders.Common.Queries.Query
 {
-    //public sealed class SearchOrderQuery : AbstractPagedQuery<SearchOrderQuery.Order>
-    //{
-    //    public SearchOrderQuery(string correlationId, string tenantId, string userId,
-    //        EnumOrderStatus status, DateTime dateStart, DateTime dateEnd,
-    //        string criteria, int pageIndex, int pageSize, string sortField, int sortOrder)
-    //        : base(correlationId, tenantId, userId, criteria, pageIndex, pageSize, sortField, sortOrder)
-    //    {
-    //        Status = status;
-    //        DateStart = dateStart;
-    //        DateEnd = dateEnd;
-    //    }
+    public sealed class SearchOrderQuery : AbstractPagedQuery<SearchOrderQuery.Order>
+    {
+        public string CustomerId { get; }
+        public string PharmacyId { get; }
 
-    //    //public EnumOrderStatus Status { get; }
-    //    public DateTime DateStart { get; }
-    //    public DateTime DateEnd { get; }
+        public SearchOrderQuery(string correlationId, string tenantId, string userId, string customerId, string pharmacyId,
+            string criteria, int pageIndex, int pageSize, string sortField, int sortOrder)
+            : base(correlationId, tenantId, userId, criteria, pageIndex, pageSize, sortField, sortOrder)
+        {
+            CustomerId = customerId;
+            PharmacyId = pharmacyId;            
+        }
 
-    //    public class Order
-    //    {
-    //        public string CustomerOrderId { get; set; }
-    //        public string Number { get; set; }
+        public class Order
+        {
+            public string OrderId { get; set; }
 
-    //        DateTime _orderDateTime;
-    //        public DateTime OrderDateTime
-    //        {
-    //            get => _orderDateTime;
-    //            set => _orderDateTime = value.AsUtc();
-    //        }
+            public EnumOrderStatus Status { get; set; }
+            public string StatusText => Status.ToString();
 
-    //        DateTime _expectedMinDeliveryDateTime;
-    //        public DateTime ExpectedMinDeliveryDateTime
-    //        {
-    //            get => _expectedMinDeliveryDateTime;
-    //            set => _expectedMinDeliveryDateTime = value.AsUtc();
-    //        }
+            public string Number { get; set; }
+            public Pharmacy Pharmacy { get; set; }
+            public Customer Customer { get; set; }
+            public double GrossPrice { get; set; }
+            public int NumberOfItems { get; set; }
 
-    //        DateTime _expectedMaxDeliveryDateTime;
-    //        public DateTime ExpectedMaxDeliveryDateTime
-    //        {
-    //            get => _expectedMaxDeliveryDateTime;
-    //            set => _expectedMaxDeliveryDateTime = value.AsUtc();
-    //        }
+            DateTime _dateOrdered;
+            public DateTime DateOrdered
+            {
+                get => _dateOrdered;
+                set => _dateOrdered = value.AsUtc();
+            }
 
-    //        public EnumOrderStatus OrderStatus { get; set; }
-    //        public string OrderStatusText => OrderStatus.ToString();
+            DateTime _dateStartPickup;
+            public DateTime DateStartPickup
+            {
+                get => _dateStartPickup;
+                set => _dateStartPickup = value.AsUtc();
+            }
 
-    //        public EnumPaymentMethod PaymentMethod { get; set; }
-    //        public string PaymentMethodText => PaymentMethod.ToString();
+            DateTime _dateEndPickup;
+            public DateTime DateEndPickup
+            {
+                get => _dateEndPickup;
+                set => _dateEndPickup = value.AsUtc();
+            }
+        }
 
-    //        public EnumShipmentType ShipmentType { get; set; }
-    //        public string ShipmentTypeText => ShipmentType.ToString();
+        public class Pharmacy
+        {
+            public string PharmacyId { get; set; }
+            public string Name { get; set; }
+            public string PhoneNumber { get; set; }
+            public string MobileNumber { get; set; }
+            public string Email { get; set; }
+            public string OpeningHours { get; set; }
+            public string Address { get; set; }
+        }
 
-    //        public double NetPrice { get; set; }
-    //        public double AmountPaid { get; set; }
+        public class Customer
+        {
+            public string CustomerId { get; set; }
+            public string Name { get; set; }
+            public string PhoneNumber { get; set; }
+            public string Email { get; set; }
+        }
 
-    //        public string RecipientName { get; set; }
-    //        public string Phone { get; set; }
-    //        public string Address { get; set; }
-    //    }
-    //}
+    }
 }
