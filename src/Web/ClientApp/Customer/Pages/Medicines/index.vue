@@ -65,7 +65,7 @@
                             {{row.item.price.price|toCurrency}}
                         </td>
                         <td>
-                            <button v-if="row.item.classification===1" @click="addToCart(row.item)" class="btn btn-sm btn-outline-primary">
+                            <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===1? 'btn-outline-danger':'btn-outline-primary'">
                                 <i class="fas fa-fw fa-cart-plus"></i>
                             </button>
                         </td>

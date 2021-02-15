@@ -19,7 +19,7 @@ import tasksIndex from './Pages/Tasks/index.vue';
 import tasksAdd from './Pages/Tasks/add.vue';
 import tasksView from './Pages/Tasks/View/index.vue';
 
-import tripsIndex from './Pages/Trips/index.vue';
+import ordersIndex from './Pages/Trips/index.vue';
 import tripsView from './Pages/Trips/View/index.vue';
 
 
@@ -43,7 +43,7 @@ const routes = [
 
     { path: '/tasks', name: "tasks", component: tasksIndex },
 
-    { path: '/trips', name: "trips", component: tripsIndex },
+    { path: '/orders', name: "ordersIndex", component: ordersIndex },
     { path: '/trips/view/:id', name: "tripsView", component: tripsView, props: true },
 
     //{ path: '/teams', name: "teams", component: teamsIndex },
@@ -52,7 +52,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-    base:'/driver',
+    base:'/staff',
     mode: "history",
     routes: routes,
 });

@@ -1,19 +1,18 @@
 ﻿<template>
     <div v-cloak>
-
         <div class="row align-items-center">
             <div class="col-sm">
                 <h1 class="h3 mb-sm-0">
-                    <i class="fas fa-fw fa-map-marked mr-1"></i>Trips
+                    <i class="fas fa-fw fa-shopping-cart mr-1"></i>Orders
                 </h1>
             </div>
             <div class="col-sm-auto">
                 <div class="d-flex flex-row">
-                    <!--<div class="mr-1">
-                        <router-link to="/teams/add" class="btn btn-primary">
+                    <div class="mr-1">
+                        <router-link to="/medicines/add" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
                         </router-link>
-                    </div>-->
+                    </div>
 
                     <div class="flex-grow-1">
                         <div class="input-group">
@@ -35,43 +34,69 @@
 
         <b-overlay :show="busy">
             <div class="mt-2 table-responsive shadow-sm">
-                <table-list :header="{key: 'tripId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
+                <table-list :header="{key: 'orderId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
                     <template #header>
                         <th class="text-center">#</th>
-                        <th>Rider</th>
-                        <th>Status</th>
-                        <th>Location</th>
+                        <th>Order Number</th>
+                        <th>Total Price</th>
+                        <th>Customer</th>
                         <th>Date</th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
-                            <span>
-                                <b-avatar size="sm" :src="row.item.rider.urlProfilePicture" :inline="true"></b-avatar>
-                                <router-link :to="{name: 'tripsView', params:{id: row.item.tripId}}">
-                                    {{row.item.rider.firstName}} {{row.item.rider.middleName}} {{row.item.rider.lastName}}
-                                </router-link>
-                            </span>
+                            <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                {{row.item.number}}
+                            </router-link>
+                            <div class="small">
+                                {{row.item.statusText}}
+                            </div>
                         </td>
                         <td>
-                            {{row.item.statusText}}
+                            {{row.item.grossPrice|toCurrency}}
                         </td>
                         <td>
-                            <div class="small">Pickup: {{row.item.startAddress}}</div>
-                            <div class="small">Destination: {{row.item.endAddress}}</div>
+                            {{row.item.customer.name}}
+                            <div>
+                                <div v-if="row.item.customer.phoneNumber">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-phone"></i>
+                                        {{row.item.customer.phoneNumber}}
+                                    </div>
+                                </div>
+                                <div v-if="row.item.customer.email">
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-at"></i>
+                                        {{row.item.customer.email}}
+                                    </div>
+                                </div>
+                            </div>
+
                         </td>
                         <td>
-                            {{row.item.dateCreated|moment('calendar')}}
+                            <ul class="list-unstyled">
+                                <li>
+                                    Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                </li>
+                                <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                    <li>
+                                        Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                    </li>
+                                    <li>
+                                        End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                    </li>
+                                </template>
+                            </ul>
                         </td>
                     </template>
 
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Rider</label>
+                                <label class="col-3 col-form-label">Number</label>
                                 <div class="col align-self-center">
-                                    <router-link :to="{name: 'tripsView', params:{id: row.item.tripId}}">
-                                        {{row.item.rider.firstName}} {{row.item.rider.middleName}} {{row.item.rider.lastName}}
+                                    <router-link :to="{name:'ordersView', params:{ id: row.item.orderId}}">
+                                        {{row.item.number}}
                                     </router-link>
                                 </div>
                             </div>
@@ -82,19 +107,64 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Location</label>
+                                <label class="col-3 col-form-label">Total Price</label>
                                 <div class="col align-self-center">
-                                    <div class="small">Pickup: {{row.item.startAddress}}</div>
-                                    <div class="small">Destination: {{row.item.endAddress}}</div>
+                                    {{row.item.grossPrice|toCurrency}}
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
+                                <label class="col-3 col-form-label">Pharmacy</label>
+                                <div class="col align-self-center">
+                                    {{row.item.pharmacy.name}}
+                                    <div class="row">
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-phone"></i>
+                                                {{row.item.pharmacy.phoneNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-mobile"></i>
+                                                {{row.item.pharmacy.mobileNumber}}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="small">
+                                                <i class="fas fa-fw fa-at"></i>
+                                                {{row.item.pharmacy.email}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-clock"></i>
+                                        {{row.item.pharmacy.openingHours}}
+                                    </div>
+                                    <div class="small">
+                                        <i class="fas fa-fw fa-location-arrow"></i>
+                                        {{row.item.pharmacy.address}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Date</label>
                                 <div class="col align-self-center">
-                                    {{row.item.dateCreated|moment('calendar')}}
+                                    <ul class="list-unstyled">
+                                        <li>
+                                            Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                        </li>
+                                        <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                            <li>
+                                                Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                            </li>
+                                            <li>
+                                                End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                            </li>
+                                        </template>
+                                    </ul>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </template>
                 </table-list>
@@ -113,20 +183,32 @@
 </template>
 <script>
     import paginatedMixin from '../../../_Core/Mixins/paginatedMixin';
+    //import modalAddMember from '../../Modals/Teams/add-member.vue';
 
     export default {
         mixins: [paginatedMixin],
 
         props: {
             uid: String,
+            urlAdd: String,
+            urlView: String,
         },
-
+        components: {
+            //modalAddTask
+            //modalAddMember
+        },
         data() {
             return {
-                baseUrl: `/api/drivers/trips/search`,
+                baseUrl: `/api/orders/search-pharmacy-orders`,
                 filter: {
-                    cacheKey: `filter-${this.uid}/search-trips`,
+                    cacheKey: `filter-${this.uid}/orders/search-pharmacy-orders`,
+                    //query: {
+                    //    orderStatus: 0,
+                    //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
+                    //    dateEnd: moment().endOf('week').format('YYYY-MM-DD')
+                    //}
                 },
+                moment: moment
             };
         },
 
@@ -141,6 +223,7 @@
             vm.initializeFilter(cache);
 
             await vm.search();
+
         },
 
         async mounted() {
