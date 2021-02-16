@@ -323,6 +323,10 @@ namespace Data.App.DbContext
                 b.HasMany(e => e.LineItems)
                     .WithOne(d => d.Order)
                     .HasForeignKey(f => f.OrderId);
+
+                b.HasMany(e => e.FileUploads)
+                    .WithOne(d => d.Order)
+                    .HasForeignKey(f => f.OrderId);
             });
 
             builder.Entity<OrderLineItem>(b =>
@@ -334,6 +338,16 @@ namespace Data.App.DbContext
                 b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.DrugId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.DrugPriceId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+            builder.Entity<OrderFileUpload>(b =>
+            {
+                b.ToTable("OrderFileUpload");
+                b.HasKey(e => e.OrderFileUploadId);
+
+                b.Property(e => e.OrderFileUploadId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.FileUploadId).HasMaxLength(KeyMaxLength).IsRequired();                
             });
         }
 

@@ -480,6 +480,31 @@ namespace Data.migrations.app
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderFileUpload",
+                columns: table => new
+                {
+                    OrderFileUploadId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
+                    OrderId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
+                    FileUploadId = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderFileUpload", x => x.OrderFileUploadId);
+                    table.ForeignKey(
+                        name: "FK_OrderFileUpload_FileUpload_FileUploadId",
+                        column: x => x.FileUploadId,
+                        principalTable: "FileUpload",
+                        principalColumn: "FileUploadId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderFileUpload_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrderLineItem",
                 columns: table => new
                 {
@@ -575,6 +600,16 @@ namespace Data.migrations.app
                 column: "PharmacyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderFileUpload_FileUploadId",
+                table: "OrderFileUpload",
+                column: "FileUploadId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderFileUpload_OrderId",
+                table: "OrderFileUpload",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderLineItem_DrugId",
                 table: "OrderLineItem",
                 column: "DrugId");
@@ -648,6 +683,9 @@ namespace Data.migrations.app
 
             migrationBuilder.DropTable(
                 name: "DrugSubscription");
+
+            migrationBuilder.DropTable(
+                name: "OrderFileUpload");
 
             migrationBuilder.DropTable(
                 name: "OrderLineItem");

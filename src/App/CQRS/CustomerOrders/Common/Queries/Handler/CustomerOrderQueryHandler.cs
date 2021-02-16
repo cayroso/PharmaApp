@@ -65,10 +65,12 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           {
                               LineNumber = e.LineNumber,
                               DrugName = e.Drug.Name,
+                              Classification = e.Drug.Classification,
                               DrugPrice = e.Drug.Prices.First().Price,
                               Quantity = e.Quantity,
                               ExtendedPrice = e.ExtendedPrice
-                          }).ToList(),
+                          }),
+                          FileUploadUrls = o.FileUploads.Select(e => e.FileUpload.Url)
                       };
 
             var dto = await sql.FirstOrDefaultAsync();

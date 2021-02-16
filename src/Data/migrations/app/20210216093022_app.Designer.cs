@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.migrations.app
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210213112052_app")]
+    [Migration("20210216093022_app")]
     partial class app
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -393,6 +393,32 @@ namespace Data.migrations.app
                     b.HasIndex("PharmacyId");
 
                     b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Orders.OrderFileUpload", b =>
+                {
+                    b.Property<string>("OrderFileUploadId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FileUploadId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OrderFileUploadId");
+
+                    b.HasIndex("FileUploadId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderFileUpload");
                 });
 
             modelBuilder.Entity("Data.App.Models.Orders.OrderLineItems.OrderLineItem", b =>
@@ -854,6 +880,25 @@ namespace Data.migrations.app
                     b.Navigation("Pharmacy");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Orders.OrderFileUpload", b =>
+                {
+                    b.HasOne("Data.App.Models.FileUploads.FileUpload", "FileUpload")
+                        .WithMany()
+                        .HasForeignKey("FileUploadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Orders.Order", "Order")
+                        .WithMany("FileUploads")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FileUpload");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Data.App.Models.Orders.OrderLineItems.OrderLineItem", b =>
                 {
                     b.HasOne("Data.App.Models.Drugs.Drug", "Drug")
@@ -1019,6 +1064,8 @@ namespace Data.migrations.app
 
             modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
+                    b.Navigation("FileUploads");
+
                     b.Navigation("LineItems");
                 });
 

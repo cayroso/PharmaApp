@@ -46,33 +46,34 @@
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
-                            <router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
+                            {{row.item.name}}
+                            <!--<router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
                                 {{row.item.name}}
-                            </router-link>
+                            </router-link>-->
                         </td>
                         <td>
-                            <div class="small">
+                            <div v-if="row.item.phoneNumber" class="small">
                                 <i class="fas fa-fw fa-phone"></i>
                                 {{row.item.phoneNumber}}
                             </div>
 
-                            <div class="small">
+                            <div v-if="row.item.mobileNumber" class="small">
                                 <i class="fas fa-fw fa-mobile"></i>
                                 {{row.item.mobileNumber}}
                             </div>
 
-                            <div class="small">
+                            <div v-if="row.item.email" class="small">
                                 <i class="fas fa-fw fa-at"></i>
                                 {{row.item.email}}
                             </div>
 
                         </td>
                         <td>
-                            <div class="small">
+                            <div v-if="row.item.address" class="small">
                                 <i class="fas fa-fw fa-location-arrow"></i>
                                 {{row.item.address}}
                             </div>
-                            <div class="small">
+                            <div v-if="row.item.openingHours"  class="small">
                                 <i class="fas fa-fw fa-clock"></i>
                                 {{row.item.openingHours}}
                             </div>
@@ -92,25 +93,26 @@
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Name</label>
                                 <div class="col align-self-center">
-                                    <router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
+                                    {{row.item.name}}
+                                    <!--<router-link :to="{name:'medicinesView', params:{id:row.item.drugId}}">
                                         {{row.item.name}}
-                                    </router-link>
+                                    </router-link>-->
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Contact</label>
                                 <div class="col align-self-center">
-                                    <div class="">
+                                    <div v-if="row.item.phoneNumber" class="small">
                                         <i class="fas fa-fw fa-phone"></i>
                                         {{row.item.phoneNumber}}
                                     </div>
 
-                                    <div class="">
+                                    <div v-if="row.item.mobileNumber" class="small">
                                         <i class="fas fa-fw fa-mobile"></i>
                                         {{row.item.mobileNumber}}
                                     </div>
 
-                                    <div class="">
+                                    <div v-if="row.item.email" class="small">
                                         <i class="fas fa-fw fa-at"></i>
                                         {{row.item.email}}
                                     </div>
@@ -118,14 +120,14 @@
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Address</label>
-                                <div class="col align-self-center">
+                                <div v-if="row.item.address" class="col align-self-center">
                                     <i class="fas fa-fw fa-location-arrow"></i>
                                     {{row.item.address}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Open Hours</label>
-                                <div class="col align-self-center">
+                                <div v-if="row.item.openingHours" class="col align-self-center">
                                     <i class="fas fa-fw fa-clock"></i>
                                     {{row.item.openingHours}}
                                 </div>

@@ -100,7 +100,9 @@
         props: {
             uid: String,
         },
-
+        components: {
+            //uploadPrescription
+        },
         data() {
             return {
                 isDirty: false,
@@ -123,6 +125,7 @@
         },
 
         computed: {
+
             formIsValid() {
                 const vm = this;
 

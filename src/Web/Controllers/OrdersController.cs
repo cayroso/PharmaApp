@@ -6,6 +6,7 @@ using App.Hubs;
 using App.Services;
 using Data.App.DbContext;
 using Data.App.Models.Chats;
+using Data.App.Models.Orders;
 using Data.Common;
 using Data.Enums;
 using Data.Identity.DbContext;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -50,19 +52,70 @@ namespace Web.Controllers
         }
 
         [HttpPost("customer/add-order")]
-        public async Task<IActionResult> AddOrder([FromBody] AddOrderInfo info)
+        public async Task<IActionResult> AddOrder()
         {
-            var lines = info.Items.Select(e => new AddCustomerOrderCommand.Line
+            var infoFile = Request.Form.Files.FirstOrDefault(e => e.Name == "payload");
+            var imagefiles = Request.Form.Files.Where(e => e.Name == "files");
+
+            if (infoFile != null && infoFile.Length > 0)
             {
-                DrugId = e.DrugId,
-                Quantity = e.DrugQuantity
-            });
+                var streamReader = new StreamReader(infoFile.OpenReadStream());
 
-            var cmd = new AddCustomerOrderCommand("", TenantId, UserId, GuidStr(), info.PharmacyId, lines);
+                var infoJson = streamReader.ReadToEnd();
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+                var info = JsonConvert.DeserializeObject<AddOrderInfo>(infoJson);
 
-            return Ok(cmd.OrderId);
+                var lines = info.Items.Select(e => new AddCustomerOrderCommand.Line
+                {
+                    DrugId = e.DrugId,
+                    Quantity = e.DrugQuantity
+                });
+
+                var cmd = new AddCustomerOrderCommand("", TenantId, UserId, GuidStr(), info.PharmacyId, lines);
+
+                await _commandHandlerDispatcher.HandleAsync(cmd);
+
+                //  handle file uploads
+                var order = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == cmd.OrderId);
+
+                foreach (var file in imagefiles)
+                {                    
+                    var bytes = new byte[file.Length];
+
+                    using (var stream = file.OpenReadStream())
+                    {
+                        stream.Read(bytes);
+                    }
+
+                    var fileUploadId = GuidStr();
+
+                    var orderFileUpload = new OrderFileUpload
+                    {
+                        OrderId = order.OrderId,
+                        FileUpload = new Data.App.Models.FileUploads.FileUpload
+                        {
+                            FileUploadId = fileUploadId,
+                            FileName = file.FileName,
+                            ContentDisposition = file.ContentDisposition,
+                            ContentType = file.ContentType,
+                            Content = bytes,
+                            Length = file.Length,
+                            DateCreated = DateTime.UtcNow,
+                            //Url = $"api/files/{TenantId}/{fileUploadId}",
+                            Url = $"api/files/{fileUploadId}",
+                        }
+                    };
+
+                    order.FileUploads.Add(orderFileUpload);
+                }
+
+                await _appDbContext.SaveChangesAsync();
+
+                return Ok(cmd.OrderId);
+            }
+            //var inf = [FromBody] AddOrderInfo info;
+
+            return BadRequest();
         }
 
         [HttpPut("{id}/change-status/{status}")]

@@ -66,10 +66,11 @@
                     drugName: info.drugName,
                     drugBrand: info.drugBrand,
                     drugClassification: info.drugClassification,
+                    drugClassificationText: info.drugClassificationText,
                     drugPrice: info.drugPrice,
-                    drugQuantity: 0
+                    drugQuantity: null
                 };
-
+                
                 if (shop) {
                     var item = shop.items.find(e => e.drugId === info.drugId)
 

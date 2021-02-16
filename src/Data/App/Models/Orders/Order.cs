@@ -1,11 +1,13 @@
 ﻿using Common.Extensions;
 using Data.App.Models.Customers;
+using Data.App.Models.FileUploads;
 using Data.App.Models.Orders.OrderLineItems;
 using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
 using Data.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,6 +56,21 @@ namespace Data.App.Models.Orders
         public string ConcurrencyToken { get; set; } = Guid.NewGuid().ToString();
 
         public virtual ICollection<OrderLineItem> LineItems { get; set; } = new List<OrderLineItem>();
+        public virtual ICollection<OrderFileUpload> FileUploads { get; set; } = new List<OrderFileUpload>();
+    }
+
+
+    public class OrderFileUpload
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string OrderFileUploadId { get; set; }
+        
+        public string OrderId { get; set; }
+        public virtual Order Order { get; set; }
+
+        public string FileUploadId { get; set; }
+        public virtual FileUpload FileUpload { get; set; }
+
     }
 
     public static class OrderExtension

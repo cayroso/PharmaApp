@@ -24,7 +24,7 @@ namespace App.CQRS.Orders.Common.Queries.Query
 
             public string Number { get; set; }
             public Pharmacy Pharmacy { get; set; }
-            public Customer Customer { get; set; }            
+            public Customer Customer { get; set; }
             public double GrossPrice { get; set; }
 
             DateTime _dateOrdered;
@@ -49,6 +49,7 @@ namespace App.CQRS.Orders.Common.Queries.Query
             }
 
             public IEnumerable<Orderline> Lines { get; set; } = new List<Orderline>();
+            public IEnumerable<string> FileUploadUrls { get; set; } = new List<string>();
         }
 
         public class Pharmacy
@@ -74,7 +75,8 @@ namespace App.CQRS.Orders.Common.Queries.Query
         {
             public string DrugName { get; set; }
             public double DrugPrice { get; set; }
-
+            public EnumDrugClassification Classification { get; set; }
+            public string ClassificationText => Classification.ToString();
             public string LineNumber { get; set; }
             public double Quantity { get; set; }
             public double ExtendedPrice { get; set; }

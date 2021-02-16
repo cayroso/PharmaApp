@@ -59,13 +59,14 @@
                             {{row.item.classificationText}}
                         </td>
                         <td>
-                            {{row.item.isAvailable}}
+                            <i v-if="row.item.isAvailable" class="fas fa-fw fa-check-circle"></i>
+                            <i v-else class="fas fa-fw fa-times-circle"></i>
                         </td>
                         <td>
                             {{row.item.price.price|toCurrency}}
                         </td>
                         <td>
-                            <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===1? 'btn-outline-danger':'btn-outline-primary'">
+                            <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
                                 <i class="fas fa-fw fa-cart-plus"></i>
                             </button>
                         </td>
@@ -81,12 +82,12 @@
                                     </router-link>
                                 </div>
                             </div>
-                            <div class="form-group mb-0 row no-gutters">
+                            <!--<div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Brand</label>
                                 <div class="col align-self-center">
                                     {{row.item.brand}}
                                 </div>
-                            </div>
+                            </div>-->
                             <div v-if="!pharmacyId" class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Pharmacy</label>
                                 <div class="col align-self-center">
@@ -115,7 +116,7 @@
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <div class="offset-3 col align-self-center">
-                                    <button v-if="row.item.classification===1" @click="addToCart(row.item)" class="btn btn-sm btn-outline-primary">
+                                    <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
                                         <i class="fas fa-fw fa-cart-plus"></i>
                                     </button>
                                 </div>
@@ -236,7 +237,8 @@
                     drugId: item.drugId,
                     drugName: item.name,
                     drugBrand: item.brand,
-                    drugClassification: item.classificationText,
+                    drugClassification: item.classification,
+                    drugClassificationText: item.classificationText,
                     drugPrice: item.price.price,
                 };
 
