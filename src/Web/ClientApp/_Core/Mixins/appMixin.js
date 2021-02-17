@@ -48,7 +48,7 @@ export default {
         const vm = this;
 
         if (vm.uid) {
-            await vm.connectNotificationHub();
+            //await vm.connectNotificationHub();
 
             await vm.connectChatHub();
 
@@ -259,38 +259,39 @@ export default {
                 .withAutomaticReconnect()
                 .build();
 
+            hub.on('orderUpdated', function (resp) {                
+                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:order-updated');
+            });
+
             //  customer
             hub.on('customerPlacedOrder', function (resp) {
-                vm.$bus.$emit('event:customer-place-order', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:customer-place-order', resp);                
             });
 
             hub.on('customerCancelledOrder', function (resp) {
-                vm.$bus.$emit('event:customer-cancelledOrder', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:customer-cancelledOrder', resp);                
             });
 
             hub.on('customerSetOrderToArchived', function (resp) {
-                vm.$bus.$emit('event:customer-set-order-to-archived', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:customer-set-order-to-archived', resp);                
             });
 
             //  pharmacy
             hub.on('pharmacyAcceptedOrder', function (resp) {
-                vm.$bus.$emit('event:pharmacy-accepted-order', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:pharmacy-accepted-order', resp);                
+            });
+            hub.on('pharmacyRejectedOrder', function (resp) {
+                vm.$bus.$emit('event:pharmacy-rejected-order', resp);                
             });
             hub.on('pharmacySetOrderReadyForPickup', function (resp) {
-                vm.$bus.$emit('event:pharmacy-set-order-ready-for-pickup', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:pharmacy-set-order-ready-for-pickup', resp);                
             });
             hub.on('pharmacySetOrderToCompleted', function (resp) {
-                vm.$bus.$emit('event:pharmacy-set-order-to-completed', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:pharmacy-set-order-to-completed', resp);                
             });
             hub.on('pharmacySetOrderToArchived', function (resp) {
-                vm.$bus.$emit('event:pharmacy-set-order-to-archived', resp);
-                vm.$bus.$emit('event:notification-received');
+                vm.$bus.$emit('event:pharmacy-set-order-to-archived', resp);                
             });
 
             

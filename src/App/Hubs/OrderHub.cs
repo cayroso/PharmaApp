@@ -21,15 +21,21 @@ namespace App.Services
         public string CustomerName { get; set; }
 
         public string Notes { get; set; }
+
+        public string Title { get; set; }
+        public string Content { get; set; }
     }
 
     public interface IOrderClient
     {
+        Task OrderUpdated(string orderId);
+
         Task CustomerPlacedOrder(Response response);
         Task CustomerCancelledOrder(Response response);
         Task CustomerSetOrderToArchived(Response response);
 
         Task PharmacyAcceptedOrder(Response response);
+        Task PharmacyRejectedOrder(Response response);
         Task PharmacySetOrderReadyForPickup(Response response);
         Task PharmacySetOrderToCompleted(Response response);
         Task PharmacySetOrderToArchived(Response response);

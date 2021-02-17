@@ -113,36 +113,22 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Pharmacy</label>
+                                <label class="col-3 col-form-label">Customer</label>
                                 <div class="col align-self-center">
-                                    {{row.item.pharmacy.name}}
-                                    <div class="row">
-                                        <div class="col-md-auto">
+                                    {{row.item.customer.name}}
+                                    <div>
+                                        <div v-if="row.item.customer.phoneNumber">
                                             <div class="small">
                                                 <i class="fas fa-fw fa-phone"></i>
-                                                {{row.item.pharmacy.phoneNumber}}
+                                                {{row.item.customer.phoneNumber}}
                                             </div>
                                         </div>
-                                        <div class="col-md-auto">
-                                            <div class="small">
-                                                <i class="fas fa-fw fa-mobile"></i>
-                                                {{row.item.pharmacy.mobileNumber}}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-auto">
+                                        <div v-if="row.item.customer.email">
                                             <div class="small">
                                                 <i class="fas fa-fw fa-at"></i>
-                                                {{row.item.pharmacy.email}}
+                                                {{row.item.customer.email}}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="small">
-                                        <i class="fas fa-fw fa-clock"></i>
-                                        {{row.item.pharmacy.openingHours}}
-                                    </div>
-                                    <div class="small">
-                                        <i class="fas fa-fw fa-location-arrow"></i>
-                                        {{row.item.pharmacy.address}}
                                     </div>
                                 </div>
                             </div>

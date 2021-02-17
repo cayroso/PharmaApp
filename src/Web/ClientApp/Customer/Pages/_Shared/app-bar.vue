@@ -14,13 +14,19 @@
             </div>
 
             <ul class="navbar-nav ml-auto flex-row">
-                <!-- Nav Item - Messages -->
-                <li class="nav-item px-2 px-sm-0">
-                    <a v-b-toggle.messagesDrawer class="nav-link" @click.prevent href="#">
+                <li v-show="messages.length>0" class="nav-item">
+                    <a v-b-toggle.messagesDrawer class="nav-link" @click.prevent href="#" role="button">
                         <i class="fas fa-envelope fa-fw"></i>
-                        <!-- Counter - Messages -->
-                        <span class="badge badge-danger badge-counter invisible initialHidden">
-                            <span v-if="messages.length>0">{{messages.length}}</span>
+                        <span class="badge badge-danger">
+                            <span>{{messages.length}}</span>
+                        </span>
+                    </a>
+                </li>
+                <li v-show="notifications.length>0" class="nav-item px-2 px-sm-0">
+                    <a v-b-toggle.notificationsDrawer class="nav-link" @click.prevent href="#">
+                        <i class="fas fa-fw fa-bell"></i>
+                        <span class="badge badge-danger">
+                            <span>{{notifications.length}}</span>
                         </span>
                     </a>
                 </li>
@@ -63,7 +69,7 @@
         </div>
 
         <!--<nav-drawer :appName="appName"></nav-drawer>-->
-        <notifications-drawer :notifications="notifications"></notifications-drawer>
+        <notifications-drawer :notifications="notifications" url-view-order="ordersView"></notifications-drawer>
         <messages-drawer :messages="messages"></messages-drawer>
         <shopping-drawer :uid="uid"></shopping-drawer>
     </b-navbar>

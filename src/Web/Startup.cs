@@ -192,7 +192,7 @@ namespace Web
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
 
-                endpoints.MapHub<ChatHub>("/chatHub");
+                endpoints.MapHub<ChatHub>("/chatHub");                
                 endpoints.MapHub<OrderHub>("/orderHub"); 
             });
         }

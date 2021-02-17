@@ -37,19 +37,26 @@
                 </div>
             </div>
             <b-collapse v-model="toggles.information">
-                <div class="p-1 text-right">
-                    <button>Cancel</button>
-                    <!--<div class="dropdown ">
+                <!--not archived-->
+                <div v-if="item.status!==4 && item.status!==7" class="p-1 text-right">
+                    <div class="dropdown ">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Update Status
+                            <i class="fas fa-fw fa-cogs mr-1"></i>Update Status
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a @click.prevent="setOrderStatus(2)" class="dropdown-item" href="#">Accepted</a>
-                            <a @click.prevent="setOrderStatus(3)" class="dropdown-item" href="#">Ready for Pickup</a>
-                            <a @click.prevent="setOrderStatus(4)" class="dropdown-item" href="#">Completed</a>
-                            <a @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">Archived</a>
+                            <!--placed, accepted-->
+                            <a v-if="item.status==1 || item.status==2" @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">
+                                Cancel
+                            </a>
+                            <!--rejected, completed, cancelled-->
+                            <a v-if="item.status===3||item.status===5||item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
+                                Archive
+                            </a>
                         </div>
-                    </div>-->
+                    </div>
+
+                    <!--<button v-if="item.status==1 || item.status==2" @click="cancelOrder" class="btn btn-danger">Cancel</button>-->
+
                 </div>
                 <div class="p-2">
                     <div class="form-row">
@@ -223,7 +230,7 @@
             </b-collapse>
         </div>
 
-        <div class="card mt-2">
+        <div v-if="item.fileUploadUrls.length>0" class="card mt-2">
             <div @click="toggle('prescriptions')" class="card-header d-flex flex-row justify-content-between align-items-center">
                 <h5 class="mb-0 align-self-start">
                     <span class="fas fa-fw fa-money-bill mr-1 d-none"></span>Prescriptions
@@ -281,7 +288,13 @@
 
         computed: {
         },
-
+        watch: {
+            async $route(to, from) {
+                const vm = this
+                //this.show = false;
+                await vm.get();
+            }
+        },
         async created() {
             const vm = this;
             const toggles = JSON.parse(localStorage.getItem(vm.togglesKey)) || null;
@@ -294,10 +307,29 @@
         async mounted() {
             const vm = this;
 
+            vm.$bus.$on('event:order-updated', async (orderId) => {                
+                debugger;
+                if (vm.id === orderId)
+                    await vm.get();
+            });
+            //vm.$bus.$on('event:pharmacy-accepted-order', vm.getIfOrder);
+            //vm.$bus.$on('event:pharmacy-rejected-order', vm.getIfOrder);
+            //vm.$bus.$on('event:pharmacy-set-order-ready-for-pickup', vm.getIfOrder);
+            //vm.$bus.$on('event:pharmacy-set-order-to-completed', vm.getIfOrder);
+            //vm.$bus.$on('event:pharmacy-set-order-to-archived', vm.getIfOrder);
+
+
             await vm.get();
         },
 
         methods: {
+            //async getIfOrder(info) {
+            //    const vm = this;
+            //    debugger;
+            //    if (info.orderId === vm.id) {
+            //        await vm.get();
+            //    }
+            //},
             async get() {
                 const vm = this;
 
@@ -305,7 +337,43 @@
                     .then(resp => vm.item = resp.data);
             },
 
-            
+            async setOrderStatus(status) {
+                const vm = this;
+
+
+                try {
+                    let api = 'oyeah';
+                    let reason = '';
+
+                    switch (status) {
+                        case 6:
+                            api = `/api/orders/customer/cancel`
+                            reason = prompt('Reason for Cancelling Order');
+                            if (!reason)
+                                return;
+                            break;
+                        case 7:
+                            api = `/api/orders/customer/archive`
+                            break;
+                    };
+                    const payload = {
+                        orderId: vm.item.orderId,
+                        token: vm.item.token,
+                        notes: reason
+                    };
+
+                    await vm.$util.axios.put(api, payload)
+                        .then(async _ => {
+                            vm.$bvToast.toast('Order status updated.', { title: 'Update Order', variant: 'success' });
+
+                            await vm.get();
+                        })
+                } catch (e) {
+                    vm.$util.handleError(e);
+                }
+            }
+
+
         }
     }
 </script>

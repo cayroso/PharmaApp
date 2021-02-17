@@ -66,7 +66,7 @@
                             {{row.item.price.price|toCurrency}}
                         </td>
                         <td>
-                            <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
+                            <button v-bind:disabled="!row.item.isAvailable" @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
                                 <i class="fas fa-fw fa-cart-plus"></i>
                             </button>
                         </td>
@@ -116,7 +116,7 @@
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <div class="offset-3 col align-self-center">
-                                    <button @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
+                                    <button v-bind:disabled="!row.item.isAvailable" @click="addToCart(row.item)" class="btn btn-sm" v-bind:class="row.item.classification===2? 'btn-danger':'btn-outline-success'">
                                         <i class="fas fa-fw fa-cart-plus"></i>
                                     </button>
                                 </div>

@@ -26,6 +26,8 @@ namespace App.CQRS.Orders.Common.Queries.Query
             public Pharmacy Pharmacy { get; set; }
             public Customer Customer { get; set; }
             public double GrossPrice { get; set; }
+            public string Token { get; set; }
+
 
             DateTime _dateOrdered;
             public DateTime DateOrdered

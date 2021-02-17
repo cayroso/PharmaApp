@@ -39,17 +39,8 @@ export default {
     async mounted() {
         const vm = this;
 
-        const elNotif = vm.$refs.notifications;
-        const elMessage = vm.$refs.messages;
-
-        if (elNotif && elNotif.offsetParent) {
-            //await vm.getUnreadNotifications();
-            //debugger;
-        }
-
-        if (elMessage && elMessage.offsetParent) {
-            await vm.getUnreadChats();
-        }
+        await vm.getUnreadNotifications();
+        await vm.getUnreadChats();
 
         vm.showHiddenElements();
     },
@@ -91,9 +82,9 @@ export default {
             const vm = this;
 
             try {
-                await vm.$util.axios.get(`api/accounts/unread-notifications`)
+                await vm.$util.axios.get(`/api/notifications/unread/?criteria=&pageIndex=1&pageSize=20`)
                     .then(resp => {
-                        vm.notifications = resp.data;
+                        vm.notifications = resp.data.items;
                     });
             } catch (e) {
                 vm.$util.handleError(e);

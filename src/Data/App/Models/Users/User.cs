@@ -18,27 +18,17 @@ namespace Data.App.Models.Users
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         [NotMapped]
-        public string FirstLastName => $"{FirstName} {LastName}";
+        public string FirstLastName => $"{FirstName} {MiddleName} {LastName}";
         [NotMapped]
         public string Initials => $"{FirstName[0]}{LastName[0]}".ToUpper();
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-
-        public double OverallRating { get; set; }
-        public double TotalRating { get; set; }
 
         public string ConcurrencyToken { get; set; } = Guid.NewGuid().ToString();
 
         public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         public virtual ICollection<UserTask> UserTasks { get; set; } = new List<UserTask>();
 
-        //public virtual ICollection<DocumentAccessHistory> DocumentAccessHistories { get; set; } = new List<DocumentAccessHistory>();
-
-        public void CalculateRating(double newRating)
-        {
-            OverallRating = ((OverallRating * TotalRating) + newRating) / (TotalRating + 1);
-            TotalRating += newRating;
-        }
     }
 
     public static class UserExtension

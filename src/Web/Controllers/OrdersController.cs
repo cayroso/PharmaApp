@@ -1,5 +1,7 @@
 ﻿using App.CQRS;
 using App.CQRS.CustomerOrders.Common.Commands.Command;
+using App.CQRS.CustomerOrders.Common.Commands.Command.Customer;
+using App.CQRS.CustomerOrders.Common.Commands.Command.Pharmacy;
 using App.CQRS.Drugs.Common.Queries.Query;
 using App.CQRS.Orders.Common.Queries.Query;
 using App.Hubs;
@@ -51,8 +53,40 @@ namespace Web.Controllers
             _tripHubContext = tripHubContext ?? throw new ArgumentNullException(nameof(tripHubContext));
         }
 
-        [HttpPost("customer/add-order")]
-        public async Task<IActionResult> AddOrder()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            var query = new GetCustomerOrderByIdQuery("", TenantId, UserId, id);
+
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>(query);
+
+            return Ok(dto);
+        }
+
+        [HttpGet("search-my-orders")]
+        public async Task<IActionResult> GetMyOrders(string c, int p, int s, string sf, int so)
+        {
+            var query = new SearchOrderQuery("", TenantId, UserId, UserId, null, c, p, s, sf, so);
+
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+
+            return Ok(dto);
+        }
+
+        [HttpGet("search-pharmacy-orders")]
+        public async Task<IActionResult> GetPharmacyOrders(string c, int p, int s, string sf, int so)
+        {
+            var query = new SearchOrderQuery("", TenantId, UserId, null, PharmacyId, c, p, s, sf, so);
+
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+
+            return Ok(dto);
+        }
+
+        #region Customer
+
+        [HttpPost("customer/place-order")]
+        public async Task<IActionResult> PostCustomerPlaceOrder()
         {
             var infoFile = Request.Form.Files.FirstOrDefault(e => e.Name == "payload");
             var imagefiles = Request.Form.Files.Where(e => e.Name == "files");
@@ -79,7 +113,7 @@ namespace Web.Controllers
                 var order = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == cmd.OrderId);
 
                 foreach (var file in imagefiles)
-                {                    
+                {
                     var bytes = new byte[file.Length];
 
                     using (var stream = file.OpenReadStream())
@@ -118,62 +152,92 @@ namespace Web.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{id}/change-status/{status}")]
-        public async Task<IActionResult> UpdateStatus(string id, EnumOrderStatus status)
+
+        [HttpPut("customer/archive")]
+        public async Task<IActionResult> PutCustomerArchiveOrder([FromBody] UpdateOrderStatusInfo info)
         {
-            var order = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == id);
+            var cmd = new CustomerArchiveOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            if (order == null)
-                return NotFound();
-
-            order.OrderStatus = status;
-
-            switch (status)
-            {
-                case EnumOrderStatus.Accepted:
-                    order.StartPickupDate = DateTime.MaxValue;
-                    order.EndPickupDate = DateTime.MaxValue;
-                    break;
-
-                case EnumOrderStatus.ReadyForPickup:
-                    order.StartPickupDate = DateTime.UtcNow;
-                    order.EndPickupDate = DateTime.UtcNow.AddDays(2);
-                    break;
-            }
-
-            await _appDbContext.SaveChangesAsync();
+            await _commandHandlerDispatcher.HandleAsync(cmd);
 
             return Ok();
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpPut("customer/cancel")]
+        public async Task<IActionResult> PutCustomerCancelledOrder([FromBody] UpdateOrderStatusInfo info)
         {
-            var query = new GetCustomerOrderByIdQuery("", TenantId, UserId, id);
+            var cmd = new CustomerCancelOrderCommand("", TenantId, UserId, info.OrderId, info.Token, info.Notes);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>(query);
+            await _commandHandlerDispatcher.HandleAsync(cmd);
 
-            return Ok(dto);
+            return Ok();
         }
 
-        [HttpGet("search-my-orders")]
-        public async Task<IActionResult> GetMyOrders(string c, int p, int s, string sf, int so)
+        #endregion
+
+        #region Pharmacy
+
+
+        [HttpPut("pharmacy/accept")]
+        public async Task<IActionResult> PutPharmacyAcceptedOrder([FromBody] UpdateOrderStatusInfo info)
         {
-            var query = new SearchOrderQuery("", TenantId, UserId, UserId, null, c, p, s, sf, so);
+            var cmd = new PharmacyAcceptOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+            await _commandHandlerDispatcher.HandleAsync(cmd);
 
-            return Ok(dto);
+            return Ok();
         }
 
-        [HttpGet("search-pharmacy-orders")]
-        public async Task<IActionResult> GetPharmacyOrders(string c, int p, int s, string sf, int so)
+        [HttpPut("pharmacy/reject")]
+        public async Task<IActionResult> PutPharmacyRejectedOrder([FromBody] UpdateOrderStatusInfo info)
         {
-            var query = new SearchOrderQuery("", TenantId, UserId, null, PharmacyId, c, p, s, sf, so);
+            var cmd = new PharmacyRejectedOrderCommand("", TenantId, UserId, info.OrderId, info.Token, info.Notes);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+            await _commandHandlerDispatcher.HandleAsync(cmd);
 
-            return Ok(dto);
+            return Ok();
         }
+
+        [HttpPut("pharmacy/ready-for-pickup")]
+        public async Task<IActionResult> PutPharmacyReadyForPickupOrder([FromBody] UpdateOrderStatusInfo info)
+        {
+            var cmd = new PharmacyOrderReadyForPickupCommand("", TenantId, UserId, info.OrderId, info.Token);
+
+            await _commandHandlerDispatcher.HandleAsync(cmd);
+
+            return Ok();
+        }
+
+        [HttpPut("pharmacy/completed")]
+        public async Task<IActionResult> PutPharmacyCompletedOrder([FromBody] UpdateOrderStatusInfo info)
+        {
+            var cmd = new PharmacyCompleteOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
+
+            await _commandHandlerDispatcher.HandleAsync(cmd);
+
+            return Ok();
+        }
+
+        [HttpPut("pharmacy/archived")]
+        public async Task<IActionResult> PutPharmacyArchivedOrder([FromBody] UpdateOrderStatusInfo info)
+        {
+            var cmd = new PharmacyArchiveOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
+
+            await _commandHandlerDispatcher.HandleAsync(cmd);
+
+            return Ok();
+        }
+
+        #endregion
+    }
+
+
+    public class UpdateOrderStatusInfo
+    {
+        [Required]
+        public string OrderId { get; set; }
+        [Required]
+        public string Token { get; set; }
+        public string Notes { get; set; }
     }
 }

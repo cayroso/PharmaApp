@@ -342,6 +342,72 @@ namespace Data.migrations.app
                     b.ToTable("FileUpload");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Notifications.Notification", b =>
+                {
+                    b.Property<string>("NotificationId")
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateSent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IconClass")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("NotificationType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReferenceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("NotificationId");
+
+                    b.ToTable("Notification");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Notifications.NotificationReceiver", b =>
+                {
+                    b.Property<string>("NotificationReceiverId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateRead")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateReceived")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NotificationId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("NotificationReceiverId");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.ToTable("NotificationReceiver");
+                });
+
             modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
                     b.Property<string>("OrderId")
@@ -459,6 +525,41 @@ namespace Data.migrations.app
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderLineItem");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Orders.OrderTimeline", b =>
+                {
+                    b.Property<string>("OrderTimelineId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateTimeline")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OrderTimelineId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrderTimeline");
                 });
 
             modelBuilder.Entity("Data.App.Models.Pharmacies.Pharmacy", b =>
@@ -859,6 +960,25 @@ namespace Data.migrations.app
                     b.Navigation("Drug");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Notifications.NotificationReceiver", b =>
+                {
+                    b.HasOne("Data.App.Models.Notifications.Notification", "Notification")
+                        .WithMany("Receivers")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Users.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("Receiver");
+                });
+
             modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
                     b.HasOne("Data.App.Models.Customers.Customer", "Customer")
@@ -922,6 +1042,25 @@ namespace Data.migrations.app
                     b.Navigation("DrugPrice");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Data.App.Models.Orders.OrderTimeline", b =>
+                {
+                    b.HasOne("Data.App.Models.Orders.Order", "Order")
+                        .WithMany("Timelines")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.App.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Data.App.Models.Pharmacies.PharmacyReview", b =>
@@ -1060,11 +1199,18 @@ namespace Data.migrations.app
                     b.Navigation("OrderLineItems");
                 });
 
+            modelBuilder.Entity("Data.App.Models.Notifications.Notification", b =>
+                {
+                    b.Navigation("Receivers");
+                });
+
             modelBuilder.Entity("Data.App.Models.Orders.Order", b =>
                 {
                     b.Navigation("FileUploads");
 
                     b.Navigation("LineItems");
+
+                    b.Navigation("Timelines");
                 });
 
             modelBuilder.Entity("Data.App.Models.Pharmacies.Pharmacy", b =>

@@ -105,7 +105,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -172,7 +171,7 @@
 
                 const validations = new Map();
 
-                if (!vm.imageFilesValid) {
+                if (vm.requiresPrescription && !vm.imageFilesValid) {
                     validations.set('imageFiles', 'Screenshots of prescription from doctor/clinic is required.');
                 }
 
@@ -301,15 +300,15 @@
                 formData.append("payload", blob);
 
                 try {
-                    await vm.$util.axios.post(`/api/orders/customer/add-order`, formData)
+                    await vm.$util.axios.post(`/api/orders/customer/place-order`, formData)
                         .then(resp => {
-                            vm.$bvToast.toast('Reservation placed.', { title: 'Reserve Medicines', variant: 'success', toaster: 'b-toaster-bottom-right' });
+                            vm.$bvToast.toast('Order placed.', { title: 'Order Medicines', variant: 'success', toaster: 'b-toaster-bottom-right' });
 
                             vm.removeItem(vm.pharmacyId);
-                             
+
                             setTimeout(_ => {
                                 vm.$router.push({ name: 'ordersView', params: { id: resp.data } });
-                            }, 2000);
+                            }, 1000);
 
                         })
                 } catch (e) {
@@ -323,7 +322,7 @@
                 let shoppingCart = JSON.parse(localStorage.getItem('shopping-cart')) || [];
 
                 let shop = shoppingCart.find(e => e.pharmacyId === pharmacyId);
-                
+
                 if (shop) {
                     shoppingCart = shoppingCart.filter(e => e.pharmacyId !== pharmacyId);
 

@@ -37,16 +37,38 @@
                 </div>
             </div>
             <b-collapse v-model="toggles.information">
-                <div class="p-1 text-right">
+                <!--not archived-->
+                <div v-if="item.status!==7 && item.status!==3" class="p-1 text-right">
                     <div class="dropdown ">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Update Status
+                            <i class="fas fa-fw fa-cogs mr-1"></i>Update Status
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a @click.prevent="setOrderStatus(2)" class="dropdown-item" href="#">Accepted</a>
-                            <a @click.prevent="setOrderStatus(3)" class="dropdown-item" href="#">Ready for Pickup</a>
-                            <a @click.prevent="setOrderStatus(4)" class="dropdown-item" href="#">Completed</a>
-                            <a @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">Archived</a>
+                            <!--placed-->
+                            <a v-if="item.status===1" @click.prevent="setOrderStatus(2)" class="dropdown-item" href="#">
+                                <i v-if="item.status===2" class="fas fa-fw fa-check"></i>
+                                Accepted
+                            </a>
+                            <!--placed, accepted-->
+                            <a v-if="item.status===1 || item.status===2 || item.status===4" @click.prevent="setOrderStatus(3)" class="dropdown-item" href="#">
+                                <i v-if="item.status===3" class="fas fa-fw fa-check"></i>
+                                Reject
+                            </a>
+                            <!--accepted-->
+                            <a v-if="item.status===2" @click.prevent="setOrderStatus(4)" class="dropdown-item" href="#">
+                                <i v-if="item.status===4" class="fas fa-fw fa-check"></i>
+                                Ready for Pickup
+                            </a>
+                            <!--readyforpickup-->
+                            <a v-if="item.status===4" @click.prevent="setOrderStatus(5)" class="dropdown-item" href="#">
+                                <i v-if="item.status===5" class="fas fa-fw fa-check"></i>
+                                Completed
+                            </a>
+                            <!--cancelled, completed-->
+                            <a v-if="item.status===5 || item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
+                                <i v-if="item.status===7" class="fas fa-fw fa-check"></i>
+                                Archived
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -176,7 +198,7 @@
                                 {{item.customer.name}}
                             </div>
                         </div>
-                        
+
                         <div class="form-group col-md">
                             <label>Phone Number</label>
                             <div v-if="item.customer.phoneNumber" class="form-control-plaintext">
@@ -197,11 +219,11 @@
                         </div>
                         <div class="form-group col-md">
                             <label>Email</label>
-                            <div v-if="item.pharmacy.email" class="form-control-plaintext">
-                                <a :href="`mailto:${item.pharmacy.email}`" class="btn btn-outline-primary">
+                            <div v-if="item.customer.email" class="form-control-plaintext">
+                                <a :href="`mailto:${item.customer.email}`" class="btn btn-outline-primary">
                                     <i class="fas fa-fw fa-envelope"></i>
                                 </a>
-                                {{item.pharmacy.email}}
+                                {{item.customer.email}}
                             </div>
                         </div>
                     </div>
@@ -209,7 +231,7 @@
             </b-collapse>
         </div>
 
-        <div class="card mt-2">
+        <div  v-if="item.fileUploadUrls.length>0" class="card mt-2">
             <div @click="toggle('prescriptions')" class="card-header d-flex flex-row justify-content-between align-items-center">
                 <h5 class="mb-0 align-self-start">
                     <span class="fas fa-fw fa-money-bill mr-1 d-none"></span>Prescriptions
@@ -256,7 +278,11 @@
                     lineItems: false,
                     prescriptions: false,
                 },
-                item: {},
+                item: {
+                    customer: {},
+                    lines: [],
+                    fileUploadUrls: []
+                },
                 moment: moment
             };
         },
@@ -264,7 +290,13 @@
         computed: {
 
         },
-
+        watch: {
+            async $route(to, from) {
+                const vm = this
+                //this.show = false;
+                await vm.get();
+            }
+        },
         async created() {
             const vm = this;
             const toggles = JSON.parse(localStorage.getItem(vm.togglesKey)) || null;
@@ -276,10 +308,26 @@
         async mounted() {
             const vm = this;
 
+            vm.$bus.$on('event:order-updated', async (orderId) => {
+                console.log('fuck', orderId);
+                if (vm.id === orderId)
+                    await vm.get();
+            });
+            //vm.$bus.$on('event:customer-place-order', vm.getIfOrder);
+            //vm.$bus.$on('event:customer-cancelledOrder', vm.getIfOrder);
+            //vm.$bus.$on('event:customer-set-order-to-archived', vm.getIfOrder);
+
             await vm.get();
         },
 
         methods: {
+            //async getIfOrder(info) {
+            //    const vm = this;
+            //    debugger;
+            //    if (info.orderId === vm.id) {
+            //        await vm.get();
+            //    }
+            //},
             async get() {
                 const vm = this;
 
@@ -290,10 +338,39 @@
                 const vm = this;
 
                 try {
-                    await vm.$util.axios.put(`/api/orders/${vm.id}/change-status/${status}`)
-                        .then(async _ => {
+                    let api = '/api/oyeah';
+                    let notes = '';
 
-                            alert('Order status updated.');
+                    switch (status) {
+                        case 2:
+                            api = `/api/orders/pharmacy/accept`
+                            break;
+                        case 3:
+                            api = `/api/orders/pharmacy/reject`
+                            notes = prompt('Reason for Rejecting Order');
+                            if (!notes)
+                                return;
+                            break;
+                        case 4:
+                            api = `/api/orders/pharmacy/ready-for-pickup`
+                            break;
+                        case 5:
+                            api = `/api/orders/pharmacy/completed`
+                            break;
+                        case 7:
+                            api = `/api/orders/pharmacy/archived`
+                            break;
+                    };
+
+                    const payload = {
+                        orderId: vm.item.orderId,
+                        token: vm.item.token,
+                        notes: notes
+                    };
+
+                    await vm.$util.axios.put(api, payload)
+                        .then(async _ => {
+                            vm.$bvToast.toast('Order status updated.', { title: 'Update Order', variant: 'success' });
 
                             await vm.get();
                         });

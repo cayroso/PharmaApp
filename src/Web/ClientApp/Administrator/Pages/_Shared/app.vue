@@ -73,29 +73,46 @@
             setupEventReceivers() {
                 const vm = this;
 
+
                 //  customers
                 vm.$bus.$on('event:customer-place-order', async function (resp) {
-                    vm.$bvToast.toast(`${resp.customerName} has placed order #${resp.orderNumber}`, {
-                        title: `Customer Placed Orderd`,
-                        variant: 'info',
+                    let content = resp.content;
+                    content = content.replace(/<b>/g, '');
+                    content = content.replace(/<\/b>/g, '');
+                    content = content.replace(/<br\/>/g, '');
+
+                    vm.$bvToast.toast(content, {
+                        title: resp.title,
+                        variant: 'success',
                         solid: true
                     });
                 });
                 vm.$bus.$on('event:customer-cancelledOrder', async function (resp) {
-                    vm.$bvToast.toast(`${resp.customerName} has cancelled order #${resp.orderNumber}`, {
-                        title: `Customer Cancelled Order`,
-                        variant: 'info',
+                    let content = resp.content;
+                    content = content.replace(/<b>/g, '');
+                    content = content.replace(/<\/b>/g, '');
+                    content = content.replace(/<br\/>/g, '');
+
+                    vm.$bvToast.toast(content, {
+                        title: resp.title,
+                        variant: 'danger',
                         solid: true
                     });
                 });
                 vm.$bus.$on('event:customer-set-order-to-archived', async function (resp) {
-                    vm.$bvToast.toast(`${resp.customerName} has archived order #${resp.orderNumber}`, {
-                        title: `Customer Set Order to Archived`,
+                    let content = resp.content;
+                    content = content.replace(/<b>/g, '');
+                    content = content.replace(/<\/b>/g, '');
+                    content = content.replace(/<br\/>/g, '');
+
+                    vm.$bvToast.toast(content, {
+                        title: resp.title,
                         variant: 'info',
                         solid: true
                     });
                 });
 
+                //  pharmacy
             },
 
             //async getMembershipInfo() {

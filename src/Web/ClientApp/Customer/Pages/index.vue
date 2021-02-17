@@ -114,7 +114,7 @@
         async mounted() {
             const vm = this;
 
-            await vm.get();
+            //await vm.get();
         },
 
         methods: {

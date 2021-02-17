@@ -43,7 +43,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           DateOrdered = o.OrderDate,
                           DateStartPickup = o.StartPickupDate,
                           DateEndPickup = o.EndPickupDate,
-
+                          Token = o.ConcurrencyToken,
                           Pharmacy = new GetCustomerOrderByIdQuery.Pharmacy
                           {
                               PharmacyId = o.Pharmacy.PharmacyId,

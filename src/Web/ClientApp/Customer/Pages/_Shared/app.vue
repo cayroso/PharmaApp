@@ -70,7 +70,7 @@
                     drugPrice: info.drugPrice,
                     drugQuantity: null
                 };
-                
+
                 if (shop) {
                     var item = shop.items.find(e => e.drugId === info.drugId)
 
@@ -104,29 +104,62 @@
 
             //  pharmacy
             vm.$bus.$on('event:pharmacy-accepted-order', async function (resp) {
-                vm.$bvToast.toast(`${resp.pharmacyName} as accepted your order #${resp.orderNumber}`, {
-                    title: `Pharmacy Accepted Order`,
-                    variant: 'info',
+                let content = resp.content;
+                content = content.replace(/<b>/g, '');
+                content = content.replace(/<\/b>/g, '');
+                content = content.replace(/<br\/>/g, '');
+                
+                vm.$bvToast.toast(content, {
+                    title: resp.title,
+                    variant: 'success',
                     solid: true
                 });
             });
+            vm.$bus.$on('event:pharmacy-rejected-order', async function (resp) {
+                let content = resp.content;
+                content = content.replace(/<b>/g, '');
+                content = content.replace(/<\/b>/g, '');
+                content = content.replace(/<br\/>/g, '');
+
+                vm.$bvToast.toast(content, {
+                    title: resp.title,
+                    variant: 'warning',
+                    solid: true
+                });
+            });
+
             vm.$bus.$on('event:pharmacy-set-order-ready-for-pickup', async function (resp) {
-                vm.$bvToast.toast(`${resp.pharmacyName} has set your order #${resp.orderNumber} ready for pickup.`, {
-                    title: `Pharmacy Set Order Ready for Pickup`,
-                    variant: 'info',
+                let content = resp.content;
+                content = content.replace(/<b>/g, '');
+                content = content.replace(/<\/b>/g, '');
+                content = content.replace(/<br\/>/g, '');
+
+                vm.$bvToast.toast(content, {
+                    title: resp.title,
+                    variant: 'success',
                     solid: true
                 });
             });
             vm.$bus.$on('event:pharmacy-set-order-to-completed', async function (resp) {
-                vm.$bvToast.toast(`${resp.pharmacyName} has completed your order #${resp.orderNumber}`, {
-                    title: `Pharmacy Set Order to Completed`,
+                let content = resp.content;
+                content = content.replace(/<b>/g, '');
+                content = content.replace(/<\/b>/g, '');
+                content = content.replace(/<br\/>/g, '');
+
+                vm.$bvToast.toast(content, {
+                    title: resp.title,
                     variant: 'info',
                     solid: true
                 });
             });
             vm.$bus.$on('event:pharmacy-set-order-to-archived', async function (resp) {
-                vm.$bvToast.toast(`${resp.pharmacyName} has archived your order #${resp.orderNumber}`, {
-                    title: `Pharmacy Set Order to Archved`,
+                let content = resp.content;
+                content = content.replace(/<b>/g, '');
+                content = content.replace(/<\/b>/g, '');
+                content = content.replace(/<br\/>/g, '');
+
+                vm.$bvToast.toast(content, {
+                    title: resp.title,
                     variant: 'info',
                     solid: true
                 });
