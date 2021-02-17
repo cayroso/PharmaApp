@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.CQRS.CustomerOrders.Common.Commands.Command
+namespace App.CQRS.CustomerOrders.Common.Commands.Command.Customer
 {
-    public sealed class AddCustomerOrderCommand : AbstractCommand
+    public sealed class CustomerPlaceOrderCommand : AbstractCommand
     {
         public string OrderId { get; }
         public string PharmacyId { get; }
         public IEnumerable<Line> Lines { get; }
 
-        public AddCustomerOrderCommand(string correlationId, string tenantId, string userId,
+        public CustomerPlaceOrderCommand(string correlationId, string tenantId, string userId,
             string orderId, string pharmacyId, IEnumerable<Line> lines)
             : base(correlationId, tenantId, userId)
         {

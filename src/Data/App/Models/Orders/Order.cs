@@ -56,7 +56,19 @@ namespace Data.App.Models.Orders
         public string ConcurrencyToken { get; set; } = Guid.NewGuid().ToString();
 
         public virtual ICollection<OrderLineItem> LineItems { get; set; } = new List<OrderLineItem>();
+        public virtual ICollection<OrderTimeline> Timelines { get; set; } = new List<OrderTimeline>();
         public virtual ICollection<OrderFileUpload> FileUploads { get; set; } = new List<OrderFileUpload>();
+
+        public void AddTimeline(string userId, EnumOrderStatus status, string notes)
+        {
+            Timelines.Add(new OrderTimeline
+            {
+                OrderId = OrderId,
+                UserId = userId,
+                Status = status,
+                Notes = notes
+            });
+        }
     }
 
 

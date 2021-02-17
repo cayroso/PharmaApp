@@ -65,13 +65,13 @@ namespace Web.Controllers
 
                 var info = JsonConvert.DeserializeObject<AddOrderInfo>(infoJson);
 
-                var lines = info.Items.Select(e => new AddCustomerOrderCommand.Line
+                var lines = info.Items.Select(e => new CustomerPlaceOrderCommand.Line
                 {
                     DrugId = e.DrugId,
                     Quantity = e.DrugQuantity
                 });
 
-                var cmd = new AddCustomerOrderCommand("", TenantId, UserId, GuidStr(), info.PharmacyId, lines);
+                var cmd = new CustomerPlaceOrderCommand("", TenantId, UserId, GuidStr(), info.PharmacyId, lines);
 
                 await _commandHandlerDispatcher.HandleAsync(cmd);
 

@@ -49,14 +49,15 @@
                                 {{row.item.name}}
                             </router-link>                            
                             <div>
-                                <small>{{row.item.brand}}</small>
+                                <small>{{row.item.brandName}}</small>
                             </div>
                         </td>
                         <td>
                             {{row.item.classificationText}}
                         </td>
                         <td>
-                            {{row.item.isAvailable}}
+                            <span v-if="row.item.isAvailable" class="fas fa-fw fa-check-circle"></span>
+                            <span v-else class="fas fa-fw fa-times-circle"></span>
                         </td>
                         <td>
                             {{row.item.price.price|toCurrency}}
@@ -76,7 +77,7 @@
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Brand</label>
                                 <div class="col align-self-center">
-                                    {{row.item.brand}}
+                                    {{row.item.brandName}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
@@ -88,8 +89,8 @@
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Available</label>
                                 <div class="col align-self-center">
-                                    <span v-if="row.item.isAvailable" class="fas fa-fw fa-check"></span>
-                                    <span v-else class="fas fa-fw fa-times"></span>
+                                    <span v-if="row.item.isAvailable" class="fas fa-fw fa-check-circle"></span>
+                                    <span v-else class="fas fa-fw fa-times-circle"></span>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">

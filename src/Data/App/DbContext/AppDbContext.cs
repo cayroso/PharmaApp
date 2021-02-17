@@ -5,6 +5,7 @@ using Data.App.Models.Chats;
 using Data.App.Models.Customers;
 using Data.App.Models.Drugs;
 using Data.App.Models.FileUploads;
+using Data.App.Models.Notifications;
 using Data.App.Models.Orders;
 using Data.App.Models.Orders.OrderLineItems;
 using Data.App.Models.Pharmacies;
@@ -83,6 +84,9 @@ namespace Data.App.DbContext
 
         public DbSet<FileUpload> FileUploads { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationReceiver> NotificationReceivers { get; set; }
+
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<Pharmacy> Pharmacies { get; set; }
@@ -142,6 +146,8 @@ namespace Data.App.DbContext
             CreateDrugs(builder);
 
             CreateFileUploads(builder);
+
+            CreateNotifications(builder);
 
             CreateOrders(builder);
 
@@ -308,6 +314,34 @@ namespace Data.App.DbContext
             });
         }
 
+        void CreateNotifications(ModelBuilder builder)
+        {
+            builder.Entity<Notification>(b =>
+            {
+                b.ToTable("Notification");
+                b.HasKey(e => e.NotificationId);
+
+                b.Property(e => e.NotificationId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ConcurrencyStamp).HasMaxLength(KeyMaxLength).IsRequired();
+
+                b.HasMany(e => e.Receivers)
+                    .WithOne(d => d.Notification)
+                    .HasForeignKey(f => f.NotificationId);
+            });
+
+            builder.Entity<NotificationReceiver>(b =>
+            {
+                b.ToTable("NotificationReceiver");
+                b.HasKey(e => e.NotificationReceiverId);
+
+                b.Property(e => e.NotificationReceiverId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.NotificationId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.ReceiverId).HasMaxLength(KeyMaxLength).IsRequired();
+            });
+
+        }
+
+
         void CreateOrders(ModelBuilder builder)
         {
             builder.Entity<Order>(b =>
@@ -348,6 +382,16 @@ namespace Data.App.DbContext
                 b.Property(e => e.OrderFileUploadId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
                 b.Property(e => e.FileUploadId).HasMaxLength(KeyMaxLength).IsRequired();                
+            });
+
+            builder.Entity<OrderTimeline>(b =>
+            {
+                b.ToTable("OrderTimeline");
+                b.HasKey(e => e.OrderTimelineId);
+
+                b.Property(e => e.OrderTimelineId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.OrderId).HasMaxLength(KeyMaxLength).IsRequired();
+                b.Property(e => e.UserId).HasMaxLength(KeyMaxLength).IsRequired();
             });
         }
 

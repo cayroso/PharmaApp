@@ -1,4 +1,5 @@
 using App.Hubs;
+using App.Services;
 using Data.App.DbContext;
 using Data.Constants;
 using Microsoft.AspNetCore.Builder;
@@ -121,9 +122,10 @@ namespace Web
             services.AddProgressiveWebApp();
 #endif
             services.AddScoped<App.Services.ChatService>();
+            services.AddScoped<App.Services.NotificationService>();
 
             services.AddTransient<ChatHub>();
-            services.AddTransient<TripHub>();
+            services.AddTransient<OrderHub>();
 
             StartupExtension.RegisterCQRS(services);
         }
@@ -191,7 +193,7 @@ namespace Web
                 endpoints.MapControllers();
 
                 endpoints.MapHub<ChatHub>("/chatHub");
-                endpoints.MapHub<TripHub>("/tripHub"); 
+                endpoints.MapHub<OrderHub>("/orderHub"); 
             });
         }
     }

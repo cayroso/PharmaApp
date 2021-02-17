@@ -48,7 +48,7 @@
                     { to: '/', label: 'Home', icon: 'fas fa-fw fa-home' },
                     { to: '/pharmacies', label: 'Pharmacies', icon: 'fas fa-fw fa-clinic-medical' },
                     { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-tasks' },
-                    { to: '/orders', label: 'Reservations', icon: 'fas fa-fw fa-cubes' },
+                    { to: '/orders', label: 'My Orders', icon: 'fas fa-fw fa-cubes' },
                     //{ to: '/trips', label: 'Trips', icon: 'fas fa-fw fa-map-marked' },
                 ]
             }
@@ -101,55 +101,36 @@
                 //});
             });
 
-            vm.$bus.$on('event:driver-accepted', async function (resp) {
-                vm.$bvToast.toast(`Driver accepted the trip request. Wait for the driver's fare offer.`, {
-                    title: `Driver Accepted Trip Request`,
+
+            //  pharmacy
+            vm.$bus.$on('event:pharmacy-accepted-order', async function (resp) {
+                vm.$bvToast.toast(`${resp.pharmacyName} as accepted your order #${resp.orderNumber}`, {
+                    title: `Pharmacy Accepted Order`,
                     variant: 'info',
                     solid: true
                 });
             });
-
-            vm.$bus.$on('event:driver-rejected', async function (resp) {
-                vm.$bvToast.toast(`The assigned driver rejected the trip request. System will look for another available driver.`, {
-                    title: `Driver Rejected Trip Request`,
+            vm.$bus.$on('event:pharmacy-set-order-ready-for-pickup', async function (resp) {
+                vm.$bvToast.toast(`${resp.pharmacyName} has set your order #${resp.orderNumber} ready for pickup.`, {
+                    title: `Pharmacy Set Order Ready for Pickup`,
                     variant: 'info',
                     solid: true
                 });
             });
-
-            vm.$bus.$on('event:driver-fare-offered', async function (resp) {
-                vm.$bvToast.toast(`The driver offered fare is ${resp.fare}.`, {
-                    title: `Driver Offered Fare`,
+            vm.$bus.$on('event:pharmacy-set-order-to-completed', async function (resp) {
+                vm.$bvToast.toast(`${resp.pharmacyName} has completed your order #${resp.orderNumber}`, {
+                    title: `Pharmacy Set Order to Completed`,
                     variant: 'info',
                     solid: true
                 });
             });
-
-            vm.$bus.$on('event:driver-trip-inprogress', async function (resp) {
-                vm.$bvToast.toast(`The driver set the trip request to in-progress.`, {
-                    title: `Trip In-Progress`,
+            vm.$bus.$on('event:pharmacy-set-order-to-archived', async function (resp) {
+                vm.$bvToast.toast(`${resp.pharmacyName} has archived your order #${resp.orderNumber}`, {
+                    title: `Pharmacy Set Order to Archved`,
                     variant: 'info',
                     solid: true
                 });
             });
-
-            vm.$bus.$on('event:driver-trip-completed', async function (resp) {
-                vm.$bvToast.toast(`The driver set the trip request to completed.`, {
-                    title: `Trip Completed`,
-                    variant: 'info',
-                    solid: true
-                });
-            });
-
-            //let theme = localStorage.getItem('theme') || '';
-            //if (theme) {
-            //    //debugger;
-            //    let style = document.createElement('link');
-            //    style.type = "text/css";
-            //    style.rel = "stylesheet";
-            //    style.href = theme;// 'https://bootswatch.com/4/yeti/bootstrap.min.css';
-            //    document.head.appendChild(style);
-            //}
         },
         async created() {
             //const vm = this;

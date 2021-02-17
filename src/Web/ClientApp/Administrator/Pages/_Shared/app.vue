@@ -53,15 +53,9 @@
             }
         },
         async mounted() {
-            //let theme = localStorage.getItem('theme') || '';
-            //if (theme) {
-            //    //debugger;
-            //    let style = document.createElement('link');
-            //    style.type = "text/css";
-            //    style.rel = "stylesheet";
-            //    style.href = theme;// 'https://bootswatch.com/4/yeti/bootstrap.min.css';
-            //    document.head.appendChild(style);
-            //}
+            const vm = this;
+
+            vm.setupEventReceivers();
         },
         async created() {
             //const vm = this;
@@ -76,6 +70,34 @@
             //}
         },
         methods: {
+            setupEventReceivers() {
+                const vm = this;
+
+                //  customers
+                vm.$bus.$on('event:customer-place-order', async function (resp) {
+                    vm.$bvToast.toast(`${resp.customerName} has placed order #${resp.orderNumber}`, {
+                        title: `Customer Placed Orderd`,
+                        variant: 'info',
+                        solid: true
+                    });
+                });
+                vm.$bus.$on('event:customer-cancelledOrder', async function (resp) {
+                    vm.$bvToast.toast(`${resp.customerName} has cancelled order #${resp.orderNumber}`, {
+                        title: `Customer Cancelled Order`,
+                        variant: 'info',
+                        solid: true
+                    });
+                });
+                vm.$bus.$on('event:customer-set-order-to-archived', async function (resp) {
+                    vm.$bvToast.toast(`${resp.customerName} has archived order #${resp.orderNumber}`, {
+                        title: `Customer Set Order to Archived`,
+                        variant: 'info',
+                        solid: true
+                    });
+                });
+
+            },
+
             //async getMembershipInfo() {
             //    const vm = this;
             //    try {

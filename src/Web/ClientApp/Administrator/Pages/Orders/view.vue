@@ -46,7 +46,7 @@
                             <a @click.prevent="setOrderStatus(2)" class="dropdown-item" href="#">Accepted</a>
                             <a @click.prevent="setOrderStatus(3)" class="dropdown-item" href="#">Ready for Pickup</a>
                             <a @click.prevent="setOrderStatus(4)" class="dropdown-item" href="#">Completed</a>
-                            <a @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">Archived</a>                            
+                            <a @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">Archived</a>
                         </div>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
             </div>
             <b-collapse v-model="toggles.lineItems">
                 <div class="table-responsive mb-0">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-sm">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -158,7 +158,7 @@
         <div class="card mt-2">
             <div @click="toggle('pharmacy')" class="card-header d-flex flex-row justify-content-between align-items-center">
                 <h5 class="mb-0 align-self-start">
-                    <span class="fas fa-fw fa-money-bill mr-1 d-none"></span>Pharmacy
+                    <span class="fas fa-fw fa-money-bill mr-1 d-none"></span>Customer
                 </h5>
                 <div>
                     <span>
@@ -173,49 +173,59 @@
                         <div class="form-group col-md">
                             <label>Name</label>
                             <div class="form-control-plaintext">
-                                {{item.pharmacy.name}}
+                                {{item.customer.name}}
                             </div>
                         </div>
-                        <div class="form-group col-md">
-                            <label>Open Hours</label>
-                            <div class="form-control-plaintext">
-                                {{item.pharmacy.openingHours}}
-                            </div>
-                        </div>
-                        <div class="form-group col-md">
-                            <label>Address</label>
-                            <div class="form-control-plaintext">
-                                {{item.pharmacy.address}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row">
+                        
                         <div class="form-group col-md">
                             <label>Phone Number</label>
-                            <div class="form-control-plaintext">
-                                <a :href="`tel:${item.pharmacy.phoneNumber}`" class="btn btn-outline-primary">
+                            <div v-if="item.customer.phoneNumber" class="form-control-plaintext">
+                                <a :href="`tel:${item.customer.phoneNumber}`" class="btn btn-outline-primary">
                                     <i class="fas fa-fw fa-phone"></i>
                                 </a>
-                                {{item.pharmacy.phoneNumber}}
+                                {{item.customer.phoneNumber}}
                             </div>
                         </div>
                         <div class="form-group col-md">
                             <label>Mobile Number</label>
-                            <div class="form-control-plaintext">
-                                <a :href="`sms:${item.pharmacy.mobileNumber}`" class="btn btn-outline-primary">
+                            <div v-if="item.customer.mobileNumber" class="form-control-plaintext">
+                                <a :href="`sms:${item.customer.mobileNumber}`" class="btn btn-outline-primary">
                                     <i class="fas fa-fw fa-sms"></i>
                                 </a>
-                                {{item.pharmacy.mobileNumber}}
+                                {{item.customer.mobileNumber}}
                             </div>
                         </div>
                         <div class="form-group col-md">
                             <label>Email</label>
-                            <div class="form-control-plaintext">
+                            <div v-if="item.pharmacy.email" class="form-control-plaintext">
                                 <a :href="`mailto:${item.pharmacy.email}`" class="btn btn-outline-primary">
                                     <i class="fas fa-fw fa-envelope"></i>
                                 </a>
                                 {{item.pharmacy.email}}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </b-collapse>
+        </div>
+
+        <div class="card mt-2">
+            <div @click="toggle('prescriptions')" class="card-header d-flex flex-row justify-content-between align-items-center">
+                <h5 class="mb-0 align-self-start">
+                    <span class="fas fa-fw fa-money-bill mr-1 d-none"></span>Prescriptions
+                </h5>
+                <div>
+                    <span>
+                        <span v-if="toggles.prescriptions" class="fas fa-fw fa-angle-up"></span>
+                        <span v-else class="fas fa-fw fa-angle-down"></span>
+                    </span>
+                </div>
+            </div>
+            <b-collapse v-model="toggles.prescriptions">
+                <div class="p-2">
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
+                        <div v-for="imageUrl in item.fileUploadUrls" class="col">
+                            <b-img-lazy :src="imageUrl" fluid center></b-img-lazy>
                         </div>
                     </div>
                 </div>
@@ -244,6 +254,7 @@
                     information: false,
                     pharmacy: false,
                     lineItems: false,
+                    prescriptions: false,
                 },
                 item: {},
                 moment: moment
