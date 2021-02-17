@@ -23,7 +23,7 @@ namespace App.CQRS.Staffs.Common.Queries.Query
         {
             public string StaffId { get; set; }
 
-            public string ImageUrl { get; set; }
+            public string UrlProfilePicture { get; set; }
 
             public string FirstName { get; set; }
             public string MiddleName { get; set; }
@@ -31,6 +31,14 @@ namespace App.CQRS.Staffs.Common.Queries.Query
             public string Email { get; set; }
             public string PhoneNumber { get; set; }
             public string Token { get; set; }
+
+            public IEnumerable<Role> Roles { get; set; } = new List<Role>();
+        }
+
+        public class Role
+        {
+            public string RoleId { get; set; }
+            public string Name { get; set; }
         }
     }
 }

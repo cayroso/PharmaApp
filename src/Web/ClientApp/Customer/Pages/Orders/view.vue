@@ -49,9 +49,9 @@
                                 Cancel
                             </a>
                             <!--rejected, completed, cancelled-->
-                            <a v-if="item.status===3||item.status===5||item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
+                            <!--<a v-if="item.status===3||item.status===5||item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
                                 Archive
-                            </a>
+                            </a>-->
                         </div>
                     </div>
 
@@ -307,7 +307,7 @@
         async mounted() {
             const vm = this;
 
-            vm.$bus.$on('event:order-updated', async (orderId) => {                
+            vm.$bus.$on('event:order-updated', async (orderId) => {
                 debugger;
                 if (vm.id === orderId)
                     await vm.get();

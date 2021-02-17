@@ -19,9 +19,9 @@ import ordersView from './Pages/Orders/view.vue';
 import pharmacyIndex from './Pages/Pharmacy/index.vue';
 
 
-import usersIndex from './Pages/Users/index.vue';
-import usersAdd from './Pages/Users/add.vue';
-import usersView from './Pages/Users/view.vue';
+import staffsIndex from './Pages/Staffs/index.vue';
+import staffsAdd from './Pages/Staffs/add.vue';
+import staffsView from './Pages/Staffs/view.vue';
 
 
 //import tasksIndex from './Pages/Tasks/index.vue';
@@ -49,9 +49,9 @@ const routes = [
 
     { path: '/pharmacy', name: "pharmacy", component: pharmacyIndex },
 
-    { path: '/users', name: "users", component: usersIndex },
-    { path: '/users/add', name: "usersAdd", component: usersAdd },
-    { path: '/users/view/:id', name: "usersView", component: usersView, props: true },
+    { path: '/staffs', name: "staffsIndex", component: staffsIndex },
+    { path: '/staffs/add', name: "staffsAdd", component: staffsAdd },
+    { path: '/staffs/view/:id', name: "staffsView", component: staffsView, props: true },
 
     //{ path: '/tasks', name: "tasks", component: tasksIndex },
 

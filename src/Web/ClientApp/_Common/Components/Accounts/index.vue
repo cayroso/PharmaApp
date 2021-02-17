@@ -47,13 +47,13 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <!--<div class="form-group">
                             <div>
                                 <button @click="$refs.modalUpdatePhoneNumber.open()" class="btn btn-sm btn-info">
                                     Update Phone Number
                                 </button>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="form-group">
                             <div>
@@ -127,6 +127,7 @@
                     await vm.$util.axios.get(`/api/accounts/`)
                         .then(resp => {
                             vm.item = resp.data;
+                            vm.item.accountId = vm.uid;
                         })
                 } catch (e) {
                     vm.$util.handleError(e);

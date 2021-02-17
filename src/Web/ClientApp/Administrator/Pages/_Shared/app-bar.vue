@@ -44,12 +44,12 @@
                             Account
                         </router-link>
 
-                        <div class="dropdown-divider"></div>
+                        <!--<div class="dropdown-divider"></div>
 
                         <router-link to="/pharmacy" class="dropdown-item">
                             <i class="fas fa-home fa-sm fa-fw mr-2"></i>
                             Pharmacy Info
-                        </router-link>
+                        </router-link>-->
 
                         <div class="dropdown-divider"></div>
 

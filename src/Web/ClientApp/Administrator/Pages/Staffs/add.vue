@@ -18,7 +18,7 @@
             <div class="form-group col-md">
                 <label for="email">Email</label>
                 <div>
-                    <input v-model="item.email" type="text" id="email" class="form-control"  v-bind:class="getValidClass('email')"/>
+                    <input v-model="item.email" type="text" id="email" class="form-control" v-bind:class="getValidClass('email')" />
                     <div v-if="validations.has('email')" class="invalid-feedback">
                         {{validations.get('email')}}
                     </div>
@@ -38,7 +38,7 @@
             <div class="form-group col-md">
                 <label for="firstName">First Name</label>
                 <div>
-                    <input v-model="item.firstName" type="text" id="firstName" class="form-control"  v-bind:class="getValidClass('firstName')"/>
+                    <input v-model="item.firstName" type="text" id="firstName" class="form-control" v-bind:class="getValidClass('firstName')" />
                     <div v-if="validations.has('firstName')" class="invalid-feedback">
                         {{validations.get('firstName')}}
                     </div>
@@ -47,7 +47,7 @@
             <div class="form-group col-md">
                 <label for="middleName">Middle Name</label>
                 <div>
-                    <input v-model="item.middleName" type="text" id="middleName" class="form-control"  v-bind:class="getValidClass('middleName')"/>
+                    <input v-model="item.middleName" type="text" id="middleName" class="form-control" v-bind:class="getValidClass('middleName')" />
                     <div v-if="validations.has('middleName')" class="invalid-feedback">
                         {{validations.get('middleName')}}
                     </div>
@@ -56,7 +56,7 @@
             <div class="form-group col-md">
                 <label for="lastName">Last Name</label>
                 <div>
-                    <input v-model="item.lastName" type="text" id="lastName" class="form-control"  v-bind:class="getValidClass('lastName')"/>
+                    <input v-model="item.lastName" type="text" id="lastName" class="form-control" v-bind:class="getValidClass('lastName')" />
                     <div v-if="validations.has('lastName')" class="invalid-feedback">
                         {{validations.get('lastName')}}
                     </div>
@@ -70,7 +70,7 @@
             <div class="form-group col-md">
                 <label for="password">Password</label>
                 <div>
-                    <input v-model="item.password" type="password" id="password" class="form-control"  v-bind:class="getValidClass('password')"/>
+                    <input v-model="item.password" type="password" id="password" class="form-control" v-bind:class="getValidClass('password')" />
                     <div v-if="validations.has('password')" class="invalid-feedback">
                         {{validations.get('password')}}
                     </div>
@@ -137,10 +137,10 @@
                 const missingName = !item.firstName && !item.middleName && !item.lastName;
 
                 if (!item.firstName) {
-                    validations.set('firstName', 'First name is required.');                    
+                    validations.set('firstName', 'First name is required.');
                 }
 
-                if (!item.lastName) {                    
+                if (!item.lastName) {
                     validations.set('lastName', 'Last name is required.');
                 }
 
@@ -202,14 +202,14 @@
 
                     const payload = vm.$util.clone(item);
 
-                    await vm.$util.axios.post(`/api/administrators/users/`, payload)
+                    await vm.$util.axios.post(`/api/staffs/`, payload)
                         .then(resp => {
                             vm.$bvToast.toast('New user created.', { title: 'Add User', variant: 'success', toaster: 'b-toaster-bottom-right' });
 
                             setTimeout(() => {
                                 vm.close();
                             }, 500);
-                            
+
                         })
                 } catch (e) {
                     vm.$util.handleError(e);

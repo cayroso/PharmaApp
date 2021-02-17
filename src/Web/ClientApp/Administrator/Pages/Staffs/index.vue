@@ -4,13 +4,13 @@
         <div class="row align-items-center">
             <div class="col-sm">
                 <h1 class="h3 mb-sm-0">
-                    <i class="fas fa-fw fa-user mr-1"></i>Users
+                    <i class="fas fa-fw fa-users mr-1"></i>Staffs
                 </h1>
             </div>
             <div class="col-sm-auto">
                 <div class="d-flex flex-row">
                     <div class="mr-1">
-                        <router-link to="/users/add" class="btn btn-primary">
+                        <router-link to="/staffs/add" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
                         </router-link>
                     </div>
@@ -35,49 +35,54 @@
 
         <b-overlay :show="busy">
             <div class="mt-2 table-responsive shadow-sm">
-                <table-list :header="{key: 'userId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
+                <table-list :header="{key: 'staffId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
                     <template #header>
                         <th class="text-center">#</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Roles</th>
-                        <th>Teams</th>
                         <th></th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
                             <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
-                            <div>
+                            <span>
                                 {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
+                            </span>
+
+                        </td>
+                        <td>
+                            <div v-if="row.item.email">
+                                <a :href="`mailto:${row.item.email}`" class="btn btn-outline-primary">
+                                    <i class="fas fa-fw fa-envelope"></i>
+                                </a>
+                                {{row.item.email}}
                             </div>
 
                         </td>
                         <td>
-                            {{row.item.email}}
+                            <div v-if="row.item.phoneNumber">
+                                <a :href="`tel:${row.item.phoneNumber}`" class="btn btn-outline-primary">
+                                    <i class="fas fa-fw fa-phone"></i>
+                                </a>
+                                {{row.item.phoneNumber}}
+                            </div>
                         </td>
                         <td>
-                            {{row.item.phoneNumber}}
-                        </td>
-                        <td>
-                            <ul>
+                            <ul class="list-unstyled">
                                 <li v-for="r in row.item.roles">
+                                    <i v-if="r=='Administrator'" class="fas fa-fw fa-user-shield"></i>
+                                    <i v-else class="fas fa-fw fa-user"></i>
                                     {{r}}
                                 </li>
                             </ul>
                         </td>
                         <td>
-                            <ul>
-                                <li v-for="r in row.item.teams">
-                                    {{r}}
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.userId)" class="btn btn-sm btn-outline-primary">
+                            <!--<button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.staffId)" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-fw fa-comment"></i>
-                            </button>
+                            </button>-->
                             <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-outline-warning">
                                 <i class="fas fa-fw fa-key"></i>
                             </button>
@@ -87,22 +92,37 @@
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
+                                <div class="offset-3 col align-self-center">
+                                    <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
+                                    
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Name</label>
                                 <div class="col align-self-center">
-                                    <b-avatar :src="row.item.urlProfilePicture" size="sm"></b-avatar>
-                                    {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
+                                        {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Email</label>
                                 <div class="col align-self-center">
-                                    {{row.item.email}}
+                                    <div v-if="row.item.email">
+                                        <a :href="`mailto:${row.item.email}`" class="btn btn-outline-primary">
+                                            <i class="fas fa-fw fa-envelope"></i>
+                                        </a>
+                                        {{row.item.email}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Phone Number</label>
                                 <div class="col align-self-center">
-                                    {{row.item.phoneNumber}}
+                                    <div v-if="row.item.phoneNumber">
+                                        <a :href="`tel:${row.item.phoneNumber}`" class="btn btn-outline-primary">
+                                            <i class="fas fa-fw fa-phone"></i>
+                                        </a>
+                                        {{row.item.phoneNumber}}
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
@@ -110,26 +130,19 @@
                                 <div class="col align-self-center">
                                     <ul class="list-unstyled">
                                         <li v-for="r in row.item.roles">
+                                            <i v-if="r=='Administrator'" class="fas fa-fw fa-user-shield"></i>
+                                            <i v-else class="fas fa-fw fa-user"></i>
                                             {{r}}
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Teams</label>
-                                <div class="col align-self-center">
-                                    <ul class="list-unstyled">
-                                        <li v-for="r in row.item.teams">
-                                            {{r}}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                            
                             <div class="form-group mb-0 row no-gutters">
                                 <div class="offset-3 col align-self-center">
-                                    <button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.userId)" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-fw fa-comment"></i>
-                                    </button>
+                                    <!--<button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.staffId)" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-fw fa-comment"></i>
+            </button>-->
                                     <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-outline-warning">
                                         <i class="fas fa-fw fa-key"></i>
                                     </button>
@@ -166,9 +179,9 @@
         },
         data() {
             return {
-                baseUrl: `/api/administrators/users`,
+                baseUrl: `/api/staffs`,
                 filter: {
-                    cacheKey: `filter-${this.uid}/users`,
+                    cacheKey: `filter-${this.uid}/staffs`,
                     //query: {
                     //    orderStatus: 0,
                     //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
@@ -201,7 +214,7 @@
             openManageUserRole(item) {
                 const vm = this;
 
-                vm.$refs.modalManageUserRole.open(item.userId);
+                vm.$refs.modalManageUserRole.open(item.staffId);
             },
         }
     }

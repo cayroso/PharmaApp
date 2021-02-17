@@ -121,8 +121,6 @@ namespace Data.migrations.app
                     LastName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
                     PhoneNumber = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false),
-                    OverallRating = table.Column<double>(type: "REAL", nullable: false),
-                    TotalRating = table.Column<double>(type: "REAL", nullable: false),
                     ConcurrencyToken = table.Column<string>(type: "TEXT", maxLength: 36, nullable: false)
                 },
                 constraints: table =>

@@ -3,7 +3,7 @@
         <div class="row align-items-center">
             <div class="col-sm">
                 <h1 class="h3 mb-sm-0">
-                    <i class="fas fa-fw fa-shopping-cart mr-1"></i>Orders
+                    <i class="fas fa-fw fa-cubes mr-1"></i>Orders
                 </h1>
             </div>
             <div class="col-sm-auto">

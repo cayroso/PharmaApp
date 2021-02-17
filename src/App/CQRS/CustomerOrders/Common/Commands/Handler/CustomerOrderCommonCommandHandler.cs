@@ -149,6 +149,8 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
 
             data.GrossPrice = data.LineItems.Sum(e => e.ExtendedPrice);
 
+            data.AddTimeline(command.UserId, data.OrderStatus, string.Empty);
+
             await _appDbContext.AddAsync(data);
 
             await _appDbContext.SaveChangesAsync();

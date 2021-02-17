@@ -1,6 +1,7 @@
 ﻿using App.CQRS;
 using Data.App.DbContext;
 using Data.Constants;
+using Data.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,125 +28,98 @@ namespace Web.Areas.Staff.Controllers
         [HttpGet("dashboard")]
         public async Task<IActionResult> GetDashboard([FromServices] AppDbContext appDbContext, int year, int month)
         {
-            //var now = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
 
-            //var startMonth = new DateTime(now.Year, now.Month, 1);
-            //var endMonth = startMonth.AddMonths(1);
+            var startMonth = new DateTime(now.Year, now.Month, 1);
+            var endMonth = startMonth.AddMonths(1);
 
-            //var startWeek = now.AddDays(-(int)now.DayOfWeek);
-            //var endWeek = startWeek.AddDays(7);
+            var startWeek = now.AddDays(-(int)now.DayOfWeek);
+            var endWeek = startWeek.AddDays(7);
 
-            //var startLastWeek = startWeek.AddDays(-7);
-            //var endLastWeek = startWeek;
+            var startLastWeek = startWeek.AddDays(-7);
+            var endLastWeek = startWeek;
 
-            //var startToday = now.Date;
-            //var endToday = startToday.AddDays(1);
+            var startToday = now.Date;
+            var endToday = startToday.AddDays(1);
 
-            //var startYesterday = now.Date.AddDays(-1);
-            //var endYesterday = now.Date;
+            var startYesterday = now.Date.AddDays(-1);
+            var endYesterday = now.Date;
 
-            //var monthTrips = await appDbContext.Trips.Include(e => e.Rider).ThenInclude(e => e.User).AsNoTracking()
-            //    .Where(e => e.DriverId == UserId && e.DateCreated >= startMonth && e.DateCreated <= endMonth).ToListAsync();
+            var orderHistory = await appDbContext.OrderTimelines.Where(e => e.DateTimeline >= startMonth && e.DateTimeline <= endMonth).ToListAsync();
 
-            //var weekTrips = monthTrips.Where(e => e.DateCreated >= startWeek && e.DateCreated <= endWeek).ToList();
+            var numberOfPlaced = orderHistory.Count(e => e.Status == EnumOrderStatus.Placed);
+            var numberOfCancelled = orderHistory.Count(e => e.Status == EnumOrderStatus.Cancelled);
+            var numberOfRejected = orderHistory.Count(e => e.Status == EnumOrderStatus.Rejected);
+            var numberOfCompleted = orderHistory.Count(e => e.Status == EnumOrderStatus.Completed);
 
-            //var lastWeekTrips = monthTrips.Where(e => e.DateCreated >= startLastWeek && e.DateCreated <= endLastWeek).ToList();
+            var orders = await appDbContext.Orders
+                .Include(e => e.Customer)
+                    .ThenInclude(e => e.User)
+                .Include(e => e.LineItems)
+                    .ThenInclude(e => e.Drug)
+                .AsNoTracking()
+                .Where(e =>
+                        e.OrderDate >= startMonth && e.OrderDate <= endMonth
+                        && (e.OrderStatus == EnumOrderStatus.Completed))
+                .ToListAsync();
+            var orderLines = orders.SelectMany(e => e.LineItems);
 
-            //var todayTrips = monthTrips.Where(e => e.DateCreated >= startToday && e.DateCreated <= endToday).ToList();
+            var weekOrders = orders.Where(e => e.OrderDate >= startWeek && e.OrderDate <= endWeek).ToList();
+            var lastWeekOrders = orders.Where(e => e.OrderDate >= startLastWeek && e.OrderDate <= endLastWeek).ToList();
+            var todayOrders = orders.Where(e => e.OrderDate >= startToday && e.OrderDate <= endToday).ToList();
+            var yesterdayOrders = orders.Where(e => e.OrderDate >= startYesterday && e.OrderDate <= endYesterday).ToList();
 
-            //var yesterdayTrips = monthTrips.Where(e => e.DateCreated >= startYesterday && e.DateCreated <= endYesterday).ToList();
+            var monthSales = orders.Sum(e => e.GrossPrice);
+            var weekSales = weekOrders.Sum(e => e.GrossPrice);
+            var lastWeekSales = lastWeekOrders.Sum(e => e.GrossPrice);
+            var todaySales = todayOrders.Sum(e => e.GrossPrice);
+            var yesterdaySales = yesterdayOrders.Sum(e => e.GrossPrice);
 
-            ////  no of trips month
-            //var totalMonthTrips = monthTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Count();
+            var monthSold = orders.Count();
+            var weekSold = weekOrders.Count();
+            var lastWeekSold = lastWeekOrders.Count();
+            var todaySold = todayOrders.Count();
+            var yesterdaySold = yesterdayOrders.Count();
 
-            ////  total earning this month
-            //var sumMonthEarnings = monthTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Sum(e => e.Fare);
+            // top medicines
+            var topMedicines = orderLines
+                            .GroupBy(e => e.Drug.Name)
+                            .Select(e => new
+                            {
+                                Name = e.Key,
+                                TotalPrice = e.Sum(p => p.ExtendedPrice),
+                                TotalCount = e.Sum(p => p.Quantity),
+                            }).OrderByDescending(e => e.TotalPrice).ToList();
 
-            //// no of trips this week
-            //var totalWeekTrips = weekTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Count();
+            // top customers
+            var topCustomers = orders
+                            .GroupBy(e => e.Customer.User.FirstLastName)
+                            .Select(e => new
+                            {
+                                Name = e.Key,
+                                TotalPrice = e.Sum(p => p.GrossPrice),
+                                TotalOrders = e.Count(),
+                            }).OrderByDescending(e => e.TotalPrice).ToList();
 
-            //// total earnings this week
-            //var sumWeekEarnings = weekTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Sum(e => e.Fare);
+            var dto = new
+            {
+                monthSales,
+                weekSales,
+                lastWeekSales,
+                todaySales,
+                yesterdaySales,
 
-            ////  no of trips last week
-            //var totalLastWeekTrips = lastWeekTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Count();
+                monthSold,
+                weekSold,
+                lastWeekSold,
+                todaySold,
+                yesterdaySold,
 
-            ////  sum of earnings last week
-            //var sumLastWeekEarnings = lastWeekTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Sum(e => e.Fare);
+                topMedicines,
+                topCustomers,
+            };
 
-            ////  no of trips today
-            //var totalTodayTrips = todayTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Count();
-
-            ////  sum of earnings today
-            //var sumTodayEarnings = todayTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Sum(e => e.Fare);
-
-            ////  no of trips yesterday
-            //var totalYesterdayTrips = yesterdayTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Count();
-
-            ////  sum of earnings yesterday
-            //var sumYesterdayEarnings = yesterdayTrips.Where(e => e.Status == Data.Enums.EnumTripStatus.Complete).Sum(e => e.Fare);
-
-            //// top riders
-            //var topRiders = monthTrips.GroupBy(e => e.Rider)
-            //                .Select(e => new
-            //                {
-            //                    Rider = e.Key,
-            //                    TotalFare = e.Sum(p => p.Fare),
-            //                    TotalTrip = e.Count()
-            //                }).ToList();
-
-            //var dto = new
-            //{
-            //    totalMonthTrips,
-            //    sumMonthEarnings,
-            //    totalWeekTrips,
-            //    sumWeekEarnings,
-            //    totalLastWeekTrips,
-            //    sumLastWeekEarnings,
-            //    totalTodayTrips,
-            //    sumTodayEarnings,
-            //    totalYesterdayTrips,
-            //    sumYesterdayEarnings,
-            //    topRiders
-            //};
-
-            //return Ok(dto);
-
-            ////  number of teams
-            //var teams = await dbContext.TeamMembers.AsNoTracking().Where(m => m.MemberId == UserId).CountAsync();
-
-            ////  number of members
-            //var users = await dbContext.Teams
-            //                .AsNoTracking()
-            //                .Where(e => e.Members.Any(m => m.MemberId == UserId))
-            //                .SelectMany(e => e.Members).Select(e => e.MemberId)
-            //                .Distinct()
-            //                .CountAsync();
-
-            ////  number of contacts
-            //var contacts = await dbContext.Contacts.CountAsync();
-
-            ////  number of documens
-            //var documents = await dbContext.Documents.CountAsync();
-
-            ////  number of attachments
-            //var attachments = await dbContext.ContactAttachments.CountAsync();
-
-            ////  number of tasks
-            //var tasks = await dbContext.UserTasks.CountAsync();
-
-            //var dto = new
-            //{
-            //    teams,
-            //    users,
-            //    contacts,
-            //    documents,
-            //    attachments,
-            //    tasks
-            //};
-
-            //return Ok(dto);
-            return Ok();
+            return Ok(dto);
         }
     }
 }

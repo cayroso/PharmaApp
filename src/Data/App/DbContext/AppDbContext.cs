@@ -88,6 +88,7 @@ namespace Data.App.DbContext
         public DbSet<NotificationReceiver> NotificationReceivers { get; set; }
 
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderTimeline> OrderTimelines { get; set; }
 
         public DbSet<Pharmacy> Pharmacies { get; set; }
         public DbSet<PharmacyStaff> PharmacyStaffs { get; set; }

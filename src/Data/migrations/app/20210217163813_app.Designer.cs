@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.migrations.app
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210217024009_app")]
+    [Migration("20210217163813_app")]
     partial class app
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -730,16 +730,10 @@ namespace Data.migrations.app
                     b.Property<string>("MiddleName")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("OverallRating")
-                        .HasColumnType("REAL");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("TotalRating")
-                        .HasColumnType("REAL");
 
                     b.HasKey("UserId");
 

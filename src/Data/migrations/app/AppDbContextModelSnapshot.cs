@@ -728,16 +728,10 @@ namespace Data.migrations.app
                     b.Property<string>("MiddleName")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("OverallRating")
-                        .HasColumnType("REAL");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(36)
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("TotalRating")
-                        .HasColumnType("REAL");
 
                     b.HasKey("UserId");
 

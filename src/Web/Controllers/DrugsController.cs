@@ -33,18 +33,15 @@ namespace Web.Controllers
         readonly IQueryHandlerDispatcher _queryHandlerDispatcher;
         readonly ICommandHandlerDispatcher _commandHandlerDispatcher;
         readonly AppDbContext _appDbContext;
-        readonly IHubContext<TripHub, ITripClient> _tripHubContext;
 
         public DrugsController(
             IQueryHandlerDispatcher queryHandlerDispatcher,
             ICommandHandlerDispatcher commandHandlerDispatcher,
-            AppDbContext appDbContext,
-            IHubContext<TripHub, ITripClient> tripHubContext)
+            AppDbContext appDbContext)
         {
             _queryHandlerDispatcher = queryHandlerDispatcher ?? throw new ArgumentNullException(nameof(queryHandlerDispatcher));
             _commandHandlerDispatcher = commandHandlerDispatcher ?? throw new ArgumentNullException(nameof(commandHandlerDispatcher));
             _appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
-            _tripHubContext = tripHubContext ?? throw new ArgumentNullException(nameof(tripHubContext));
         }
 
         [HttpGet()]

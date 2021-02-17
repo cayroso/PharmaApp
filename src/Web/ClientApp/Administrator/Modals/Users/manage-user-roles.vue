@@ -64,8 +64,8 @@
                 roles: [
                     //{ value: 'system', text: 'System' },
                     { value: 'administrator', text: 'Administrator' },
-                    { value: 'manager', text: 'Manager' },
-                    { value: 'member', text: 'Member' },
+                    { value: 'staff', text: 'Staff' },
+                    //{ value: 'member', text: 'Member' },
                 ],
             }
         },
@@ -112,10 +112,11 @@
                     return;
 
                 try {
-                    await vm.$util.axios.get(`/api/administrators/users/${vm.userId}/`)
+                    await vm.$util.axios.get(`/api/staffs/${vm.userId}/`)
                         .then(resp => {
                             vm.item = resp.data;
-                            vm.selectedRoles = vm.item.roles.map(e => e.roleId);
+                            vm.selectedRoles = vm.item.roles.filter(e => vm.roles.find(r => r.value == e.roleId) !== undefined).map(e => e.roleId);
+                            
                         })
                 } catch (e) {
                     vm.$util.handleError(e);
@@ -135,8 +136,8 @@
                         userId: vm.userId,
                         roleIds: vm.selectedRoles
                     };
-
-                    await vm.$util.axios.post(`/api/administrators/users/manage-roles/`, payload)
+                    
+                    await vm.$util.axios.post(`/api/staffs/manage-roles/`, payload)
                         .then(resp => {
                             vm.$bvToast.toast('User roles updated.', { title: 'Update User Roles', variant: 'success', toaster: 'b-toaster-bottom-right' });
 

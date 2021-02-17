@@ -65,10 +65,10 @@
                                 Completed
                             </a>
                             <!--cancelled, completed-->
-                            <a v-if="item.status===5 || item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
+                            <!--<a v-if="item.status===5 || item.status===6" @click.prevent="setOrderStatus(7)" class="dropdown-item" href="#">
                                 <i v-if="item.status===7" class="fas fa-fw fa-check"></i>
                                 Archived
-                            </a>
+                            </a>-->
                         </div>
                     </div>
                 </div>

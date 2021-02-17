@@ -13,13 +13,18 @@
             </div>
         </template>
         <template v-slot:modal-footer>
-            
+            <button @click="save" class="btn btn-primary">
+                Save
+            </button>
             <button @click="close" class="btn btn-secondary">
                 Close
             </button>
         </template>
         <div>
-           content here
+           <div class="form-group">
+               <label>Phone Number</label>
+               <input v-model="phoneNumber" type="tel" class="form-control" />
+           </div>
         </div>
     </b-modal>
 </template>
@@ -30,20 +35,17 @@
                 moment: moment,
 
                 busy: false,
-                taskId: null,
-                item: {
-                    contact: {}
-                }
+                accountId: null,
+                phoneNumber: null
             }
         },
         methods: {
 
-            async open(taskId) {
+            async open(item) {
                 const vm = this;
 
-                vm.taskId = taskId;
-
-                await vm.get();
+                vm.accountId = item.userId;
+                vm.phoneNumber = item.phoneNumber;
 
                 vm.$refs.modal.show();
             },
@@ -54,22 +56,25 @@
                 vm.$refs.modal.hide();
             },
 
-            async get() {
+            async save() {
                 const vm = this;
 
                 if (vm.busy)
                     return;
 
                 try {
-                    await vm.$util.axios.get(`/api/members/tasks/${vm.taskId}`)
+                    const payload = {
+                        accountId: vm.accountId,
+                        phoneNumber: vm.phoneNumber
+                    };
+
+                    await vm.$util.axios.post(`/api/accounts/updatePhoneNumber`, payload)
                         .then(resp => {
-                            vm.item = resp.data;
+                            alert("Phone Number updated.");
+                        });
+                    vm.$emit('saved');
 
-                            //vm.item.taskItems.forEach(ti => {
-                            //    ti.dateCompleted = moment(ti.dateCompleted);
-                            //});
-
-                        })
+                    vm.close();
                 } catch (e) {
                     vm.$util.handleError(e);
                 } finally {

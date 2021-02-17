@@ -43,10 +43,12 @@
         data() {
             return {
                 menus: [
-                    { to: '/', label: 'Home', icon: 'fas fa-fw fa-home' },
+                    { to: '/', label: 'Dashboard', icon: 'fas fa-fw fa-tachometer-alt' },
                     { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-prescription-bottle-alt' },
                     { to: '/orders', label: 'Orders', icon: 'fas fa-fw fa-cubes' },
-                    { to: '/users', label: 'Staffs', icon: 'fas fa-fw fa-users' },
+                    { to: '/staffs', label: 'Staffs', icon: 'fas fa-fw fa-users' },
+
+                    { to: '/pharmacy', label: 'Pharmacy', icon: 'fas fa-fw fa-clinic-medical' },
                     //{ to: '/contacts', label: 'Contacts', icon: 'fas fa-fw fa-id-card' },
 
                 ]
