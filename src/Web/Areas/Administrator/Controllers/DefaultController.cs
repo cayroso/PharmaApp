@@ -134,9 +134,5 @@ namespace Web.Areas.Administrator.Controllers
             return Ok(dto);
         }
 
-        public class DashboardView
-        {
-
-        }
     }
 }

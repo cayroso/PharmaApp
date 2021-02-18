@@ -9,9 +9,7 @@
             <div class="col-sm-auto">
                 <div class="d-flex flex-row">
                     <div class="mr-1">
-                        <button @click="close" class="btn btn-secondary">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <b-form-select v-model="filter.query.orderStatus" :options="lookups.orderStatuses" @change="search(1)"></b-form-select>
                     </div>
 
                     <div class="flex-grow-1">
@@ -215,11 +213,22 @@
                 baseUrl: `/api/orders/search-my-orders`,
                 filter: {
                     cacheKey: `filter-${this.uid}/orders/search-my-orders`,
-                    //query: {
-                    //    orderStatus: 0,
-                    //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
-                    //    dateEnd: moment().endOf('week').format('YYYY-MM-DD')
-                    //}
+                    query: {
+                        orderStatus: 0,
+                        //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
+                        //    dateEnd: moment().endOf('week').format('YYYY-MM-DD')
+                    }
+                },
+                lookups: {
+                    orderStatuses: [
+                        { value: '0', text: 'All' },
+                        { value: '1', text: 'Placed' },
+                        { value: '2', text: 'Accepted' },
+                        { value: '3', text: 'Rejected' },
+                        { value: '4', text: 'Ready for Pickup' },
+                        { value: '5', text: 'Completed' },
+                        { value: '6', text: 'Cancelled' },
+                    ]
                 },
                 moment: moment
             };
@@ -245,7 +254,55 @@
         },
 
         methods: {
+            initializeFilter(cache) {
+                const filter = this.filter;
+                const urlParams = new URLSearchParams(window.location.search);
 
+                filter.query.criteria = urlParams.get('c') || cache.criteria || filter.query.criteria;
+                filter.query.pageIndex = parseInt(urlParams.get('p'), 10) || cache.pageIndex || filter.query.pageIndex;
+                filter.query.pageSize = parseInt(urlParams.get('s'), 10) || cache.pageSize || filter.query.pageSize;
+                filter.query.sortField = urlParams.get('sf') || cache.sortField || filter.query.sortField;
+                filter.query.sortOrder = parseInt(urlParams.get('so'), 10) || cache.sortOrder || filter.query.sortOrder;
+                filter.visible = cache.visible || filter.visible;
+
+                filter.query.orderStatus = urlParams.get('orderStatus') || cache.orderStatus || filter.query.orderStatus;
+
+            },
+
+            getQuery() {
+
+                const vm = this;
+                const filter = vm.filter;
+
+                if (vm.busy)
+                    return;
+
+                const query = [
+                    '?c=', encodeURIComponent(filter.query.criteria),
+                    '&p=', filter.query.pageIndex,
+                    '&s=', filter.query.pageSize,
+                    '&sf=', filter.query.sortField,
+                    '&so=', filter.query.sortOrder,
+                    '&orderStatus=', filter.query.orderStatus
+                ].join('');
+
+                return query;
+            },
+
+            saveQuery() {
+                const vm = this;
+                const filter = vm.filter;
+
+                localStorage.setItem(filter.cacheKey, JSON.stringify({
+                    criteria: filter.query.criteria,
+                    pageIndex: filter.query.pageIndex,
+                    pageSize: filter.query.pageSize,
+                    sortField: filter.query.sortField,
+                    sortOrder: filter.query.sortOrder,
+                    orderStatus: filter.query.orderStatus,
+                    visible: filter.visible
+                }));
+            },
         }
     }
 </script>

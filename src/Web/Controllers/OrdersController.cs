@@ -61,9 +61,9 @@ namespace Web.Controllers
         }
 
         [HttpGet("search-my-orders")]
-        public async Task<IActionResult> GetMyOrders(string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> GetMyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so)
         {
-            var query = new SearchOrderQuery("", TenantId, UserId, UserId, null, c, p, s, sf, so);
+            var query = new SearchOrderQuery("", TenantId, UserId, UserId, null, orderStatus, c, p, s, sf, so);
 
             var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
 
@@ -71,9 +71,9 @@ namespace Web.Controllers
         }
 
         [HttpGet("search-pharmacy-orders")]
-        public async Task<IActionResult> GetPharmacyOrders(string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> GetPharmacyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so)
         {
-            var query = new SearchOrderQuery("", TenantId, UserId, null, PharmacyId, c, p, s, sf, so);
+            var query = new SearchOrderQuery("", TenantId, UserId, null, PharmacyId, orderStatus, c, p, s, sf, so);
 
             var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
 

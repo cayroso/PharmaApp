@@ -6,23 +6,15 @@ import index from './Pages/index.vue';
 
 import accountsIndex from './Pages/Accounts/index.vue';
 
-import contactsIndex from './Pages/Contacts/index.vue';
-import contactsAdd from './Pages/Contacts/add.vue';
-import contactsView from './Pages/Contacts/View/index.vue';
+import medicinesIndex from './Pages/Medicines/index.vue';
+import medicinesAdd from './Pages/Medicines/add.vue';
+import medicinesView from './Pages/Medicines/view.vue';
 
-import documentsIndex from './Pages/Documents/index.vue';
-import documentsAdd from './Pages/Documents/add.vue';
-import documentsView from './Pages/Documents/view.vue';
+import ordersIndex from './Pages/Orders/index.vue';
+import ordersAdd from './Pages/Orders/add.vue';
+import ordersView from './Pages/Orders/view.vue';
 
-
-import tasksIndex from './Pages/Tasks/index.vue';
-import tasksAdd from './Pages/Tasks/add.vue';
-import tasksView from './Pages/Tasks/View/index.vue';
-
-import ordersIndex from './Pages/Trips/index.vue';
-import tripsView from './Pages/Trips/View/index.vue';
-
-
+import pharmacyIndex from './Pages/Pharmacy/index.vue';
 
 const NotFound = {
     template: '<div>Not found</div>'
@@ -33,20 +25,15 @@ const routes = [
 
     { path: '/accounts', name: "accounts", component: accountsIndex },
 
-    { path: '/contacts', name: "contacts", component: contactsIndex },
-    { path: '/contacts/add', name: "contactsAdd", component: contactsAdd },
-    { path: '/contacts/view/:id', name: "contactsView", component: contactsView, props: true },
+    { path: '/medicines', name: "medicines", component: medicinesIndex },
+    { path: '/medicines/add', name: "medicinesAdd", component: medicinesAdd },
+    { path: '/medicines/view/:id', name: "medicinesView", component: medicinesView, props: true },
 
-    { path: '/documents', name: "documents", component: documentsIndex },
-    { path: '/documents/add', name: "documentsAdd", component: documentsAdd },
-    { path: '/documents/view/:id', name: "documentsView", component: documentsView, props: true },
+    { path: '/orders', name: "orders", component: ordersIndex },
+    { path: '/orders/add', name: "ordersAdd", component: ordersAdd },
+    { path: '/orders/view/:id', name: "ordersView", component: ordersView, props: true },
 
-    { path: '/tasks', name: "tasks", component: tasksIndex },
-
-    { path: '/orders', name: "ordersIndex", component: ordersIndex },
-    { path: '/trips/view/:id', name: "tripsView", component: tripsView, props: true },
-
-    //{ path: '/teams', name: "teams", component: teamsIndex },
+    { path: '/pharmacy', name: "pharmacy", component: pharmacyIndex },
 
     { path: '*', component: NotFound },
 ];

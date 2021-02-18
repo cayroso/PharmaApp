@@ -57,6 +57,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           Customer = new GetCustomerOrderByIdQuery.Customer
                           {
                               CustomerId = o.Customer.CustomerId,
+                              UrlProfilePicture = o.Customer.User.Image.Url,
                               Name = o.Customer.User.FirstLastName,
                               Email = o.Customer.User.Email,
                               PhoneNumber = o.Customer.User.PhoneNumber
@@ -70,7 +71,14 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                               Quantity = e.Quantity,
                               ExtendedPrice = e.ExtendedPrice
                           }),
-                          FileUploadUrls = o.FileUploads.Select(e => e.FileUpload.Url)
+                          FileUploadUrls = o.FileUploads.Select(e => e.FileUpload.Url),
+                          Timelines = o.Timelines.OrderByDescending(e => e.DateTimeline).Select(e => new GetCustomerOrderByIdQuery.OrderTimeline
+                          {
+                              DateTimeline = e.DateTimeline,
+                              Notes = e.Notes,
+                              Status = e.Status,
+                              User = e.User.FirstLastName
+                          })
                       };
 
             var dto = await sql.FirstOrDefaultAsync();
@@ -89,6 +97,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                                 .AsNoTracking()
 
                       where o.CustomerId == query.CustomerId || o.PharmacyId == query.PharmacyId
+                      where query.OrderStatus == EnumOrderStatus.Unknown || o.OrderStatus == query.OrderStatus
                       where string.IsNullOrWhiteSpace(query.Criteria)
                         || EF.Functions.Like(o.Number, $"%{query.Criteria}%")
 
@@ -116,6 +125,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           Customer = new SearchOrderQuery.Customer
                           {
                               CustomerId = o.Customer.CustomerId,
+                              UrlProfilePicture = o.Customer.User.Image.Url,
                               Name = o.Customer.User.FirstLastName,
                               Email = o.Customer.User.Email,
                               PhoneNumber = o.Customer.User.PhoneNumber

@@ -49,12 +49,12 @@
                             Account
                         </router-link>
 
-                        <div class="dropdown-divider"></div>
+                        <!--<div class="dropdown-divider"></div>
 
                         <a href="/" class="dropdown-item">
                             <i class="fas fa-home fa-sm fa-fw mr-2"></i>
                             Home Page
-                        </a>
+                        </a>-->
 
                         <div class="dropdown-divider"></div>
 

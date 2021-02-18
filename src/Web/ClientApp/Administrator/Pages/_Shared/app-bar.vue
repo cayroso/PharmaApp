@@ -66,7 +66,7 @@
         <!--<nav-drawer :appName="appName"></nav-drawer>-->
         <notifications-drawer :notifications="notifications"  url-view-order="ordersView"></notifications-drawer>
         <messages-drawer :messages="messages"></messages-drawer>
-        <!--<teams-drawer :uid="uid"></teams-drawer>-->
+        
     </b-navbar>
 </template>
 <script>
@@ -76,7 +76,6 @@
 
     import NotificationsDrawer from '../../../_Common/Drawers/notifications-drawer.vue';
     import MessagesDrawer from '../../../_Common/Drawers/messages-drawer.vue';
-    import TeamsDrawer from '../../../_Common/Drawers/shopping-drawer.vue';
 
     export default {
         mixins: [navbarMixin],
@@ -85,7 +84,7 @@
             appName: {
                 type: String,
                 required: true,
-                default: 'LMS'
+                default: 'Pharma App'
             },
             urlProfilePicture: String,
             menus: Array
@@ -94,7 +93,6 @@
             //navDrawer,
             NotificationsDrawer,
             MessagesDrawer,
-            TeamsDrawer
         }
     };
 </script>

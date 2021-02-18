@@ -261,7 +261,7 @@ export default {
 
             hub.on('orderUpdated', function (resp) {                
                 vm.$bus.$emit('event:notification-received');
-                vm.$bus.$emit('event:order-updated');
+                vm.$bus.$emit('event:order-updated', resp);
             });
 
             //  customer

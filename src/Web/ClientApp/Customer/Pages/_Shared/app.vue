@@ -45,9 +45,9 @@
         data() {
             return {
                 menus: [
-                    { to: '/', label: 'Home', icon: 'fas fa-fw fa-home' },
+                    { to: '/', label: 'Dashboard', icon: 'fas fa-fw fa-tachometer-alt' },
                     { to: '/pharmacies', label: 'Pharmacies', icon: 'fas fa-fw fa-clinic-medical' },
-                    { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-tasks' },
+                    { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-prescription-bottle-alt' },
                     { to: '/orders', label: 'My Orders', icon: 'fas fa-fw fa-cubes' },
                     //{ to: '/trips', label: 'Trips', icon: 'fas fa-fw fa-map-marked' },
                 ]

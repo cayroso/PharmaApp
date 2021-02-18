@@ -11,13 +11,15 @@ namespace App.CQRS.Orders.Common.Queries.Query
     {
         public string CustomerId { get; }
         public string PharmacyId { get; }
+        public EnumOrderStatus OrderStatus { get; }
 
-        public SearchOrderQuery(string correlationId, string tenantId, string userId, string customerId, string pharmacyId,
+        public SearchOrderQuery(string correlationId, string tenantId, string userId, string customerId, string pharmacyId, EnumOrderStatus orderStatus,
             string criteria, int pageIndex, int pageSize, string sortField, int sortOrder)
             : base(correlationId, tenantId, userId, criteria, pageIndex, pageSize, sortField, sortOrder)
         {
             CustomerId = customerId;
-            PharmacyId = pharmacyId;            
+            PharmacyId = pharmacyId;
+            OrderStatus = orderStatus;
         }
 
         public class Order
@@ -69,6 +71,7 @@ namespace App.CQRS.Orders.Common.Queries.Query
         public class Customer
         {
             public string CustomerId { get; set; }
+            public string UrlProfilePicture { get; set; }
             public string Name { get; set; }
             public string PhoneNumber { get; set; }
             public string Email { get; set; }

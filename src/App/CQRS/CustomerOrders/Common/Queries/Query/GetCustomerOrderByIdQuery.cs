@@ -52,6 +52,8 @@ namespace App.CQRS.Orders.Common.Queries.Query
 
             public IEnumerable<Orderline> Lines { get; set; } = new List<Orderline>();
             public IEnumerable<string> FileUploadUrls { get; set; } = new List<string>();
+            public IEnumerable<OrderTimeline> Timelines { get; set; } = new List<OrderTimeline>();
+
         }
 
         public class Pharmacy
@@ -68,6 +70,7 @@ namespace App.CQRS.Orders.Common.Queries.Query
         public class Customer
         {
             public string CustomerId { get; set; }
+            public string UrlProfilePicture { get; set; }
             public string Name { get; set; }
             public string PhoneNumber { get; set; }
             public string Email { get; set; }
@@ -82,6 +85,21 @@ namespace App.CQRS.Orders.Common.Queries.Query
             public string LineNumber { get; set; }
             public double Quantity { get; set; }
             public double ExtendedPrice { get; set; }
+        }
+
+        public class OrderTimeline
+        {
+            public EnumOrderStatus Status { get; set; }
+            public string StatusText => Status.ToString();
+            public string Notes { get; set; }
+            public string User { get; set; }
+
+            DateTime _dateTimeline;
+            public DateTime DateTimeline
+            {
+                get => _dateTimeline;
+                set => _dateTimeline = value.AsUtc();
+            }
         }
     }
 }

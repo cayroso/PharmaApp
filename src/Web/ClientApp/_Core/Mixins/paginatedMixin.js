@@ -38,7 +38,7 @@ export default {
             filter.query.sortField = urlParams.get('sf') || cache.sortField || filter.query.sortField;
             filter.query.sortOrder = parseInt(urlParams.get('so'), 10) || cache.sortOrder || filter.query.sortOrder;
             filter.visible = cache.visible || filter.visible;
-
+            
         },
         getQuery() {
 
@@ -120,8 +120,8 @@ export default {
                         else
                             url += '/' + query;
 
-                        vm.$util.replaceState(query, state, url);
-
+                        vm.$util.pushState(query, state, url);
+                        
                         filter.items.forEach(item => {
                             vm.$set(item, 'expand', false);
                         });

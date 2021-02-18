@@ -74,8 +74,7 @@
         methods: {
             setupEventReceivers() {
                 const vm = this;
-
-
+                
                 //  customers
                 vm.$bus.$on('event:customer-place-order', async function (resp) {
                     let content = resp.content;

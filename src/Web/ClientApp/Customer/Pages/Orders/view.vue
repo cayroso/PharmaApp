@@ -38,14 +38,14 @@
             </div>
             <b-collapse v-model="toggles.information">
                 <!--not archived-->
-                <div v-if="item.status!==4 && item.status!==7" class="p-1 text-right">
+                <div v-if="item.status==1 || item.status==2" class="p-1 text-right">
                     <div class="dropdown ">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-fw fa-cogs mr-1"></i>Update Status
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <!--placed, accepted-->
-                            <a v-if="item.status==1 || item.status==2" @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">
+                            <a @click.prevent="setOrderStatus(6)" class="dropdown-item" href="#">
                                 Cancel
                             </a>
                             <!--rejected, completed, cancelled-->
@@ -130,17 +130,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(li,index) in item.lines">
+                            <tr v-for="(li,index) in item.lines" v-bind:class="li.classification===2? 'table-danger':''">
                                 <td>
                                     {{index+1}}
                                 </td>
                                 <td>
                                     {{li.drugName}}
+                                    <div class="mt-1 ml-2 small">
+                                        {{li.classificationText}}
+                                    </div>
                                 </td>
-                                <td>
-                                    {{li.drugPrice}}
+                                <td class="text-right">
+                                    {{li.drugPrice|toCurrency}}
                                 </td>
-                                <td>
+                                <td class="text-right">
                                     {{li.quantity}}
                                 </td>
                                 <td class="text-right">
@@ -252,6 +255,52 @@
                 </div>
             </b-collapse>
         </div>
+
+        <div class="card mt-2">
+            <div @click="toggle('timeline')" class="card-header d-flex flex-row justify-content-between align-items-center">
+                <h5 class="mb-0 align-self-start">
+                    <span class="fas fa-fw fa-history mr-1 d-none"></span>Timeline
+                </h5>
+                <div>
+                    <span>
+                        <span v-if="toggles.timeline" class="fas fa-fw fa-angle-up"></span>
+                        <span v-else class="fas fa-fw fa-angle-down"></span>
+                    </span>
+                </div>
+            </div>
+            <b-collapse v-model="toggles.timeline">
+                
+                <div class="table-responsive mb-0">
+                    <table class="table">
+                        <tbody>
+                            <tr v-for="(tl,index) in item.timelines">
+                                <td>{{index+1}}</td>
+                                <td>
+                                    {{tl.statusText}}
+                                </td>
+                                <td>
+                                    {{tl.dateTimeline|moment('calendar')}}
+                                </td>
+                                <td>
+                                    {{tl.user}} - 
+                                    <span class="mt-1 small ml-2">
+                                        <span v-if="tl.user===item.customer.name">
+                                            Customer
+                                        </span>
+                                        <span v-else>
+                                            Staff
+                                        </span>
+                                    </span>
+                                </td>
+                                <td>
+                                    {{tl.notes}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </b-collapse>
+        </div>
     </div>
 </template>
 <script>
@@ -276,11 +325,13 @@
                     pharmacy: false,
                     lineItems: false,
                     prescriptions: false,
+                    timelines: false,
                 },
                 item: {
                     pharmacy: {},
                     lines: [],
-                    fileUploadUrls: []
+                    fileUploadUrls: [],
+                    timelines: []
                 },
                 moment: moment
             };
@@ -308,16 +359,10 @@
             const vm = this;
 
             vm.$bus.$on('event:order-updated', async (orderId) => {
-                debugger;
+
                 if (vm.id === orderId)
                     await vm.get();
             });
-            //vm.$bus.$on('event:pharmacy-accepted-order', vm.getIfOrder);
-            //vm.$bus.$on('event:pharmacy-rejected-order', vm.getIfOrder);
-            //vm.$bus.$on('event:pharmacy-set-order-ready-for-pickup', vm.getIfOrder);
-            //vm.$bus.$on('event:pharmacy-set-order-to-completed', vm.getIfOrder);
-            //vm.$bus.$on('event:pharmacy-set-order-to-archived', vm.getIfOrder);
-
 
             await vm.get();
         },
