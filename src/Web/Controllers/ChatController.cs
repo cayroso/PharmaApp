@@ -1,9 +1,9 @@
 ﻿using App.CQRS;
-using App.CQRS.Chats.Common.Commands.Command;
-using App.CQRS.Chats.Common.Queries.Query;
 using App.Services;
 using Cayent.Core.Common;
 using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Common.Chats.Commands.Command;
+using Cayent.Core.CQRS.Common.Chats.Queries.Query;
 using Cayent.Core.CQRS.Queries;
 using Cayent.Core.CQRS.Services;
 using Cayent.Core.Data.Chats;

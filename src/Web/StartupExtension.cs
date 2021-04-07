@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Web.BackgroundServices;
 
@@ -29,8 +30,13 @@ namespace Web
 
             //RegisterCommonCQRS(services);
 
-            services.AddCommandQueryHandlers(typeof(ICommandHandler<>));
-            services.AddCommandQueryHandlers(typeof(IQueryHandler<,>));
+            // handlers from Core
+            services.AddCommandQueryHandlers(typeof(ICommandHandler<>), typeof(IContainer).Assembly);
+            services.AddCommandQueryHandlers(typeof(IQueryHandler<,>), typeof(IContainer).Assembly);
+
+            // handlers from this app
+            services.AddCommandQueryHandlers(typeof(ICommandHandler<>), typeof(BaseService).Assembly);
+            services.AddCommandQueryHandlers(typeof(IQueryHandler<,>), typeof(BaseService).Assembly);
         }
 
         static void RegisterCore(IServiceCollection services)
@@ -46,9 +52,9 @@ namespace Web
         }
 
 
-        static void AddCommandQueryHandlers(this IServiceCollection services, Type handlerInterface)
+        static void AddCommandQueryHandlers(this IServiceCollection services, Type handlerInterface, Assembly assembly)
         {
-            var handlers = typeof(BaseService).Assembly.GetTypes()
+            var handlers = assembly.GetTypes()
                 .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterface)
             );
 
@@ -62,6 +68,7 @@ namespace Web
 
             }
         }
+
 
     }
 
