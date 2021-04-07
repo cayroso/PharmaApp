@@ -1,31 +1,23 @@
-﻿using App.CQRS;
-using App.CQRS.CustomerOrders.Common.Commands.Command;
-using App.CQRS.CustomerOrders.Common.Commands.Command.Customer;
+﻿using App.CQRS.CustomerOrders.Common.Commands.Command.Customer;
 using App.CQRS.CustomerOrders.Common.Commands.Command.Pharmacy;
-using App.CQRS.Drugs.Common.Queries.Query;
 using App.CQRS.Orders.Common.Queries.Query;
-using App.Hubs;
-using App.Services;
+using Cayent.Core.Common;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Data.Fileuploads;
 using Data.App.DbContext;
-using Data.App.Models.Chats;
 using Data.App.Models.Orders;
-using Data.Common;
 using Data.Enums;
-using Data.Identity.DbContext;
-using Data.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Web.BackgroundServices;
 using Web.Models;
 
 namespace Web.Controllers
@@ -51,31 +43,31 @@ namespace Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken = default)
         {
             var query = new GetCustomerOrderByIdQuery("", TenantId, UserId, id);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpGet("search-my-orders")]
-        public async Task<IActionResult> GetMyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> GetMyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so, CancellationToken cancellationToken = default)
         {
             var query = new SearchOrderQuery("", TenantId, UserId, UserId, null, orderStatus, c, p, s, sf, so);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpGet("search-pharmacy-orders")]
-        public async Task<IActionResult> GetPharmacyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> GetPharmacyOrders(EnumOrderStatus orderStatus, string c, int p, int s, string sf, int so, CancellationToken cancellationToken = default)
         {
             var query = new SearchOrderQuery("", TenantId, UserId, null, PharmacyId, orderStatus, c, p, s, sf, so);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchOrderQuery, Paged<SearchOrderQuery.Order>>(query, cancellationToken);
 
             return Ok(dto);
         }
@@ -83,7 +75,7 @@ namespace Web.Controllers
         #region Customer
 
         [HttpPost("customer/place-order")]
-        public async Task<IActionResult> PostCustomerPlaceOrder()
+        public async Task<IActionResult> PostCustomerPlaceOrder(CancellationToken cancellationToken = default)
         {
             var infoFile = Request.Form.Files.FirstOrDefault(e => e.Name == "payload");
             var imagefiles = Request.Form.Files.Where(e => e.Name == "files");
@@ -104,7 +96,7 @@ namespace Web.Controllers
 
                 var cmd = new CustomerPlaceOrderCommand("", TenantId, UserId, GuidStr(), info.PharmacyId, lines);
 
-                await _commandHandlerDispatcher.HandleAsync(cmd);
+                await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
                 //  handle file uploads
                 var order = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == cmd.OrderId);
@@ -123,7 +115,7 @@ namespace Web.Controllers
                     var orderFileUpload = new OrderFileUpload
                     {
                         OrderId = order.OrderId,
-                        FileUpload = new Data.App.Models.FileUploads.FileUpload
+                        FileUpload = new FileUpload
                         {
                             FileUploadId = fileUploadId,
                             FileName = file.FileName,
@@ -151,21 +143,21 @@ namespace Web.Controllers
 
 
         [HttpPut("customer/archive")]
-        public async Task<IActionResult> PutCustomerArchiveOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutCustomerArchiveOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new CustomerArchiveOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("customer/cancel")]
-        public async Task<IActionResult> PutCustomerCancelledOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutCustomerCancelledOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new CustomerCancelOrderCommand("", TenantId, UserId, info.OrderId, info.Token, info.Notes);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
@@ -176,51 +168,51 @@ namespace Web.Controllers
 
 
         [HttpPut("pharmacy/accept")]
-        public async Task<IActionResult> PutPharmacyAcceptedOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutPharmacyAcceptedOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new PharmacyAcceptOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("pharmacy/reject")]
-        public async Task<IActionResult> PutPharmacyRejectedOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutPharmacyRejectedOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new PharmacyRejectedOrderCommand("", TenantId, UserId, info.OrderId, info.Token, info.Notes);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("pharmacy/ready-for-pickup")]
-        public async Task<IActionResult> PutPharmacyReadyForPickupOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutPharmacyReadyForPickupOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new PharmacyOrderReadyForPickupCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("pharmacy/completed")]
-        public async Task<IActionResult> PutPharmacyCompletedOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutPharmacyCompletedOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new PharmacyCompleteOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("pharmacy/archived")]
-        public async Task<IActionResult> PutPharmacyArchivedOrder([FromBody] UpdateOrderStatusInfo info)
+        public async Task<IActionResult> PutPharmacyArchivedOrder([FromBody] UpdateOrderStatusInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new PharmacyArchiveOrderCommand("", TenantId, UserId, info.OrderId, info.Token);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }

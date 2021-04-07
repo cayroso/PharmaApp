@@ -1,16 +1,11 @@
 ﻿using Data.App.DbContext;
 using Data.App.Models.Calendars;
 using Data.App.Models.Users;
-using Data.Constants;
 using Data.Identity.Models;
-using Data.Identity.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Providers
 {

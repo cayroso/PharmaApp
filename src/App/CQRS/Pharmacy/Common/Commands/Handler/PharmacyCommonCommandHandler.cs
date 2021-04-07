@@ -1,5 +1,7 @@
 ﻿using App.CQRS.Pharmacy.Common.Commands.Command;
 using App.Services;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Services;
 using Data.App.DbContext;
 using Data.App.Models.Pharmacies;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App.CQRS.Pharmacy.Common.Commands.Handler
@@ -22,7 +25,7 @@ namespace App.CQRS.Pharmacy.Common.Commands.Handler
             _sequentialGuidGenerator = sequentialGuidGenerator ?? throw new ArgumentNullException(nameof(sequentialGuidGenerator));
         }
 
-        async Task ICommandHandler<EditPharmacyCommand>.HandleAsync(EditPharmacyCommand command)
+        async Task ICommandHandler<EditPharmacyCommand>.HandleAsync(EditPharmacyCommand command, CancellationToken cancellationToken)
         {
             var pharmacy = await _appDbContext.Pharmacies.FirstOrDefaultAsync(e=> e.PharmacyId == command.PharmacyId);
 

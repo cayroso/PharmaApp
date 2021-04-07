@@ -1,15 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cayent.Core.Data.Users;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.App.Models.Users
 {
-    public class Role
+    public class Role : RoleBase
     {
-        public string RoleId { get; set; }
-        public string Name { get; set; }
-        //public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    }
+
+    public class RoleConfiguration : RoleConfiguration<Role>
+    {
+        public override void Configure(EntityTypeBuilder<Role> builder)
+        {
+            base.Configure(builder);
+            this.ConfigureEntity(builder);
+        }
+
+        private void ConfigureEntity(EntityTypeBuilder<Role> builder)
+        {
+        }
     }
 }

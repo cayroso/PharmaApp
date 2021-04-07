@@ -1,12 +1,8 @@
-﻿using Common.Extensions;
-using Data.Enums;
-using Data.Identity.Models.Users;
+﻿using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
 
 namespace Data.App.Models.Users
 {

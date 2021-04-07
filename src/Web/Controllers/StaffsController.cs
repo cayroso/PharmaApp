@@ -1,5 +1,8 @@
 ﻿using App.CQRS;
 using App.CQRS.Staffs.Common.Queries.Query;
+using Cayent.Core.Common;
+using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Data.Users;
 using Data.App.DbContext;
 using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
@@ -20,6 +23,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Web.Controllers
@@ -38,21 +42,21 @@ namespace Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> Get(string c, int p, int s, string sf, int so, CancellationToken cancellationToken = default)
         {
             var query = new SearchStaffQuery("", TenantId, UserId, PharmacyId, c, p, s, sf, so);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchStaffQuery, Paged<SearchStaffQuery.Staff>>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchStaffQuery, Paged<SearchStaffQuery.Staff>>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken = default)
         {
             var query = new GetStaffByIdQuery("", TenantId, UserId, id);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetStaffByIdQuery, GetStaffByIdQuery.Staff>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetStaffByIdQuery, GetStaffByIdQuery.Staff>(query, cancellationToken);
 
             return Ok(dto);
         }
@@ -114,7 +118,7 @@ namespace Web.Controllers
                                 LastName = info.LastName,
                                 PhoneNumber = info.PhoneNumber,
                                 Email = info.Email,
-                                UserRoles = new List<UserRole>
+                                UserRoles = new List<UserRoleBase>
                                 {
                                      new UserRole {
                                          UserId = userRole.UserId,

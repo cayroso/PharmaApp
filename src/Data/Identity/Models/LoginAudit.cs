@@ -1,11 +1,7 @@
-﻿using Common.Extensions;
-using Data.Identity.Models.Users;
+﻿using Data.Identity.Models.Users;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
 
 namespace Data.Identity.Models
 {

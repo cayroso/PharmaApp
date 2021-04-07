@@ -9,6 +9,10 @@ using Data.Common;
 using Data.Constants;
 using Data.Enums;
 using Data.Identity.DbContext;
+using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Common;
+using Cayent.Core.Common.Extensions;
+using System.Threading;
 
 namespace App.CQRS.Orders.Common.Queries.Handler
 {
@@ -22,7 +26,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        async Task<GetCustomerOrderByIdQuery.Order> IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>.HandleAsync(GetCustomerOrderByIdQuery query)
+        async Task<GetCustomerOrderByIdQuery.Order> IQueryHandler<GetCustomerOrderByIdQuery, GetCustomerOrderByIdQuery.Order>.HandleAsync(GetCustomerOrderByIdQuery query, CancellationToken cancellationToken)
         {
             var sql = from o in _dbContext.Orders
 
@@ -86,7 +90,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
             return dto;
         }
 
-        async Task<Paged<SearchOrderQuery.Order>> IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>.HandleAsync(SearchOrderQuery query)
+        async Task<Paged<SearchOrderQuery.Order>> IQueryHandler<SearchOrderQuery, Paged<SearchOrderQuery.Order>>.HandleAsync(SearchOrderQuery query, CancellationToken cancellationToken)
         {
             var sql = from o in _dbContext.Orders
 
@@ -132,7 +136,7 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                           }
                       };
 
-            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize);
+            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize, cancellationToken);
 
             return dto;
         }

@@ -1,32 +1,12 @@
-﻿using Data.App.Models.FileUploads;
-
+﻿using Cayent.Core.Data.Users;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.App.Models.Users
 {
-    public class User
-    {
-        public string UserId { get; set; }
-        public string ImageId { get; set; }
-        public virtual FileUpload Image { get; set; }
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        [NotMapped]
-        public string FirstLastName => $"{FirstName} {MiddleName} {LastName}";
-        [NotMapped]
-        public string Initials => $"{FirstName[0]}{LastName[0]}".ToUpper();
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-
-        public string ConcurrencyToken { get; set; } = Guid.NewGuid().ToString();
-
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public class User: UserBase
+    {        
         public virtual ICollection<UserTask> UserTasks { get; set; } = new List<UserTask>();
 
     }
@@ -51,6 +31,19 @@ namespace Data.App.Models.Users
                 throw new ApplicationException("User already updated by another user.");
 
             me.ConcurrencyToken = newToken;
+        }
+    }
+
+    public class UserConfiguration : UserConfiguration<User>
+    {
+        public override void Configure(EntityTypeBuilder<User> builder)
+        {
+            base.Configure(builder);
+            this.ConfigureEntity(builder);
+        }
+
+        private void ConfigureEntity(EntityTypeBuilder<User> builder)
+        {
         }
     }
 }

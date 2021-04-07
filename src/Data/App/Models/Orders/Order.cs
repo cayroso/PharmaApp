@@ -1,16 +1,13 @@
-﻿using Common.Extensions;
-using Data.App.Models.Customers;
-using Data.App.Models.FileUploads;
+﻿using Data.App.Models.Customers;
+
 using Data.App.Models.Orders.OrderLineItems;
 using Data.App.Models.Pharmacies;
-using Data.App.Models.Users;
 using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
+using Cayent.Core.Data.Fileuploads;
 
 namespace Data.App.Models.Orders
 {

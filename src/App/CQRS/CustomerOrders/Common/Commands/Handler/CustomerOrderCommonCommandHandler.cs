@@ -2,8 +2,11 @@
 using App.CQRS.CustomerOrders.Common.Commands.Command.Customer;
 using App.CQRS.CustomerOrders.Common.Commands.Command.Pharmacy;
 using App.Services;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Services;
+using Cayent.Core.Data.Notifications;
 using Data.App.DbContext;
-using Data.App.Models.Notifications;
+
 using Data.App.Models.Orders;
 using Data.App.Models.Orders.OrderLineItems;
 using Microsoft.AspNetCore.SignalR;
@@ -13,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App.CQRS.CustomerOrders.Common.Commands.Handler
@@ -48,7 +52,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
 
         #region Customer
 
-        async Task ICommandHandler<CustomerArchiveOrderCommand>.HandleAsync(CustomerArchiveOrderCommand command)
+        async Task ICommandHandler<CustomerArchiveOrderCommand>.HandleAsync(CustomerArchiveOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -84,7 +88,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<CustomerCancelOrderCommand>.HandleAsync(CustomerCancelOrderCommand command)
+        async Task ICommandHandler<CustomerCancelOrderCommand>.HandleAsync(CustomerCancelOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -120,7 +124,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<CustomerPlaceOrderCommand>.HandleAsync(CustomerPlaceOrderCommand command)
+        async Task ICommandHandler<CustomerPlaceOrderCommand>.HandleAsync(CustomerPlaceOrderCommand command, CancellationToken cancellationToken)
         {
             var data = new Order
             {
@@ -182,7 +186,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
         #endregion
 
         #region Pharmacy
-        async Task ICommandHandler<PharmacyAcceptOrderCommand>.HandleAsync(PharmacyAcceptOrderCommand command)
+        async Task ICommandHandler<PharmacyAcceptOrderCommand>.HandleAsync(PharmacyAcceptOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -216,7 +220,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<PharmacyArchiveOrderCommand>.HandleAsync(PharmacyArchiveOrderCommand command)
+        async Task ICommandHandler<PharmacyArchiveOrderCommand>.HandleAsync(PharmacyArchiveOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -251,7 +255,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<PharmacyCompleteOrderCommand>.HandleAsync(PharmacyCompleteOrderCommand command)
+        async Task ICommandHandler<PharmacyCompleteOrderCommand>.HandleAsync(PharmacyCompleteOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -286,7 +290,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<PharmacyOrderReadyForPickupCommand>.HandleAsync(PharmacyOrderReadyForPickupCommand command)
+        async Task ICommandHandler<PharmacyOrderReadyForPickupCommand>.HandleAsync(PharmacyOrderReadyForPickupCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 
@@ -324,7 +328,7 @@ namespace App.CQRS.CustomerOrders.Common.Commands.Handler
             await _orderHubContext.Clients.Users(allNotifyIds).OrderUpdated(data.OrderId);
         }
 
-        async Task ICommandHandler<PharmacyRejectedOrderCommand>.HandleAsync(PharmacyRejectedOrderCommand command)
+        async Task ICommandHandler<PharmacyRejectedOrderCommand>.HandleAsync(PharmacyRejectedOrderCommand command, CancellationToken cancellationToken)
         {
             var data = await _appDbContext.Orders.FirstOrDefaultAsync(e => e.OrderId == command.OrderId);
 

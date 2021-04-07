@@ -1,21 +1,18 @@
-using App.Hubs;
+
 using App.Services;
+using Cayent.Core.CQRS.Services;
+using Cayent.Core.Hubs;
 using Data.App.DbContext;
 using Data.Constants;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
+
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Web.Middlewares;
 
 namespace Web
@@ -121,11 +118,13 @@ namespace Web
 #if !DEBUG
             services.AddProgressiveWebApp();
 #endif
-            services.AddScoped<App.Services.ChatService>();
-            services.AddScoped<App.Services.NotificationService>();
+            services.AddScoped<ChatService>();
+            services.AddScoped<NotificationService>();
 
             services.AddTransient<ChatHub>();
             services.AddTransient<OrderHub>();
+
+            services.AddScoped<AppBaseDbContext, AppDbContext>();
 
             StartupExtension.RegisterCQRS(services);
         }
@@ -192,8 +191,8 @@ namespace Web
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
 
-                endpoints.MapHub<ChatHub>("/chatHub");                
-                endpoints.MapHub<OrderHub>("/orderHub"); 
+                endpoints.MapHub<ChatHub>("/chatHub");
+                endpoints.MapHub<OrderHub>("/orderHub");
             });
         }
     }

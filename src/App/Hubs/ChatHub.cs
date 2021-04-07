@@ -9,30 +9,30 @@ using ViewModel.Chats;
 
 namespace App.Hubs
 {
-    public interface IChatClient
-    {
-        Task ChatMessageReceived(ChatMessageReceivedInfo info);
+    //public interface IChatClient
+    //{
+    //    Task ChatMessageReceived(ChatMessageReceivedInfo info);
 
-        Task ChatMessageReceivedFromGroup(ChatMessageReceivedInfo info);
+    //    Task ChatMessageReceivedFromGroup(ChatMessageReceivedInfo info);
 
-        Task ChatReceiverAdded(ChatReceiverAddedInfo info);
+    //    Task ChatReceiverAdded(ChatReceiverAddedInfo info);
 
-        Task ChatReceiverRemoved(ChatReceiverRemovedInfo info);
+    //    Task ChatReceiverRemoved(ChatReceiverRemovedInfo info);
 
-        Task ChatDeleted(string chatId);
-    }
+    //    Task ChatDeleted(string chatId);
+    //}
 
-    [Authorize]
-    public class ChatHub : Hub<IChatClient>
-    {
-        public async Task JoinChat(string chatId)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
-        }
+    //[Authorize]
+    //public class ChatHub : Hub<IChatClient>
+    //{
+    //    public async Task JoinChat(string chatId)
+    //    {
+    //        await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
+    //    }
 
-        public async Task LeaveChat(string chatId)
-        {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
-        }
-    }
+    //    public async Task LeaveChat(string chatId)
+    //    {
+    //        await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId);
+    //    }
+    //}
 }

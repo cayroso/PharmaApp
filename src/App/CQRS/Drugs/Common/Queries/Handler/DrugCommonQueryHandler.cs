@@ -1,4 +1,5 @@
 ﻿using App.CQRS.Drugs.Common.Queries.Query;
+using Cayent.Core.CQRS.Queries;
 using Data.App.DbContext;
 using Data.Common;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
+using Cayent.Core.Common;
 
 namespace App.CQRS.Drugs.Common.Queries.Handler
 {
@@ -20,7 +24,7 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
             _appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
         }
 
-        async Task<GetDrugByIdQuery.Drug> IQueryHandler<GetDrugByIdQuery, GetDrugByIdQuery.Drug>.HandleAsync(GetDrugByIdQuery query)
+        async Task<GetDrugByIdQuery.Drug> IQueryHandler<GetDrugByIdQuery, GetDrugByIdQuery.Drug>.HandleAsync(GetDrugByIdQuery query, CancellationToken cancellationToken)
         {
             var sql = from d in _appDbContext.Drugs.AsNoTracking()
 
@@ -62,7 +66,7 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
             return dto;
         }
 
-        async Task<Paged<SearchDrugByPharmacyQuery.Drug>> IQueryHandler<SearchDrugByPharmacyQuery, Paged<SearchDrugByPharmacyQuery.Drug>>.HandleAsync(SearchDrugByPharmacyQuery query)
+        async Task<Paged<SearchDrugByPharmacyQuery.Drug>> IQueryHandler<SearchDrugByPharmacyQuery, Paged<SearchDrugByPharmacyQuery.Drug>>.HandleAsync(SearchDrugByPharmacyQuery query, CancellationToken cancellationToken)
         {
             var sql = from d in _appDbContext.Drugs.AsNoTracking()
 
@@ -99,7 +103,7 @@ namespace App.CQRS.Drugs.Common.Queries.Handler
                           },
                       };
 
-            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize);
+            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize, cancellationToken);
 
             return dto;
         }

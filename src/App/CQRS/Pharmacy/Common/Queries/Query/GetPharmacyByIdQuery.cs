@@ -1,4 +1,5 @@
-﻿using Data.Enums;
+﻿using Cayent.Core.CQRS.Queries;
+using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

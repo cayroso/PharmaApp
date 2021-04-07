@@ -1,10 +1,12 @@
 ﻿using App.CQRS.Users.Common.Queries.Query;
+using Cayent.Core.CQRS.Queries;
 using Data.App.DbContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App.CQRS.Users.Common.Queries.Handler
@@ -18,7 +20,7 @@ namespace App.CQRS.Users.Common.Queries.Handler
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        async Task<GetUserByIdQuery.User> IQueryHandler<GetUserByIdQuery, GetUserByIdQuery.User>.HandleAsync(GetUserByIdQuery query)
+        async Task<GetUserByIdQuery.User> IQueryHandler<GetUserByIdQuery, GetUserByIdQuery.User>.HandleAsync(GetUserByIdQuery query, CancellationToken cancellationToken)
         {
             var sql = from u in _dbContext.Users
 

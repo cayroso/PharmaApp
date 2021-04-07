@@ -1,8 +1,4 @@
 ﻿using App.CQRS.Chats.Common.Commands.Command;
-using App.Hubs;
-using Data.App.Models.Chats;
-using Data.Identity.DbContext;
-using ViewModel.Chats;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.App.DbContext;
+using Cayent.Core.Data.Chats;
+using Cayent.Core.CQRS.Commands;
+using System.Threading;
+using Cayent.Core.Hubs;
 
 namespace App.CQRS.Chats.Common.Commands.Handler
 {
@@ -26,7 +26,7 @@ namespace App.CQRS.Chats.Common.Commands.Handler
             _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
         }
 
-        async Task ICommandHandler<AddChatCommand>.HandleAsync(AddChatCommand command)
+        async Task ICommandHandler<AddChatCommand>.HandleAsync(AddChatCommand command, CancellationToken cancellationToken)
         {
             //  check if already existing
             var exists = await _dbContext.Chats
@@ -49,7 +49,7 @@ namespace App.CQRS.Chats.Common.Commands.Handler
 
                     var cmd1 = new AddChatMessageCommand(command.CorrelationId, command.TenantId, command.UserId, exists.ChatId, command.MemberId2, "Rejoining the chat.", EnumChatMessageType.System);
 
-                    await HandleAsync(cmd1);
+                    await HandleAsync(cmd1, cancellationToken);
                 }
 
                 return;
@@ -87,10 +87,10 @@ namespace App.CQRS.Chats.Common.Commands.Handler
             //  starting message
             var cmd2 = new AddChatMessageCommand(command.CorrelationId, command.TenantId, command.UserId, command.ChatId, command.MemberId1, "Joined the chat.", EnumChatMessageType.System);
 
-            await HandleAsync(cmd2);
+            await HandleAsync(cmd2, cancellationToken);
         }
 
-        public async Task HandleAsync(AddChatMessageCommand command)
+        public async Task HandleAsync(AddChatMessageCommand command, CancellationToken cancellationToken)
         {
             var chat = await _dbContext
                 .Chats

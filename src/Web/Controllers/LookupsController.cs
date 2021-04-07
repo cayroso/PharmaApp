@@ -1,25 +1,12 @@
-﻿using App.CQRS;
-using App.CQRS.Drugs.Common.Queries.Query;
-using App.Hubs;
-using App.Services;
+﻿using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Queries;
 using Data.App.DbContext;
-using Data.App.Models.Chats;
-using Data.Common;
-using Data.Identity.DbContext;
-using Data.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Web.BackgroundServices;
-using Web.Models;
 
 namespace Web.Controllers
 {

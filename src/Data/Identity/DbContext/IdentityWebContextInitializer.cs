@@ -1,12 +1,8 @@
 ﻿using Data.Constants;
-using Data.Identity.Models;
 using Data.Identity.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Identity.DbContext
 {

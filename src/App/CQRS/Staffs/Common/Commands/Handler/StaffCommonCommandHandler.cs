@@ -1,11 +1,14 @@
 ﻿using App.CQRS.Staffs.Common.Commands.Command;
 using App.Services;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Services;
 using Data.App.DbContext;
 using Data.Identity.DbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App.CQRS.Staffs.Common.Commands.Handler
@@ -26,7 +29,7 @@ namespace App.CQRS.Staffs.Common.Commands.Handler
             _sequentialGuidGenerator = sequentialGuidGenerator ?? throw new ArgumentNullException(nameof(sequentialGuidGenerator));
         }
 
-        async Task ICommandHandler<AddStaffCommand>.HandleAsync(AddStaffCommand command)
+        async Task ICommandHandler<AddStaffCommand>.HandleAsync(AddStaffCommand command, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

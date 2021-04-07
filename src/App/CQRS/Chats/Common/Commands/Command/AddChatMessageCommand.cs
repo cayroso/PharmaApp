@@ -1,4 +1,6 @@
-﻿using Data.App.Models.Chats;
+﻿
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.Data.Chats;
 
 namespace App.CQRS.Chats.Common.Commands.Command
 {

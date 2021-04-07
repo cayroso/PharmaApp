@@ -1,7 +1,9 @@
 ﻿using App.CQRS;
 using App.CQRS.Navbar.Common.Queries.Query;
+using Cayent.Core.Common;
+using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Data.Fileuploads;
 using Data.App.DbContext;
-using Data.App.Models.FileUploads;
 using Data.Common;
 using Data.Identity.DbContext;
 using Data.Providers;
@@ -13,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Web.Controllers
@@ -46,10 +49,10 @@ namespace Web.Controllers
         }
 
         [HttpGet("unread-chats")]
-        public async Task<IActionResult> GetNavbarUnreadChats()
+        public async Task<IActionResult> GetNavbarUnreadChats(CancellationToken cancellationToken = default)
         {
             var query = new GetUnreadChatsQuery("", TenantId, UserId, 1, 10);
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetUnreadChatsQuery, Paged<GetUnreadChatsQuery.ChatMessage>>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetUnreadChatsQuery, Paged<GetUnreadChatsQuery.ChatMessage>>(query, cancellationToken);
 
             return Ok(dto.Items);
         }

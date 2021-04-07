@@ -1,14 +1,10 @@
-﻿using Common.Extensions;
-using Data.App.Models.Brands;
-using Data.App.Models.Drugs;
+﻿using Data.App.Models.Brands;
 using Data.App.Models.Orders.OrderLineItems;
 using Data.App.Models.Pharmacies;
 using Data.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
 
 namespace Data.App.Models.Drugs
 {

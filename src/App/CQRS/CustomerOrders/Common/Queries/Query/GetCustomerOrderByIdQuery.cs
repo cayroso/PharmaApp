@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Common.Extensions;
 using Data.Enums;
+using Cayent.Core.Common.Extensions;
+using Cayent.Core.CQRS.Queries;
 
 namespace App.CQRS.Orders.Common.Queries.Query
 {

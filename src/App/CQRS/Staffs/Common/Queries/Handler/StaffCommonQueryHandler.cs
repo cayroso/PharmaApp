@@ -1,4 +1,6 @@
 ﻿using App.CQRS.Staffs.Common.Queries.Query;
+using Cayent.Core.Common;
+using Cayent.Core.CQRS.Queries;
 using Data.App.DbContext;
 using Data.Common;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Cayent.Core.Common.Extensions;
 
 namespace App.CQRS.Staffs.Common.Queries.Handler
 {
@@ -20,7 +24,7 @@ namespace App.CQRS.Staffs.Common.Queries.Handler
             _appDbContext = appDbContext ?? throw new ArgumentNullException(nameof(appDbContext));
         }
 
-        async Task<GetStaffByIdQuery.Staff> IQueryHandler<GetStaffByIdQuery, GetStaffByIdQuery.Staff>.HandleAsync(GetStaffByIdQuery query)
+        async Task<GetStaffByIdQuery.Staff> IQueryHandler<GetStaffByIdQuery, GetStaffByIdQuery.Staff>.HandleAsync(GetStaffByIdQuery query, CancellationToken cancellationToken)
         {
             var sql = from s in _appDbContext.Users.AsNoTracking()
 
@@ -50,7 +54,7 @@ namespace App.CQRS.Staffs.Common.Queries.Handler
             return dto;
         }
 
-        async Task<Paged<SearchStaffQuery.Staff>> IQueryHandler<SearchStaffQuery, Paged<SearchStaffQuery.Staff>>.HandleAsync(SearchStaffQuery query)
+        async Task<Paged<SearchStaffQuery.Staff>> IQueryHandler<SearchStaffQuery, Paged<SearchStaffQuery.Staff>>.HandleAsync(SearchStaffQuery query, CancellationToken cancellationToken)
         {
             var sql = from ps in _appDbContext.PharmacyStaffs
                                         .Include(e => e.Staff)
@@ -71,7 +75,7 @@ namespace App.CQRS.Staffs.Common.Queries.Handler
                           Roles = ps.Staff.User.UserRoles.Select(e => e.Role.Name)
                       };
 
-            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize);
+            var dto = await sql.ToPagedItemsAsync(query.PageIndex, query.PageSize, cancellationToken);
 
             return dto;
         }

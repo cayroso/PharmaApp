@@ -1,5 +1,7 @@
 ﻿using App.CQRS.Drugs.Common.Command.Command;
 using App.Services;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Services;
 using Data.App.DbContext;
 using Data.App.Models.Drugs;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace App.CQRS.Drugs.Common.Command.Handler
@@ -24,7 +27,7 @@ namespace App.CQRS.Drugs.Common.Command.Handler
             _sequentialGuidGenerator = sequentialGuidGenerator ?? throw new ArgumentNullException(nameof(sequentialGuidGenerator));
         }
 
-        async Task ICommandHandler<AddDrugCommand>.HandleAsync(AddDrugCommand command)
+        async Task ICommandHandler<AddDrugCommand>.HandleAsync(AddDrugCommand command, CancellationToken cancellationToken)
         {
             var drug = new Drug
             {
@@ -50,7 +53,7 @@ namespace App.CQRS.Drugs.Common.Command.Handler
             await _appDbContext.SaveChangesAsync();
         }
 
-        async Task ICommandHandler<DeleteDrugCommand>.HandleAsync(DeleteDrugCommand command)
+        async Task ICommandHandler<DeleteDrugCommand>.HandleAsync(DeleteDrugCommand command, CancellationToken cancellationToken)
         {
             var drug = await _appDbContext.Drugs.FirstOrDefaultAsync(e => e.DrugId == command.DrugId);
 
@@ -61,7 +64,7 @@ namespace App.CQRS.Drugs.Common.Command.Handler
             await _appDbContext.SaveChangesAsync();
         }
 
-        async Task ICommandHandler<EditDrugCommand>.HandleAsync(EditDrugCommand command)
+        async Task ICommandHandler<EditDrugCommand>.HandleAsync(EditDrugCommand command, CancellationToken cancellationToken)
         {
             var drug = await _appDbContext.Drugs.Include(e => e.Prices).FirstOrDefaultAsync(e => e.DrugId == command.DrugId);
 

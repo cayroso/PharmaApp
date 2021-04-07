@@ -1,26 +1,14 @@
-﻿using App.CQRS;
-using App.CQRS.Drugs.Common.Queries.Query;
-using App.CQRS.Pharmacy.Common.Commands.Command;
+﻿using App.CQRS.Pharmacy.Common.Commands.Command;
 using App.CQRS.Pharmacy.Common.Queries.Query;
-using App.Hubs;
-using App.Services;
+using Cayent.Core.Common;
+using Cayent.Core.CQRS.Commands;
+using Cayent.Core.CQRS.Queries;
 using Data.App.DbContext;
-using Data.App.Models.Chats;
-using Data.Common;
-using Data.Identity.DbContext;
-using Data.Providers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Web.BackgroundServices;
 using Web.Models;
 
 namespace Web.Controllers
@@ -46,42 +34,42 @@ namespace Web.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken = default)
         {
             var query = new GetPharmacyByIdQuery("", TenantId, UserId, PharmacyId);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Get(string c, int p, int s, string sf, int so)
+        public async Task<IActionResult> Get(string c, int p, int s, string sf, int so, CancellationToken cancellationToken = default)
         {
             var query = new SearchPharmacyQuery("", TenantId, UserId, c, p, s, sf, so);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<SearchPharmacyQuery, Paged<SearchPharmacyQuery.Pharmacy>>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchPharmacyQuery, Paged<SearchPharmacyQuery.Pharmacy>>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get(string id, CancellationToken cancellationToken = default)
         {
             var query = new GetPharmacyByIdQuery("", TenantId, UserId, id);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(query);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(query, cancellationToken);
 
             return Ok(dto);
         }
 
         [HttpPut()]
-        public async Task<IActionResult> Put([FromBody] EditPharmacyInfo info)
+        public async Task<IActionResult> Put([FromBody] EditPharmacyInfo info, CancellationToken cancellationToken = default)
         {
             var cmd = new EditPharmacyCommand("", TenantId, UserId, info.PharmacyId, info.Token, info.Name, info.PhoneNumber, info.MobileNumber, info.Email,
                 info.PharmacyStatus, info.OpeningHours, info.Address, info.GeoX, info.GeoY);
 
-            await _commandHandlerDispatcher.HandleAsync(cmd);
+            await _commandHandlerDispatcher.HandleAsync(cmd, cancellationToken);
 
             return Ok();
         }

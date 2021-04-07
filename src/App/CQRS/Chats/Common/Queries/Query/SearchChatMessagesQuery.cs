@@ -1,7 +1,10 @@
-﻿using Common.Extensions;
-using Data.App.Models.Chats;
+﻿
+using Cayent.Core.Data.Chats;
 using Data.Common;
 using System;
+using Cayent.Core.Common.Extensions;
+using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Common;
 
 namespace App.CQRS.Chats.Common.Queries.Query
 {
