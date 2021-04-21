@@ -1,16 +1,12 @@
-﻿using App.CQRS;
-using App.Services;
+﻿using App.Services;
 using Cayent.Core.CQRS.Commands;
 using Cayent.Core.CQRS.Queries;
 using Cayent.Core.CQRS.Services;
 using Data.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Web.BackgroundServices;
 
 namespace Web
 {

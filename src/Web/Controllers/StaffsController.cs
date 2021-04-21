@@ -1,15 +1,13 @@
-﻿using App.CQRS;
-using App.CQRS.Staffs.Common.Queries.Query;
+﻿using App.CQRS.Staffs.Common.Queries.Query;
 using Cayent.Core.Common;
 using Cayent.Core.CQRS.Queries;
+using Cayent.Core.Data.Identity.Models.Users;
 using Cayent.Core.Data.Users;
 using Data.App.DbContext;
 using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
-using Data.Common;
 using Data.Constants;
 using Data.Identity.DbContext;
-using Data.Identity.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cayent.Core.Data.Identity.Models.Users;
 using Cayent.Core.Data.Users;
+using Data.App.Models.Brands;
 using Data.App.Models.Customers;
+using Data.App.Models.Drugs;
 using Data.App.Models.Pharmacies;
 using Data.App.Models.Users;
 using Data.Constants;
 using Data.Identity.DbContext;
 using Data.Providers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.App.DbContext
@@ -28,6 +32,9 @@ namespace Data.App.DbContext
             CopyIdentityUserToApp(identityWebContext, ctx, pharmacy);
 
             ctx.Add(pharmacy);
+
+
+            CreateAllegre(identityWebContext, ctx);
 
             ctx.SaveChanges();
         }
@@ -174,6 +181,135 @@ namespace Data.App.DbContext
                           .ToArray());
 
             return result;
+        }
+
+        static void CreateAllegre(IdentityWebContext identityWebContext, AppDbContext ctx)
+        {
+            #region Owner
+
+            var email = "user2@pharmaapp.com";
+            var token = Guid.NewGuid().ToString();
+            var admin = new IdentityWebUser
+            {
+                Id = "administrator2",
+                UserName = email,
+                NormalizedUserName = email.ToUpper(),
+
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                EmailConfirmed = true,
+                PhoneNumber = "+639198262335",
+                PhoneNumberConfirmed = true,
+
+                LockoutEnabled = false,
+                LockoutEnd = null,
+                PasswordHash = "AQAAAAEAACcQAAAAEKGIieH17t5bYXa5tUfxRwN9UIEwApTKbQBRaUtIHplIUG2OfYxvBS8uvKy5E2Stsg==",
+                SecurityStamp = "6SADCY3NMMLOHA2S26ZJCEWGHWSQUYRM",
+                TwoFactorEnabled = false,
+                AccessFailedCount = 0,
+                //TenantId = tenant.TenantId,
+                ConcurrencyStamp = token,
+                UserInformation = new UserInformation
+                {
+                    FirstName = "Tina",
+                    LastName = "Moran",
+                    ConcurrencyToken = token,
+                    Theme = "https://bootswatch.com/4/journal/bootstrap.min.css"
+                }
+            };
+            var adminRoles = ApplicationRoles.Items.Select(e => new IdentityUserRole<string>
+            {
+                UserId = admin.Id,
+                RoleId = e.Id
+            }).ToList();
+
+            ctx.AddRange(admin);
+            ctx.AddRange(adminRoles);
+
+            #endregion
+
+            var pharmacy = new Pharmacy
+            {
+                PharmacyId = NewId(), 
+                Name = "Allegre Drugstore"
+            };
+
+            var defaultBrand = new Brand
+            {
+                PharmacyId = pharmacy.PharmacyId,
+                BrandId = NewId(),
+                Name = "Default"
+            };
+
+            var drugs = new List<Drug>()
+            {
+                new Drug
+                {
+                    PharmacyId = pharmacy.PharmacyId,
+                    BrandId = defaultBrand.BrandId,
+                    DrugId = NewId(),
+                    Name = "Allerkid Drops",
+                    Prices = new List<DrugPrice>
+                    {
+                        new DrugPrice
+                        {
+                            DrugPriceId = NewId(),
+                            Price= 160,
+                        }
+                    }
+                },
+                new Drug
+                {
+                    PharmacyId = pharmacy.PharmacyId,
+                    BrandId = defaultBrand.BrandId,
+                    DrugId = NewId(),
+                    Name = "Allerkid Syrup 30ml", 
+                    Prices = new List<DrugPrice>
+                    {
+                        new DrugPrice
+                        {
+                            DrugPriceId = NewId(),
+                            Price= 146,
+                        }
+                    }
+                },
+                new Drug
+                {
+                    PharmacyId = pharmacy.PharmacyId,
+                    BrandId = defaultBrand.BrandId,
+                    DrugId = NewId(),
+                    Name = "Allerkid Syrup 60ml",
+                    Prices = new List<DrugPrice>
+                    {
+                        new DrugPrice
+                        {
+                            DrugPriceId = NewId(),
+                            Price= 262,
+                        }
+                    }
+                }
+                ,
+                new Drug
+                {
+                    PharmacyId = pharmacy.PharmacyId,
+                    BrandId = defaultBrand.BrandId,
+                    DrugId = NewId(),
+                    Name = "Allerta Syrup 60ml",
+                    Prices = new List<DrugPrice>
+                    {
+                        new DrugPrice
+                        {
+                            DrugPriceId = NewId(),
+                            Price= 206,
+                        }
+                    }
+                }
+            };
+
+            pharmacy.Brands.Add(defaultBrand);
+            pharmacy.Drugs = drugs;
+
+            ctx.Add(pharmacy);
         }
     }
 }

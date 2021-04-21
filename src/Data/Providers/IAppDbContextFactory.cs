@@ -1,4 +1,5 @@
-﻿using Data.App.DbContext;
+﻿using Cayent.Core.Data.Identity.Models;
+using Data.App.DbContext;
 using Data.App.Models.Calendars;
 using Data.App.Models.Users;
 using Data.Identity.Models;

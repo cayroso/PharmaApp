@@ -1,4 +1,6 @@
-﻿using Data.Identity.Models;
+﻿using Cayent.Core.Data.Identity.Models;
+using Cayent.Core.Data.Identity.Models.Users;
+using Data.Identity.Models;
 using Data.Identity.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

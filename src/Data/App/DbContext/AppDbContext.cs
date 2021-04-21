@@ -2,6 +2,7 @@
 using Cayent.Core.CQRS.Services;
 using Cayent.Core.Data.Chats;
 using Cayent.Core.Data.Fileuploads;
+using Cayent.Core.Data.Identity.Models;
 using Cayent.Core.Data.Notifications;
 using Data.App.Models.Brands;
 using Data.App.Models.Calendars;

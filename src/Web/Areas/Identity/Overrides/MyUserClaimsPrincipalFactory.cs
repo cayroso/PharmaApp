@@ -1,16 +1,14 @@
 ﻿using Cayent.Core.Common.Extensions;
+using Cayent.Core.Data.Identity.Models;
+using Cayent.Core.Data.Identity.Models.Users;
 using Data.App.DbContext;
 using Data.Identity.DbContext;
-using Data.Identity.Models;
-using Data.Identity.Models.Users;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
