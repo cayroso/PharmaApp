@@ -169,6 +169,9 @@
         props: {
             uid: String,
             id: String,
+            roleId: {
+                type: String, required: true
+            }
         },
 
         data() {
@@ -186,7 +189,9 @@
                 item: {
                     price: {}
                 },
-                itemEdit: {},
+                itemEdit: {
+                    price: {}
+                },
             };
         },
 
@@ -274,7 +279,7 @@
                 const item = vm.item;
 
                 itemEdit.drugId = item.drugId;
-                itemEdit.name = item.name;
+                itemEdit.name = item.name;                
                 itemEdit.price = item.price.price;
                 itemEdit.brandId = item.brandId;
                 itemEdit.classification = item.classification;

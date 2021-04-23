@@ -1,11 +1,11 @@
 ﻿<template>
-    <b-navbar toggleable="sm" fixed="top" :sticky="true" type="dark" variant="dark">
+    <b-navbar toggleable="sm" fixed="top" :sticky="true" type="dark" variant="danger">
         <div class="container-lg">
             <a href="/" class="navbar-brand">{{appName}}</a>
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav">
                     <li v-for="menu in menus" class="nav-item">
-                        <router-link :to="menu.to" class="nav-link">
+                        <router-link :to="menu.to" class="nav-link text-white">
                             <span v-bind:class="menu.icon" class="mr-1"></span>
                             <span v-text="menu.label" class="d-none d-md-inline"></span>
                         </router-link>
@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li v-show="notifications.length>0" class="nav-item px-2 px-sm-0">
-                    <a v-b-toggle.notificationsDrawer class="nav-link" @click.prevent href="#">
+                    <a v-b-toggle.notificationsDrawer class="nav-link text-white" @click.prevent href="#">
                         <i class="fas fa-fw fa-bell"></i>
                         <span class="badge badge-danger">
                             <span>{{notifications.length}}</span>
@@ -32,7 +32,7 @@
                 </li>
 
                 <li class="nav-item px-2 px-sm-0">
-                    <a v-b-toggle.shoppingDrawer class="nav-link" @click.prevent href="#">
+                    <a v-b-toggle.shoppingDrawer class="nav-link text-white" @click.prevent href="#">
                         <i class="fas fa-fw fa-shopping-cart"></i>
                     </a>
                 </li>

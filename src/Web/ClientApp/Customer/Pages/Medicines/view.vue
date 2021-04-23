@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-row">
+            <!--<div class="form-row">
                 <div class="form-group col-md">
                     <label for="stock">Stock</label>
                     <div class="form-control-plaintext">
@@ -72,7 +72,7 @@
                         {{item.reorderLevel}}
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
@@ -89,7 +89,9 @@
 
         data() {
             return {
-                item: {}
+                item: {
+                    price: {}
+                }
             };
         },
 

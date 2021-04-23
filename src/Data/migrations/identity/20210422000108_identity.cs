@@ -102,7 +102,8 @@ namespace Data.migrations.identity
                     FeedbackCategory = table.Column<int>(type: "INTEGER", nullable: false),
                     Rating = table.Column<int>(type: "INTEGER", nullable: false),
                     Comment = table.Column<string>(type: "TEXT", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    DateCreated = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ConcurrencyToken = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

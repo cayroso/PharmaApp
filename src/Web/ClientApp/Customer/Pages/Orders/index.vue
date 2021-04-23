@@ -128,30 +128,30 @@
                                 <div class="col align-self-center">
                                     {{row.item.pharmacy.name}}
                                     <div class="row">
-                                        <div class="col-md-auto">
+                                        <div v-if="row.item.pharmacy.phoneNumber" class="col-md-auto">
                                             <div class="small">
                                                 <i class="fas fa-fw fa-phone"></i>
                                                 {{row.item.pharmacy.phoneNumber}}
                                             </div>
                                         </div>
-                                        <div class="col-md-auto">
+                                        <div v-if="row.item.pharmacy.mobileNumber" class="col-md-auto">
                                             <div class="small">
                                                 <i class="fas fa-fw fa-mobile"></i>
                                                 {{row.item.pharmacy.mobileNumber}}
                                             </div>
                                         </div>
-                                        <div class="col-md-auto">
+                                        <div v-if="row.item.pharmacy.email" class="col-md-auto">
                                             <div class="small">
                                                 <i class="fas fa-fw fa-at"></i>
                                                 {{row.item.pharmacy.email}}
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="small">
+                                    <div v-if="row.item.pharmacy.openingHours" class="small">
                                         <i class="fas fa-fw fa-clock"></i>
                                         {{row.item.pharmacy.openingHours}}
                                     </div>
-                                    <div class="small">
+                                    <div v-if="row.item.pharmacy.address" class="small">
                                         <i class="fas fa-fw fa-location-arrow"></i>
                                         {{row.item.pharmacy.address}}
                                     </div>
@@ -159,20 +159,17 @@
                             </div>
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Date</label>
-                                <div class="col align-self-center">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            Ordered: {{row.item.dateOrdered|moment('calendar')}}
-                                        </li>
-                                        <template v-if="moment(row.item.dateStartPickup).isBefore()">
-                                            <li>
-                                                Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
-                                            </li>
-                                            <li>
-                                                End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
-                                            </li>
-                                        </template>
-                                    </ul>
+                                <div class="col form-control-plaintext">
+                                    Ordered: {{row.item.dateOrdered|moment('calendar')}}
+                                    <template v-if="moment(row.item.dateStartPickup).isBefore()">
+                                        <div>
+                                            Start Pickup: {{row.item.dateStartPickup|moment('calendar')}}
+                                        </div>
+                                        <div>
+                                            End Pickup: {{row.item.dateEndPickup|moment('calendar')}}
+                                        </div>
+                                    </template>
+
                                 </div>
                             </div>
 

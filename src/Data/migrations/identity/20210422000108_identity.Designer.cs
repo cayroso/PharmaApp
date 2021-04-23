@@ -9,21 +9,25 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.migrations.identity
 {
     [DbContext(typeof(IdentityWebContext))]
-    [Migration("20210204034425_identity")]
+    [Migration("20210422000108_identity")]
     partial class identity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.5");
 
-            modelBuilder.Entity("Data.Identity.Models.Feedback", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Feedback", b =>
                 {
                     b.Property<string>("FeedbackId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Comment")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyToken")
+                        .IsConcurrencyToken()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DateCreated")
@@ -45,7 +49,7 @@ namespace Data.migrations.identity
                     b.ToTable("Feedback");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.LoginAudit", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.LoginAudit", b =>
                 {
                     b.Property<string>("LoginAuditId")
                         .ValueGeneratedOnAdd()
@@ -73,7 +77,7 @@ namespace Data.migrations.identity
                     b.ToTable("LoginAudit");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Tenant", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Tenant", b =>
                 {
                     b.Property<string>("TenantId")
                         .HasMaxLength(36)
@@ -118,7 +122,7 @@ namespace Data.migrations.identity
                     b.ToTable("Tenant");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.IdentityWebUser", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(36)
@@ -198,7 +202,7 @@ namespace Data.migrations.identity
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.UserAddress", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.UserAddress", b =>
                 {
                     b.Property<string>("UserAddressId")
                         .HasMaxLength(36)
@@ -235,7 +239,7 @@ namespace Data.migrations.identity
                     b.ToTable("UserAddress");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.UserInformation", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.UserInformation", b =>
                 {
                     b.Property<string>("UserId")
                         .HasMaxLength(36)
@@ -410,18 +414,18 @@ namespace Data.migrations.identity
                     b.ToTable("UserToken");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Feedback", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Feedback", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", "User")
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.LoginAudit", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.LoginAudit", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", "User")
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", "User")
                         .WithMany("LoginAudits")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -430,18 +434,18 @@ namespace Data.migrations.identity
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.IdentityWebUser", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Tenant", "Tenant")
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Tenant", "Tenant")
                         .WithMany("Users")
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.UserAddress", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.UserAddress", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", "User")
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -450,11 +454,11 @@ namespace Data.migrations.identity
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.UserInformation", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.UserInformation", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", "User")
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", "User")
                         .WithOne("UserInformation")
-                        .HasForeignKey("Data.Identity.Models.Users.UserInformation", "UserId")
+                        .HasForeignKey("Cayent.Core.Data.Identity.Models.Users.UserInformation", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -472,7 +476,7 @@ namespace Data.migrations.identity
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", null)
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -481,7 +485,7 @@ namespace Data.migrations.identity
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", null)
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -496,7 +500,7 @@ namespace Data.migrations.identity
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", null)
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -505,19 +509,19 @@ namespace Data.migrations.identity
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Data.Identity.Models.Users.IdentityWebUser", null)
+                    b.HasOne("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Tenant", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Tenant", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("Data.Identity.Models.Users.IdentityWebUser", b =>
+            modelBuilder.Entity("Cayent.Core.Data.Identity.Models.Users.IdentityWebUser", b =>
                 {
                     b.Navigation("LoginAudits");
 

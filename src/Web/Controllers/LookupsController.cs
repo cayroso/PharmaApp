@@ -34,7 +34,7 @@ namespace Web.Controllers
         public async Task<IActionResult> GetBrands()
         {
             var sql = from b in _appDbContext.Brands.AsNoTracking()
-
+                      where b.PharmacyId == PharmacyId
                       select new
                       {
                           Id = b.BrandId,
