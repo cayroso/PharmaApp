@@ -32,6 +32,7 @@
   <ItemGroup>
     <Folder Include="Areas\Customer\Models\" />
     <Folder Include="Areas\Staff\Models\" />
+    <Folder Include="Areas\Systems\Models\" />
   </ItemGroup>
 
 </Project>

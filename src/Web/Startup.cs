@@ -56,6 +56,12 @@ namespace Web
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(ApplicationRoles.SystemsRoleName, policy =>
+                   policy.RequireAssertion(context =>
+                       context.User.HasClaim(c =>
+                       c.Type == System.Security.Claims.ClaimTypes.Role && c.Value == ApplicationRoles.SystemsRoleName
+                           )));
+
                 options.AddPolicy(ApplicationRoles.AdministratorRoleName, policy =>
                    policy.RequireAssertion(context =>
                        context.User.HasClaim(c =>
@@ -93,6 +99,7 @@ namespace Web
             })
             .AddRazorPagesOptions(opt =>
             {
+                opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.SystemsRoleName, "/", ApplicationRoles.SystemsRoleName);
                 opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.AdministratorRoleName, "/", ApplicationRoles.AdministratorRoleName);
                 opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.StaffRoleName, "/", ApplicationRoles.StaffRoleName);
                 opt.Conventions.AuthorizeAreaFolder(ApplicationRoles.CustomerRoleName, "/", ApplicationRoles.CustomerRoleName);

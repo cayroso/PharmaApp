@@ -48,8 +48,37 @@
             </form>
         </section>
     </div>
-    <div class=" d-none col-md-6 col-md-offset-2">
-        <section>
+    <div class="col-md">
+        <h5>These accounts are for testing purposes only. The Password is "<b>123456</b>"</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Role(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emailRole in Model.EmailRoles)
+                    {
+                        <tr>
+                            <td>
+                                @emailRole.Email
+                            </td>
+                            <td>
+                                <ul class="small">
+                                    @foreach (var r in emailRole.Roles)
+                                    {
+                                        <li>@r</li>
+                                    }
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <section class="d-none">
             <h4>Use another service to log in.</h4>
             <hr />
             @{

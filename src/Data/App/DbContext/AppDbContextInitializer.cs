@@ -38,6 +38,8 @@ namespace Data.App.DbContext
             CreateGener(identityWebContext, ctx);
             CreateZoe(identityWebContext, ctx);
 
+
+            identityWebContext.SaveChanges();
             ctx.SaveChanges();
         }
 
