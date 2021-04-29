@@ -42,14 +42,14 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Mobile</th>
-                        <th>Address</th>                        
+                        <th>Address</th>
                     </template>
                     <template slot="table" slot-scope="row">
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
                             <router-link :to="{name:'pharmaciesView', params:{id:row.item.pharmacyId}}">
                                 {{row.item.name}}
-                            </router-link> 
+                            </router-link>
                         </td>
                         <td>
                             <div v-if="row.item.email">
@@ -77,21 +77,17 @@
                         </td>
                         <td>
                             {{row.item.address}}
-                        </td>                        
+                        </td>
                     </template>
 
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
-                                <div class="offset-3 col align-self-center">
-                                    <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
-
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Name</label>
                                 <div class="col align-self-center">
-                                    {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
+                                    <router-link :to="{name:'pharmaciesView', params:{id:row.item.pharmacyId}}">
+                                        {{row.item.name}}
+                                    </router-link>
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
@@ -106,7 +102,7 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Phone Number</label>
+                                <label class="col-3 col-form-label">Phone</label>
                                 <div class="col align-self-center">
                                     <div v-if="row.item.phoneNumber">
                                         <a :href="`tel:${row.item.phoneNumber}`" class="btn btn-outline-primary">
@@ -117,26 +113,20 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Roles</label>
+                                <label class="col-3 col-form-label">Mobile</label>
                                 <div class="col align-self-center">
-                                    <ul class="list-unstyled">
-                                        <li v-for="r in row.item.roles">
-                                            <i v-if="r=='Administrator'" class="fas fa-fw fa-user-shield"></i>
-                                            <i v-else class="fas fa-fw fa-user"></i>
-                                            {{r}}
-                                        </li>
-                                    </ul>
+                                    <div v-if="row.item.mobileNumber">
+                                        <a :href="`tel:${row.item.mobileNumber}`" class="btn btn-outline-primary">
+                                            <i class="fas fa-fw fa-phone"></i>
+                                        </a>
+                                        {{row.item.mobileNumber}}
+                                    </div>
                                 </div>
                             </div>
-
                             <div class="form-group mb-0 row no-gutters">
-                                <div class="offset-3 col align-self-center">
-                                    <!--<button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.staffId)" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-fw fa-comment"></i>
-                                    </button>-->
-                                    <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-outline-warning">
-                                        <i class="fas fa-fw fa-key"></i>
-                                    </button>
+                                <label class="col-3 col-form-label">Address</label>
+                                <div class="col align-self-center">
+                                    {{row.item.address}}
                                 </div>
                             </div>
                         </div>

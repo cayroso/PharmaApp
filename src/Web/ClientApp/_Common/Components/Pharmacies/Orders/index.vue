@@ -36,6 +36,7 @@
                         <th class="text-center">#</th>
                         <th>Order Number</th>
                         <th>Total Price</th>
+                        <th v-if="roleId==='systems'">Pharmacy</th>
                         <th>Customer</th>
                         <th>Date</th>
                     </template>
@@ -52,6 +53,12 @@
                         <td>
                             {{row.item.grossPrice|toCurrency}}
                         </td>
+                        <td v-if="roleId==='systems'">
+                            <router-link :to="{name:'pharmaciesView', params:{ id: row.item.pharmacy.pharmacyId}}">
+                                {{row.item.pharmacy.name}}
+                            </router-link>
+                            
+                        </td>
                         <td>
                             <div>
                                 <b-avatar :src="row.item.customer.urlProfilePicture"></b-avatar>
@@ -63,7 +70,7 @@
                                         <i class="fas fa-fw fa-phone"></i>
                                         {{row.item.customer.phoneNumber}}
                                     </div>
-                                </div>                                
+                                </div>
                                 <div v-if="row.item.customer.email">
                                     <div class="small">
                                         <i class="fas fa-fw fa-at"></i>
@@ -71,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </td>
                         <td>
                             <ul class="list-unstyled">
@@ -181,6 +188,7 @@
             uid: String,
             urlAdd: String,
             urlView: String,
+            roleId: { type: String, required: true }
         },
         components: {
             //modalAddTask
@@ -242,7 +250,7 @@
                 filter.query.sortField = urlParams.get('sf') || cache.sortField || filter.query.sortField;
                 filter.query.sortOrder = parseInt(urlParams.get('so'), 10) || cache.sortOrder || filter.query.sortOrder;
                 filter.visible = cache.visible || filter.visible;
-                
+
                 filter.query.orderStatus = urlParams.get('orderStatus') || cache.orderStatus || filter.query.orderStatus;
 
             },

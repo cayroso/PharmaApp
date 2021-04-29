@@ -1,5 +1,5 @@
 ﻿<template>
-    <my-page :uid="uid"></my-page>
+    <my-page :uid="uid" role-id="systems"></my-page>
 </template>
 <script>
     import MyPage from '../../../_Common/Components/Pharmacies/Orders/index.vue';

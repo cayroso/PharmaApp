@@ -63,6 +63,10 @@
                     {
                         <tr>
                             <td>
+                                <button onclick="setEmail('@emailRole.Email')" class="btn btn-sm btn-info">
+                                    <span class="fas fa-fw fa-copy"></span>
+                                </button>
+
                                 @emailRole.Email
                             </td>
                             <td>
@@ -111,4 +115,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function setEmail(email) {
+            document.getElementById('Input_Email').value = email;
+        }
+    </script>
 }

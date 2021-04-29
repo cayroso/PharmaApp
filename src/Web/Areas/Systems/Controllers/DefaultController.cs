@@ -13,6 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Web.Controllers;
 using Cayent.Core.Common.Extensions;
+using App.CQRS.Users.Common.Queries.Query;
+using App.CQRS.Drugs.Common.Queries.Query;
 
 namespace Web.Areas.Systems.Controllers
 {
@@ -50,8 +52,7 @@ namespace Web.Areas.Systems.Controllers
 
             var orderHistory = await appDbContext.OrderTimelines
                 .Include(e => e.Order)
-                .Where(e => e.Order.PharmacyId == PharmacyId
-                    && e.DateTimeline >= startMonth && e.DateTimeline <= endMonth)
+                .Where(e => e.DateTimeline >= startMonth && e.DateTimeline <= endMonth)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -66,9 +67,7 @@ namespace Web.Areas.Systems.Controllers
                 .Include(e => e.LineItems)
                     .ThenInclude(e => e.Drug)
                 .AsNoTracking()
-                .Where(e =>
-                        e.PharmacyId == PharmacyId
-                        && e.OrderDate >= startMonth && e.OrderDate <= endMonth
+                .Where(e => e.OrderDate >= startMonth && e.OrderDate <= endMonth
                         && (e.OrderStatus == EnumOrderStatus.Completed))
                 .ToListAsync();
 
@@ -151,9 +150,20 @@ namespace Web.Areas.Systems.Controllers
         [HttpGet("pharmacies/{id}")]
         public async Task<IActionResult> GetPharmaciesAsync(string id, CancellationToken cancellationToken = default)
         {
-            var query = new GetPharmacyByIdQuery("", TenantId, UserId, id);
+            var q1 = new GetPharmacyByIdQuery("", TenantId, UserId, id);
 
-            var dto = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(query, cancellationToken);
+            var dto1 = await _queryHandlerDispatcher.HandleAsync<GetPharmacyByIdQuery, GetPharmacyByIdQuery.Pharmacy>(q1, cancellationToken);
+
+            //  get the medicines
+            var q2 = new SearchDrugByPharmacyQuery("", TenantId, UserId, id, string.Empty, 1, 1000, string.Empty, -1);
+
+            var dto2 = await _queryHandlerDispatcher.HandleAsync<SearchDrugByPharmacyQuery, Paged<SearchDrugByPharmacyQuery.Drug>>(q2, cancellationToken);
+
+            var dto = new
+            {
+                Pharmacy = dto1,
+                Medicines = dto2
+            };
 
             return Ok(dto);
         }
@@ -161,32 +171,44 @@ namespace Web.Areas.Systems.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetUsersAsync(string c, int p, int s, string sf, int so, [FromServices] AppDbContext appDbContext, CancellationToken cancellationToken = default)
         {
-            //var query = new SearchPharmacyQuery("", TenantId, UserId, c, p, s, sf, so);
+            var query = new SearchUserQuery("", TenantId, UserId, c, p, s, sf, so);
 
-            //var dto = await _queryHandlerDispatcher.HandleAsync<SearchPharmacyQuery, Paged<SearchPharmacyQuery.Pharmacy>>(query, cancellationToken);
+            var dto = await _queryHandlerDispatcher.HandleAsync<SearchUserQuery, Paged<SearchUserQuery.User>>(query, cancellationToken);
 
-            //return Ok(dto);
-            var sql = await appDbContext.Users
-                        .AsNoTracking()
-                        .ToPagedItemsAsync(p, s, cancellationToken);
+            return Ok(dto);
+        }
 
-            return Ok(sql);
+        [HttpGet("users/{id}/roles")]
+        public async Task<IActionResult> GetUserRolesAsync(string id, [FromServices] AppDbContext appDbContext, CancellationToken cancellationToken = default)
+        {
+            var query = new GetUserByIdQuery("", TenantId, UserId, id);
+
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetUserByIdQuery, GetUserByIdQuery.User>(query, cancellationToken);
+
+            return Ok(dto);
         }
 
         [HttpGet("users/{id}")]
-        public async Task<IActionResult> GetUsersAsync(string id, [FromServices] AppDbContext appDbContext, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetUserAsync(string id, [FromServices] AppDbContext appDbContext, CancellationToken cancellationToken = default)
         {
-            //var query = new SearchPharmacyQuery("", TenantId, UserId, c, p, s, sf, so);
+            var query = new GetUserByIdQuery("", TenantId, UserId, id);
 
-            //var dto = await _queryHandlerDispatcher.HandleAsync<SearchPharmacyQuery, Paged<SearchPharmacyQuery.Pharmacy>>(query, cancellationToken);
+            var dto = await _queryHandlerDispatcher.HandleAsync<GetUserByIdQuery, GetUserByIdQuery.User>(query, cancellationToken);
 
-            //return Ok(dto);
-            var sql = await appDbContext.Users
-                        .AsNoTracking()
-                        .Where(e => e.UserId == id)
-                        .FirstOrDefaultAsync();
+            var pharmacy = await appDbContext.PharmacyStaffs
+                .AsNoTracking()
+                .Include(e => e.Pharmacy)
+                .Where(ps => ps.StaffId == id)
+                .Select(e => e.Pharmacy)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            return Ok(sql);
+            var data = new
+            {
+                User = dto,
+                pharmacy
+            };
+
+            return Ok(data);
         }
     }
 }

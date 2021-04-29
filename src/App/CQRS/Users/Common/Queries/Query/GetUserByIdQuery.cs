@@ -27,6 +27,9 @@ namespace App.CQRS.Users.Common.Queries.Query
             public string MiddleName { get; set; }
             public string LastName { get; set; }
 
+            public string PharmacyId { get; set; }
+            public string PharmacyName { get; set; }
+
             public IEnumerable<Role> Roles { get; set; } = new List<Role>();
         }
 

@@ -6,15 +6,12 @@ import index from './Pages/index.vue';
 
 import accountsIndex from './Pages/Accounts/index.vue';
 
-//import contactsIndex from './Pages/Contacts/index.vue';
+import ordersIndex from './Pages/Orders/index.vue';
+//import ordersAdd from './Pages/Orders/add.vue';
+import ordersView from './Pages/Orders/view.vue';
 
 import medicinesIndex from './Pages/Medicines/index.vue';
-import medicinesAdd from './Pages/Medicines/add.vue';
 import medicinesView from './Pages/Medicines/view.vue';
-
-import ordersIndex from './Pages/Orders/index.vue';
-import ordersAdd from './Pages/Orders/add.vue';
-import ordersView from './Pages/Orders/view.vue';
 
 import pharmaciesIndex from './Pages/Pharmacies/index.vue';
 import pharmaciesView from './Pages/Pharmacies/view.vue';
@@ -37,15 +34,13 @@ const routes = [
 
     { path: '/accounts', name: "accounts", component: accountsIndex },
 
-    //{ path: '/contacts', name: "contacts", component: contactsIndex },
-
-    { path: '/medicines', name: "medicines", component: medicinesIndex },
-    { path: '/medicines/add', name: "medicinesAdd", component: medicinesAdd },
-    { path: '/medicines/view/:id', name: "medicinesView", component: medicinesView, props: true },
-
-    //{ path: '/orders', name: "orders", component: ordersIndex },
+    { path: '/orders', name: "orders", component: ordersIndex },
     //{ path: '/orders/add', name: "ordersAdd", component: ordersAdd },
-    //{ path: '/orders/view/:id', name: "ordersView", component: ordersView, props: true },
+    { path: '/orders/view/:id', name: "ordersView", component: ordersView, props: true },
+
+    { path: '/medicines', name: "medicinesIndex", component: medicinesIndex },
+    { path: '/medicines/:pharmacyId', name: "pharmaMedicinesIndex", component: medicinesIndex, props: true },
+    { path: '/medicines/view/:id', name: "medicinesView", component: medicinesView, props: true },
 
     { path: '/pharmacies', name: "pharmaciesIndex", component: pharmaciesIndex },
     { path: '/pharmacies/view/:id', name: "pharmaciesView", component: pharmaciesView, props: true },

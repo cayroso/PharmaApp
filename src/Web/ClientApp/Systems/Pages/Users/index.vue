@@ -4,16 +4,16 @@
         <div class="row align-items-center">
             <div class="col-sm">
                 <h1 class="h3 mb-sm-0">
-                    <i class="fas fa-fw fa-users mr-1"></i>Staffs
+                    <i class="fas fa-fw fa-users mr-1"></i>Users
                 </h1>
             </div>
             <div class="col-sm-auto">
                 <div class="d-flex flex-row">
-                    <div class="mr-1">
+                    <!--<div class="mr-1">
                         <router-link to="/staffs/add" class="btn btn-primary">
                             <i class="fas fa-plus"></i>
                         </router-link>
-                    </div>
+                    </div>-->
 
                     <div class="flex-grow-1">
                         <div class="input-group">
@@ -35,12 +35,12 @@
 
         <b-overlay :show="busy">
             <div class="mt-2 table-responsive shadow-sm">
-                <table-list :header="{key: 'staffId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
+                <table-list :header="{key: 'userId', columns:[]}" :items="filter.items" :getRowNumber="getRowNumber" :setSelected="setSelected" :isSelected="isSelected" table-css="">
                     <template #header>
                         <th class="text-center">#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
+                        <th>Pharmacy</th>
+                        <th>Contact</th>
                         <th>Roles</th>
                         <th></th>
                     </template>
@@ -48,10 +48,16 @@
                         <td v-text="getRowNumber(row.index)" class="text-center"></td>
                         <td>
                             <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
-                            <span>
+                            <router-link :to="{name:'usersView', params:{id:row.item.userId}}">
                                 {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
-                            </span>
-
+                            </router-link>
+                        </td>
+                        <td>
+                            <div v-if="row.item.pharmacyName">
+                                <router-link :to="{name:'pharmaciesView', params:{id:row.item.pharmacyId}}">
+                                    {{row.item.pharmacyName}}
+                                </router-link>
+                            </div>
                         </td>
                         <td>
                             <div v-if="row.item.email">
@@ -60,10 +66,7 @@
                                 </a>
                                 {{row.item.email}}
                             </div>
-
-                        </td>
-                        <td>
-                            <div v-if="row.item.phoneNumber">
+                            <div v-if="row.item.phoneNumber" class="mt-2">
                                 <a :href="`tel:${row.item.phoneNumber}`" class="btn btn-outline-primary">
                                     <i class="fas fa-fw fa-phone"></i>
                                 </a>
@@ -83,7 +86,7 @@
                             <!--<button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.staffId)" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-fw fa-comment"></i>
                             </button>-->
-                            <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-outline-warning">
+                            <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-danger">
                                 <i class="fas fa-fw fa-key"></i>
                             </button>
                         </td>
@@ -92,21 +95,30 @@
                     <template slot="list" slot-scope="row">
                         <div>
                             <div class="form-group mb-0 row no-gutters">
-                                <div class="offset-3 col align-self-center">
-                                    <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
-                                    
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Name</label>
-                                <div class="col align-self-center">
-                                        {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
+                                <div class="col">
+                                    <div class="form-control-plaintext">
+                                        <b-avatar :src="row.item.urlProfilePicture"></b-avatar>
+                                        <router-link :to="{name:'usersView', params:{id:row.item.userId}}">
+                                            {{row.item.firstName}} {{row.item.middleName}} {{row.item.lastName}}
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div v-if="row.item.pharmacyName" class="form-group mb-0 row no-gutters">
+                                <label class="col-3 col-form-label">Pharmacy</label>
+                                <div class="col align-self-center">
+                                    <router-link :to="{name:'pharmaciesView', params:{id:row.item.pharmacyId}}">                                        
+                                        {{row.item.pharmacyName}}
+                                    </router-link>
+                                </div>
+                            </div>
+
                             <div class="form-group mb-0 row no-gutters">
                                 <label class="col-3 col-form-label">Email</label>
                                 <div class="col align-self-center">
-                                    <div v-if="row.item.email">
+                                    <div v-if="row.item.email" class="form-control-plaintext">
                                         <a :href="`mailto:${row.item.email}`" class="btn btn-outline-primary">
                                             <i class="fas fa-fw fa-envelope"></i>
                                         </a>
@@ -115,9 +127,9 @@
                                 </div>
                             </div>
                             <div class="form-group mb-0 row no-gutters">
-                                <label class="col-3 col-form-label">Phone Number</label>
+                                <label class="col-3 col-form-label">Phone</label>
                                 <div class="col align-self-center">
-                                    <div v-if="row.item.phoneNumber">
+                                    <div v-if="row.item.phoneNumber" class="form-control-plaintext">
                                         <a :href="`tel:${row.item.phoneNumber}`" class="btn btn-outline-primary">
                                             <i class="fas fa-fw fa-phone"></i>
                                         </a>
@@ -137,13 +149,13 @@
                                     </ul>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group mb-0 row no-gutters">
                                 <div class="offset-3 col align-self-center">
                                     <!--<button v-if="row.item.userId !== uid" @click="$bus.$emit('event:send-message',row.item.staffId)" class="btn btn-sm btn-outline-primary">
                 <i class="fas fa-fw fa-comment"></i>
             </button>-->
-                                    <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-outline-warning">
+                                    <button @click="openManageUserRole(row.item)" class="btn btn-sm btn-danger">
                                         <i class="fas fa-fw fa-key"></i>
                                     </button>
                                 </div>
@@ -179,9 +191,9 @@
         },
         data() {
             return {
-                baseUrl: `/api/staffs`,
+                baseUrl: `/api/systems/default/users`,
                 filter: {
-                    cacheKey: `filter-${this.uid}/staffs`,
+                    cacheKey: `filter-${this.uid}/users`,
                     //query: {
                     //    orderStatus: 0,
                     //    dateStart: moment().startOf('week').format('YYYY-MM-DD'),
@@ -214,7 +226,7 @@
             openManageUserRole(item) {
                 const vm = this;
 
-                vm.$refs.modalManageUserRole.open(item.staffId);
+                vm.$refs.modalManageUserRole.open(item.userId);
             },
         }
     }

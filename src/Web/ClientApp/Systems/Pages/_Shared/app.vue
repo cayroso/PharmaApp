@@ -44,10 +44,10 @@
             return {
                 menus: [
                     { to: '/', label: 'Dashboard', icon: 'fas fa-fw fa-tachometer-alt' },
-                    //{ to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-prescription-bottle-alt' },
-                    //{ to: '/orders', label: 'Orders', icon: 'fas fa-fw fa-cubes' },
                     { to: '/pharmacies', label: 'Pharmacies', icon: 'fas fa-fw fa-clinic-medical' },
+                    { to: '/medicines', label: 'Medicines', icon: 'fas fa-fw fa-prescription-bottle-alt' },                    
                     { to: '/users', label: 'Users', icon: 'fas fa-fw fa-users' },
+                    { to: '/orders', label: 'Orders', icon: 'fas fa-fw fa-cubes' },
                 ]
             }
         },

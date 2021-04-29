@@ -62,10 +62,10 @@
                 item: {},
                 selectedRoles: [],
                 roles: [
-                    //{ value: 'system', text: 'System' },
+                    { value: 'systems', text: 'System' },
                     { value: 'administrator', text: 'Administrator' },
-                    { value: 'staff', text: 'Staff' },
-                    //{ value: 'member', text: 'Member' },
+                    /*{ value: 'staff', text: 'Staff' },*/
+                    { value: 'customer', text: 'Customer' },
                 ],
             }
         },
@@ -91,11 +91,11 @@
 
             async open(id) {
                 const vm = this;
-
+                
                 vm.userId = id;
 
                 await vm.get();
-
+                
                 vm.$refs.modal.show();
             },
 
@@ -112,11 +112,10 @@
                     return;
 
                 try {
-                    await vm.$util.axios.get(`/api/staffs/${vm.userId}/`)
+                    await vm.$util.axios.get(`/api/systems/default/users/${vm.userId}/roles/`)
                         .then(resp => {
                             vm.item = resp.data;
-                            vm.selectedRoles = vm.item.roles.filter(e => vm.roles.find(r => r.value == e.roleId) !== undefined).map(e => e.roleId);
-                            
+                            vm.selectedRoles = vm.item.roles.filter(e => vm.roles.find(r => r.value == e.roleId) !== undefined).map(e => e.roleId);                            
                         })
                 } catch (e) {
                     vm.$util.handleError(e);

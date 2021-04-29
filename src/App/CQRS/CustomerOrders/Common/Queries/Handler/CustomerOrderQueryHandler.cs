@@ -100,7 +100,8 @@ namespace App.CQRS.Orders.Common.Queries.Handler
                                 //    .ThenInclude(e => e.DrugPrice)
                                 .AsNoTracking()
 
-                      where o.CustomerId == query.CustomerId || o.PharmacyId == query.PharmacyId
+                      where string.IsNullOrWhiteSpace(query.CustomerId) || string.IsNullOrWhiteSpace(query.PharmacyId)
+                             || o.CustomerId == query.CustomerId || o.PharmacyId == query.PharmacyId
                       where query.OrderStatus == EnumOrderStatus.Unknown || o.OrderStatus == query.OrderStatus
                       where string.IsNullOrWhiteSpace(query.Criteria)
                         || EF.Functions.Like(o.Number, $"%{query.Criteria}%")
