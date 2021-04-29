@@ -35,4 +35,16 @@
     <Folder Include="Areas\Systems\Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\img\icon192x192.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\icon512x512.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
