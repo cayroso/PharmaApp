@@ -73,28 +73,10 @@ namespace Web.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
 
             //  get all existing user in the system
-            var sql = from u in webContext.Users
-                      join ur in webContext.UserRoles on u.Id equals ur.UserId
-                      join r in webContext.Roles on ur.RoleId equals r.Id
-                      select new
-                      {
-                          u.Email,
-                          r.Name
-                      };
-
-            var dto = await sql.ToListAsync();
-
-            EmailRoles = dto.GroupBy(e => e.Email).Select(e =>
-                new EmailRoles
-                {
-                    Email = e.Key,
-                    Roles = e.Select(p => p.Name).OrderBy(e => e).ToList()
-                })
-                .OrderByDescending(e => e.Roles.Count).ThenBy(e => e.Email)
-                .ToList();
+            await GetEmailRoles(webContext);
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync([FromServices] IdentityWebContext webContext, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
@@ -122,12 +104,36 @@ namespace Web.Areas.Identity.Pages.Account
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    await GetEmailRoles(webContext);
                     return Page();
                 }
             }
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        async Task GetEmailRoles(IdentityWebContext webContext)
+        {
+            var sql = from u in webContext.Users
+                      join ur in webContext.UserRoles on u.Id equals ur.UserId
+                      join r in webContext.Roles on ur.RoleId equals r.Id
+                      select new
+                      {
+                          u.Email,
+                          r.Name
+                      };
+
+            var dto = await sql.ToListAsync();
+
+            EmailRoles = dto.GroupBy(e => e.Email).Select(e =>
+                new EmailRoles
+                {
+                    Email = e.Key,
+                    Roles = e.Select(p => p.Name).OrderBy(e => e).ToList()
+                })
+                .OrderByDescending(e => e.Roles.Count).ThenBy(e => e.Email)
+                .ToList();
         }
     }
 
